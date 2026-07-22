@@ -145,10 +145,10 @@
       <div class="eyebrow rise d1">MENG 4450 · Fall 2026</div>
       <h1 class="rise d2">PLC <span class="amp">&amp;</span> Robotics</h1>
       <p class="lede rise d3">Industrial automation as one applied mechatronics problem: sensing, actuation, and control integrated into working cells you can build, and debug when they fail.</p>
-      <div class="loop rise d4" aria-label="The sense, decide, act control loop">
+      <div class="loop rise d4" aria-label="The sense, plan, act control loop">
         <div class="node on" id="n-sense"><span class="dot"></span><span class="lbl">SENSE</span></div>
         <div class="link l1"></div>
-        <div class="node" id="n-decide"><span class="dot"></span><span class="lbl">DECIDE</span></div>
+        <div class="node" id="n-plan"><span class="dot"></span><span class="lbl">PLAN</span></div>
         <div class="link l2"></div>
         <div class="node" id="n-act"><span class="dot"></span><span class="lbl">ACT</span></div>
       </div>
@@ -184,7 +184,7 @@
           </a>
 
           <a class="card" href="modules/03-control/lesson.html">
-            <div class="card-top"><span class="card-num">03</span><span class="stage">Decide</span></div>
+            <div class="card-top"><span class="card-num">03</span><span class="stage">Plan</span></div>
             <h3><span class="pilot"></span>Industrial Control</h3>
             <p>Deciding and regulating behavior. PLC sequencing with timers, counters, interlocks, and fault handling; robot motion control as the continuous case.</p>
             <div class="go">Open module →</div>
@@ -224,7 +224,7 @@
     (function(){
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if(reduce) return;
-      var nodes = [document.getElementById('n-sense'),document.getElementById('n-decide'),document.getElementById('n-act')];
+      var nodes = [document.getElementById('n-sense'),document.getElementById('n-plan'),document.getElementById('n-act')];
       var i = 0;
       setInterval(function(){
         nodes.forEach(function(n){ n.classList.remove('on'); });
