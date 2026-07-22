@@ -145,10 +145,10 @@
       <div class="eyebrow rise d1">MENG 4450 · Fall 2026</div>
       <h1 class="rise d2">PLC <span class="amp">&amp;</span> Robotics</h1>
       <p class="lede rise d3">Industrial automation as one applied mechatronics problem: sensing, actuation, and control integrated into working cells you can build, and debug when they fail.</p>
-      <div class="loop rise d4" aria-label="The sense, plan, act control loop">
+      <div class="loop rise d4" aria-label="The sense, decide, act control loop">
         <div class="node on" id="n-sense"><span class="dot"></span><span class="lbl">SENSE</span></div>
         <div class="link l1"></div>
-        <div class="node" id="n-plan"><span class="dot"></span><span class="lbl">PLAN</span></div>
+        <div class="node" id="n-decide"><span class="dot"></span><span class="lbl">DECIDE</span></div>
         <div class="link l2"></div>
         <div class="node" id="n-act"><span class="dot"></span><span class="lbl">ACT</span></div>
       </div>
@@ -159,42 +159,42 @@
     <div class="wrap">
       <div class="eyebrow">The premise</div>
       <p>The hardware is <span class="hl">not the subject</span>. It is the testbed.</p>
-      <p class="sub">The Allen-Bradley PLC and the MELFA SCARA arm are where you make real the principles used across all industrial automation. Every module rehearses a principle in open-source simulation, then applies it to a different task on the bench. You are assessed on transfer and on troubleshooting, not on reproducing a memorized sequence.</p>
+      <p class="sub">The Allen-Bradley PLC and the MELFA SCARA arm are where you make real the principles used across all industrial automation. Every unit rehearses a principle in open-source simulation, then applies it to a different task on the bench. You are assessed on transfer and on troubleshooting, not on reproducing a memorized sequence.</p>
     </div>
   </section>
 
   <main>
     <section class="modules" id="modules">
       <div class="wrap">
-        <div class="section-head"><span class="eyebrow">Four modules</span><h2>The course, in sequence</h2></div>
+        <div class="section-head"><span class="eyebrow">Four units</span><h2>The course, in sequence</h2></div>
         <div class="grid">
 
-          <a class="card" href="modules/01-sensing/lesson.html">
+          <a class="card" href="modules/01-sensing/index.html">
             <div class="card-top"><span class="card-num">01</span><span class="stage">Sense</span></div>
             <h3><span class="pilot"></span>Industrial Sensing</h3>
             <p>Detecting and interpreting system state. Proximity, photoelectric, and limit sensors; thresholds, false detection, wiring faults, and noisy signals.</p>
-            <div class="go">Open module →</div>
+            <div class="go">Open unit →</div>
           </a>
 
-          <a class="card" href="modules/02-actuation/lesson.html">
+          <a class="card" href="modules/02-actuation/index.html">
             <div class="card-top"><span class="card-num">02</span><span class="stage">Act</span></div>
             <h3><span class="pilot"></span>Industrial Actuation</h3>
             <p>Producing physical action. Motors, relays, solenoids, and the robot's servo axes; output-not-firing, wrong direction, timing mismatch, and unsafe sequence.</p>
-            <div class="go">Open module →</div>
+            <div class="go">Open unit →</div>
           </a>
 
-          <a class="card" href="modules/03-control/lesson.html">
-            <div class="card-top"><span class="card-num">03</span><span class="stage">Plan</span></div>
+          <a class="card" href="modules/03-control/index.html">
+            <div class="card-top"><span class="card-num">03</span><span class="stage">Decide</span></div>
             <h3><span class="pilot"></span>Industrial Control</h3>
             <p>Deciding and regulating behavior. PLC sequencing with timers, counters, interlocks, and fault handling; robot motion control as the continuous case.</p>
-            <div class="go">Open module →</div>
+            <div class="go">Open unit →</div>
           </a>
 
-          <a class="card" href="modules/04-integration/lesson.html">
+          <a class="card" href="modules/04-integration/index.html">
             <div class="card-top"><span class="card-num">04</span><span class="stage">Integrate</span></div>
             <h3><span class="pilot"></span>System Integration</h3>
             <p>Combining all three into a detect–decide–actuate–verify–handle-faults cell, with PLC–robot handshake and HMI-style status.</p>
-            <div class="go">Open module →</div>
+            <div class="go">Open unit →</div>
           </a>
 
         </div>
@@ -203,7 +203,7 @@
 
     <section class="method">
       <div class="wrap">
-        <div class="section-head"><span class="eyebrow">How each module runs</span><h2>Simulation to hardware</h2></div>
+        <div class="section-head"><span class="eyebrow">How each unit runs</span><h2>Simulation to hardware</h2></div>
         <div class="rungs">
           <div class="rung"><div class="k">01 · LEARN</div><h4>Principle first</h4><p>A short, segmented lesson introduces the principle one step at a time, with practice questions to check understanding.</p></div>
           <div class="rung"><div class="k">02 · SIMULATE</div><h4>Rehearse the logic</h4><p>You write and run your own control logic in open-source simulation, change parameters, and debug against a live system.</p></div>
@@ -224,7 +224,7 @@
     (function(){
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if(reduce) return;
-      var nodes = [document.getElementById('n-sense'),document.getElementById('n-plan'),document.getElementById('n-act')];
+      var nodes = [document.getElementById('n-sense'),document.getElementById('n-decide'),document.getElementById('n-act')];
       var i = 0;
       setInterval(function(){
         nodes.forEach(function(n){ n.classList.remove('on'); });
