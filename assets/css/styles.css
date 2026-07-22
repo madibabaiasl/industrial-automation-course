@@ -1,0 +1,20 @@
+/
+  index.html              landing page, links to the four modules
+  .nojekyll
+  assets/
+    css/styles.css        one shared stylesheet
+    js/lesson.js          shared reveal + quiz logic (built once, reused)
+  modules/
+    01-sensing/
+      lesson.html
+      fault-diagnosis.html
+    02-actuation/
+      lesson.html
+      fault-diagnosis.html
+    03-control/
+      lesson.html
+      fault-diagnosis.html
+    04-integration/
+      lesson.html
+      fault-diagnosis.html
+  labs/
