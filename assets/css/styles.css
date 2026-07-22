@@ -141,11 +141,20 @@ a:hover{text-decoration:underline}
 
 /* ---- footer ---- */
 footer{margin-top:72px;background:var(--brand);color:#C9C9E8;border-top:4px solid var(--gold)}
-footer .wrap{padding:36px 28px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;align-items:center}
+footer .wrap{padding:34px 28px 20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;align-items:center}
 footer .fmono{font-family:"IBM Plex Mono",monospace;font-size:15px;letter-spacing:.05em}
 footer a.fmono{color:#C9C9E8}
 footer a.fmono:hover{color:#fff;text-decoration:none}
 footer .fmono b{color:var(--gold);font-weight:600}
+footer .lab{display:flex;align-items:center;gap:16px;text-decoration:none}
+footer .lab:hover{text-decoration:none}
+footer .labchip{background:#fff;border-radius:12px;padding:6px;display:inline-flex;line-height:0;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+footer .labchip img{height:56px;width:auto;display:block}
+footer .labtxt{font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.55;color:#C9C9E8}
+footer .labtxt b{color:#fff;font-weight:600}
+footer .labtxt .u{color:var(--gold)}
+footer .lab:hover .labtxt .u{text-decoration:underline}
+footer .copyline{max-width:var(--maxw);margin:0 auto;padding:18px 28px 32px;border-top:1px solid rgba(255,255,255,.14);font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.6;letter-spacing:.02em;color:#AEAED2}
 
 @media (max-width:720px){
   .grid{grid-template-columns:1fr}
