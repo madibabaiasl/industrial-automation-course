@@ -118,18 +118,19 @@ a:hover{text-decoration:underline}
 .pager .lbl{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;margin-bottom:5px}
 .pager .ttl{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:1.1rem;line-height:1.15;display:block}
 
-/* previous: secondary, white with outline, arrow on the left */
-.pager .prev{background:#fff;border:1px solid var(--line);color:var(--ink);align-items:flex-start;text-align:left;padding-left:54px}
-.pager .prev .lbl{color:var(--ink-faint)}
-.pager .prev::before{content:"\2190";position:absolute;left:24px;top:50%;transform:translateY(-50%);font-size:1.45rem;color:var(--brand)}
-.pager a.prev:hover{border-color:var(--brand);box-shadow:0 10px 24px rgba(56,56,144,.12)}
+/* previous: solid indigo (matches the Continue button), arrow on the left */
+.pager .prev{background:var(--brand);border:1px solid var(--brand);color:#fff;align-items:flex-start;text-align:left;padding-left:56px}
+.pager .prev .lbl{color:#C9C9E8}
+.pager .prev .ttl{color:#fff}
+.pager .prev::before{content:"\2190";position:absolute;left:26px;top:50%;transform:translateY(-50%);font-size:1.5rem;color:#fff}
+.pager a.prev:hover{background:var(--brand-deep);box-shadow:0 12px 26px rgba(56,56,144,.28)}
 
-/* next: primary, filled indigo, gold arrow on the right */
-.pager .next{background:var(--brand);border:1px solid var(--brand);color:#fff;align-items:flex-end;text-align:right;padding-right:54px}
-.pager .next .lbl{color:#C9C9E8}
-.pager .next .ttl{color:#fff}
-.pager .next::after{content:"\2192";position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:1.45rem;color:var(--gold)}
-.pager a.next:hover{background:var(--brand-deep);box-shadow:0 12px 28px rgba(56,56,144,.30)}
+/* next: solid Mecharithm gold, arrow on the right, dark text for contrast */
+.pager .next{background:var(--gold);border:1px solid var(--gold);color:var(--ink);align-items:flex-end;text-align:right;padding-right:56px}
+.pager .next .lbl{color:#5A4A08}
+.pager .next .ttl{color:var(--ink)}
+.pager .next::after{content:"\2192";position:absolute;right:26px;top:50%;transform:translateY(-50%);font-size:1.5rem;color:var(--ink)}
+.pager a.next:hover{background:var(--gold-deep);border-color:var(--gold-deep);box-shadow:0 12px 28px rgba(240,192,64,.5)}
 
 /* disabled end-of-module placeholder */
 .pager .disabled{background:var(--paper-2);border:1px solid var(--line);color:var(--ink-faint);pointer-events:none}
