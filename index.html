@@ -6,23 +6,23 @@
 <title>PLC &amp; Robotics — MENG 4450</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --brand:#383890;        /* Mecharithm indigo — primary brand */
-    --brand-deep:#2C2C72;   /* darker indigo for borders/hover */
-    --brand-tint:#EDEDF6;   /* very light indigo wash */
-    --gold:#F0C040;         /* Mecharithm gold — single bright accent */
-    --ink:#1A1A1A;          /* black text */
-    --ink-soft:#5A5A5A;     /* secondary text */
-    --ink-faint:#8A8A8A;    /* tertiary */
-    --paper:#FFFFFF;        /* canvas */
-    --paper-2:#FAFAFA;
-    --line:#E4E4E4;         /* hairlines on white */
-    --line-dark:#33335F;    /* hairlines on indigo */
-    --panel:#1A1A1A;        /* the one black band */
-    --panel-soft:#B4B4B4;   /* muted text on black */
-    --maxw:1080px;
+    --brand:#383890;
+    --brand-deep:#2A2A6E;
+    --brand-tint:#ECECF7;
+    --gold:#F0C040;
+    --gold-deep:#E0AE1E;
+    --ink:#141414;
+    --ink-soft:#565663;
+    --ink-faint:#8A8A97;
+    --paper:#FFFFFF;
+    --paper-2:#F7F7FB;
+    --line:#E6E6EC;
+    --panel:#141414;
+    --panel-soft:#B0B0B8;
+    --maxw:1140px;
   }
 
   *{box-sizing:border-box}
@@ -30,108 +30,122 @@
   body{
     margin:0;background:var(--paper);color:var(--ink);
     font-family:"IBM Plex Sans",system-ui,sans-serif;
-    font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;
+    font-size:19px;line-height:1.65;-webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
   }
   a{color:inherit}
-  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
   .eyebrow{
-    font-family:"IBM Plex Mono",monospace;font-size:13px;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
+    font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:500;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);
   }
 
-  /* ---------- HERO (indigo brand band) ---------- */
-  .hero{background:var(--brand);color:#F4F4FA;border-bottom:4px solid var(--gold)}
-  .hero .wrap{padding-top:66px;padding-bottom:60px}
-  .hero .eyebrow{color:#C9C9E6;position:relative;padding-left:26px}
-  .hero .eyebrow::before{content:"";position:absolute;left:0;top:50%;width:16px;height:2px;background:var(--gold)}
+  /* ===== entrance animation ===== */
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  .rise{opacity:0;animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
+  .d1{animation-delay:.05s}.d2{animation-delay:.16s}.d3{animation-delay:.27s}.d4{animation-delay:.4s}
+
+  /* ===== HERO (indigo brand band) ===== */
+  .hero{background:var(--brand);color:#F4F4FA;border-bottom:5px solid var(--gold);overflow:hidden}
+  .hero .wrap{padding-top:92px;padding-bottom:84px}
+  .hero .eyebrow{color:#C9C9E8;position:relative;padding-left:32px}
+  .hero .eyebrow::before{content:"";position:absolute;left:0;top:50%;width:20px;height:2px;background:var(--gold)}
   .hero h1{
     font-family:"Space Grotesk",sans-serif;font-weight:700;
-    font-size:clamp(38px,7vw,68px);line-height:1.02;letter-spacing:-.02em;
-    color:#fff;margin:.34em 0 .3em;
+    font-size:clamp(3.4rem,11vw,7.5rem);line-height:.98;letter-spacing:-.03em;
+    color:#fff;margin:.28em 0 .34em;
   }
-  .hero h1 .amp{color:var(--gold)}
-  .hero .lede{max-width:46ch;color:#DADAEE;font-size:clamp(17px,2.4vw,20px);margin:0}
+  .hero h1 .amp{color:var(--gold);font-weight:600}
+  .hero .lede{
+    max-width:32ch;color:#DEDEF0;
+    font-size:clamp(1.35rem,3vw,1.85rem);line-height:1.4;font-weight:400;margin:0;
+  }
 
-  /* ---------- SIGNAL PATH (signature) ---------- */
-  .loop{margin-top:46px;display:flex;align-items:center;gap:0;flex-wrap:wrap}
-  .node{display:flex;flex-direction:column;gap:6px;min-width:96px}
+  /* ===== SIGNAL PATH (signature) ===== */
+  .loop{margin-top:64px;display:flex;align-items:center;gap:0;flex-wrap:wrap}
+  .node{display:flex;flex-direction:column;gap:12px;min-width:120px}
   .node .dot{
-    width:14px;height:14px;border-radius:50%;
-    border:2px solid rgba(255,255,255,.55);background:transparent;
-    transition:background .25s ease, box-shadow .25s ease, border-color .25s ease;
+    width:22px;height:22px;border-radius:50%;
+    border:2px solid rgba(255,255,255,.5);background:transparent;
+    transition:background .3s ease, box-shadow .3s ease, border-color .3s ease;
   }
-  .node .lbl{font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.12em;color:#A8A8D0;transition:color .25s ease}
-  .node.on .dot{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 4px rgba(240,192,64,.22)}
+  .node .lbl{font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:500;letter-spacing:.16em;color:#A9A9D4;transition:color .3s ease}
+  .node.on .dot{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 6px rgba(240,192,64,.22)}
   .node.on .lbl{color:#fff}
-  .link{flex:1 1 40px;min-width:36px;height:2px;background:rgba(255,255,255,.22);position:relative;overflow:hidden;margin:0 4px 18px;align-self:flex-end}
-  .link::after{content:"";position:absolute;top:0;left:-30%;width:30%;height:100%;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:travel 3.2s linear infinite}
+  .link{flex:1 1 48px;min-width:40px;height:2px;background:rgba(255,255,255,.2);position:relative;overflow:hidden;margin:0 8px 26px;align-self:flex-end}
+  .link::after{content:"";position:absolute;top:0;left:-32%;width:32%;height:100%;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:travel 3.2s linear infinite}
   .link.l2::after{animation-delay:1.06s}
-  @keyframes travel{0%{left:-30%}60%,100%{left:130%}}
+  @keyframes travel{0%{left:-32%}60%,100%{left:132%}}
 
-  /* ---------- THESIS (black band — the contrast moment) ---------- */
-  .thesis{background:var(--panel);color:#F1F1F1;border-bottom:1px solid #000}
-  .thesis .wrap{padding:52px 24px}
+  /* ===== THESIS (black band) ===== */
+  .thesis{background:var(--panel);color:#F1F1F1}
+  .thesis .wrap{padding:78px 28px}
   .thesis .eyebrow{color:var(--panel-soft)}
-  .thesis p{max-width:62ch;font-size:clamp(19px,2.6vw,23px);line-height:1.5;margin:.5em 0 0;color:#F6F6F6}
-  .thesis p .hl{color:var(--gold);font-weight:600}
-  .thesis .sub{font-size:16px;color:var(--panel-soft);max-width:66ch;margin-top:18px;line-height:1.6}
-
-  /* ---------- MODULES ---------- */
-  .modules{padding:56px 0 8px}
-  .section-head{display:flex;align-items:baseline;gap:16px;border-bottom:2px solid var(--brand);padding-bottom:12px;margin-bottom:28px}
-  .section-head .eyebrow{color:var(--brand)}
-  .section-head h2{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:24px;letter-spacing:-.01em;color:var(--ink);margin:0}
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-  .card{
-    display:block;text-decoration:none;color:inherit;background:var(--paper);
-    border:1px solid var(--line);border-radius:2px;padding:22px 22px 20px;
-    transition:border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+  .thesis p{
+    max-width:24ch;font-family:"Space Grotesk",sans-serif;font-weight:500;
+    font-size:clamp(1.9rem,5vw,3.15rem);line-height:1.16;letter-spacing:-.015em;
+    margin:.4em 0 0;color:#FAFAFA;
   }
-  .card:hover,.card:focus-visible{border-color:var(--brand);transform:translateY(-2px);box-shadow:0 6px 22px rgba(56,56,144,.14);outline:none}
-  .card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-  .card-num{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-faint);letter-spacing:.08em}
-  .stage{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);border:1px solid var(--brand-tint);background:var(--brand-tint);border-radius:999px;padding:3px 10px}
-  .pilot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:8px;vertical-align:middle;background:var(--brand);box-shadow:0 0 0 3px rgba(56,56,144,.12)}
-  .card h3{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:20px;margin:0 0 6px;letter-spacing:-.01em;color:var(--ink)}
-  .card p{margin:0;color:var(--ink-soft);font-size:15px;line-height:1.5}
-  .card .go{margin-top:14px;font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--brand);letter-spacing:.04em}
+  .thesis p .hl{color:var(--gold)}
+  .thesis .sub{font-family:"IBM Plex Sans",sans-serif;font-weight:400;font-size:clamp(1.05rem,2vw,1.3rem);color:var(--panel-soft);max-width:60ch;margin-top:26px;line-height:1.6}
 
-  /* ---------- METHOD STRIP ---------- */
-  .method{padding:52px 0 8px}
-  .rungs{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:2px;overflow:hidden;background:var(--paper)}
-  .rung{padding:22px 22px;border-right:1px solid var(--line)}
-  .rung:last-child{border-right:none}
-  .rung .k{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--brand);letter-spacing:.1em}
-  .rung h4{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:18px;margin:8px 0 6px;color:var(--ink)}
-  .rung p{margin:0;color:var(--ink-soft);font-size:14px;line-height:1.5}
+  /* ===== MODULES ===== */
+  .modules{padding:84px 0 8px}
+  .section-head{display:flex;align-items:baseline;gap:20px;border-bottom:2px solid var(--brand);padding-bottom:16px;margin-bottom:36px;flex-wrap:wrap}
+  .section-head .eyebrow{color:var(--brand)}
+  .section-head h2{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:clamp(1.9rem,4vw,2.7rem);letter-spacing:-.02em;color:var(--ink);margin:0;line-height:1}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+  .card{
+    position:relative;display:block;text-decoration:none;color:inherit;background:var(--paper);
+    border:1px solid var(--line);border-radius:4px;padding:30px 30px 28px;
+    transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+  }
+  .card:hover,.card:focus-visible{border-color:var(--brand);transform:translateY(-3px);box-shadow:0 14px 34px rgba(56,56,144,.16);outline:none}
+  .card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .card-num{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:clamp(2.4rem,5vw,3.1rem);line-height:1;color:var(--brand);letter-spacing:-.02em;transition:color .2s ease}
+  .card:hover .card-num,.card:focus-visible .card-num{color:var(--gold-deep)}
+  .stage{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--brand);background:var(--brand-tint);border-radius:999px;padding:6px 14px}
+  .pilot{width:11px;height:11px;border-radius:50%;display:inline-block;margin-right:11px;vertical-align:middle;background:var(--brand);box-shadow:0 0 0 3px rgba(56,56,144,.12)}
+  .card h3{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:clamp(1.4rem,2.6vw,1.72rem);margin:0 0 10px;letter-spacing:-.01em;color:var(--ink);line-height:1.15}
+  .card p{margin:0;color:var(--ink-soft);font-size:1.02rem;line-height:1.55}
+  .card .go{margin-top:20px;font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:500;color:var(--brand);letter-spacing:.03em}
 
-  /* ---------- FOOTER (indigo bookend) ---------- */
-  footer{margin-top:64px;background:var(--brand);color:#C9C9E6;border-top:4px solid var(--gold)}
-  footer .wrap{padding:32px 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;align-items:center}
-  footer .fmono{font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.06em}
+  /* ===== METHOD STRIP ===== */
+  .method{padding:80px 0 8px}
+  .rungs{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--paper)}
+  .rung{padding:32px 28px}
+  .rung + .rung{border-left:1px solid var(--line)}
+  .rung .k{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:15px;color:var(--brand);letter-spacing:.1em}
+  .rung h4{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:clamp(1.3rem,2.4vw,1.5rem);margin:12px 0 8px;color:var(--ink)}
+  .rung p{margin:0;color:var(--ink-soft);font-size:1.02rem;line-height:1.55}
+
+  /* ===== FOOTER ===== */
+  footer{margin-top:88px;background:var(--brand);color:#C9C9E8;border-top:5px solid var(--gold)}
+  footer .wrap{padding:44px 28px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;align-items:center}
+  footer .fmono{font-family:"IBM Plex Mono",monospace;font-size:16px;letter-spacing:.05em}
   footer .fmono b{color:var(--gold);font-weight:600}
 
-  @media (max-width:720px){
+  @media (max-width:760px){
     .grid{grid-template-columns:1fr}
     .rungs{grid-template-columns:1fr}
-    .rung{border-right:none;border-bottom:1px solid var(--line)}
-    .rung:last-child{border-bottom:none}
+    .rung + .rung{border-left:none;border-top:1px solid var(--line)}
   }
   @media (prefers-reduced-motion:reduce){
+    .rise{opacity:1;animation:none}
     .link::after{animation:none;left:0;width:100%;opacity:.5}
     html{scroll-behavior:auto}
   }
-  :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 </style>
 </head>
 <body>
 
   <header class="hero">
     <div class="wrap">
-      <div class="eyebrow">MENG 4450 · Fall 2026</div>
-      <h1>PLC <span class="amp">&amp;</span> Robotics</h1>
-      <p class="lede">Industrial automation as one applied mechatronics problem: sensing, actuation, and control integrated into working cells you can build, and debug when they fail.</p>
-      <div class="loop" aria-label="The sense, decide, act control loop">
+      <div class="eyebrow rise d1">MENG 4450 · Fall 2026</div>
+      <h1 class="rise d2">PLC <span class="amp">&amp;</span> Robotics</h1>
+      <p class="lede rise d3">Industrial automation as one applied mechatronics problem: sensing, actuation, and control integrated into working cells you can build, and debug when they fail.</p>
+      <div class="loop rise d4" aria-label="The sense, decide, act control loop">
         <div class="node on" id="n-sense"><span class="dot"></span><span class="lbl">SENSE</span></div>
         <div class="link l1"></div>
         <div class="node" id="n-decide"><span class="dot"></span><span class="lbl">DECIDE</span></div>
@@ -144,8 +158,8 @@
   <section class="thesis">
     <div class="wrap">
       <div class="eyebrow">The premise</div>
-      <p>The Allen-Bradley PLC and the MELFA SCARA arm are <span class="hl">not the subject</span> of this course. They are the testbed. What you learn are the principles used across all industrial automation, and this hardware is where you make them real.</p>
-      <p class="sub">Every unit rehearses a principle in open-source simulation, then applies the same principle to a different task on real hardware. You are assessed on transfer and on troubleshooting, not on reproducing a memorized sequence.</p>
+      <p>The hardware is <span class="hl">not the subject</span>. It is the testbed.</p>
+      <p class="sub">The Allen-Bradley PLC and the MELFA SCARA arm are where you make real the principles used across all industrial automation. Every unit rehearses a principle in open-source simulation, then applies it to a different task on the bench. You are assessed on transfer and on troubleshooting, not on reproducing a memorized sequence.</p>
     </div>
   </section>
 
