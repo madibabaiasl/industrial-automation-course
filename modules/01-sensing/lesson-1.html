@@ -8,12 +8,78 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/styles.css">
+
+<!-- MathJax: enable $...$ inline and $$...$$ display -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] },
+    chtml: { scale: 1.05 },
+    startup: { typeset: true }
+  };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  /* ---- lesson-specific styles (base look comes from styles.css) ---- */
+  .lesson{max-width:66ch}
+  .lesson p{font-size:1.14rem;line-height:1.72;color:var(--ink);margin:1.1em 0}
+  .lesson h3{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:1.5rem;color:var(--ink);margin:1.4em 0 .3em;letter-spacing:-.01em}
+  .lesson strong{font-weight:600}
+
+  .intro{border-left:3px solid var(--brand);padding-left:20px;color:var(--ink-soft)}
+  .intro p{font-size:1.1rem}
+
+  .eqbox{background:var(--paper-2);border:1px solid var(--line);border-radius:6px;padding:14px 20px;margin:20px 0;overflow-x:auto}
+
+  /* progressive reveal */
+  .step{margin-top:10px}
+  .step[hidden]{display:none}
+  @keyframes stepIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .step.revealing{animation:stepIn .5s cubic-bezier(.2,.7,.2,1)}
+
+  .controls{display:flex;align-items:center;gap:22px;margin:34px 0 8px;flex-wrap:wrap}
+  .progress{font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.08em;color:var(--ink-faint)}
+  .continue{
+    background:var(--brand);color:#fff;border:none;border-radius:5px;
+    padding:14px 26px;font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:16px;
+    cursor:pointer;transition:background .2s ease}
+  .continue:hover{background:var(--brand-deep)}
+  .endnote{margin:20px 0 8px;padding:16px 20px;border-left:4px solid var(--gold);background:var(--brand-tint);border-radius:4px;color:var(--ink-soft)}
+  .endnote[hidden]{display:none}
+
+  /* quiz */
+  .quiz{border:1px solid var(--line);border-radius:8px;padding:26px;margin:30px 0;background:var(--paper)}
+  .quiz .qlabel{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);font-weight:600}
+  .quiz .q{font-weight:500;font-size:1.12rem;line-height:1.5;margin:10px 0 18px;color:var(--ink)}
+  .opt{
+    display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);
+    border-radius:7px;padding:13px 16px;margin:9px 0;font:inherit;font-size:1.02rem;color:var(--ink);
+    cursor:pointer;transition:border-color .15s ease, background .15s ease}
+  .opt:hover:not(:disabled){border-color:var(--brand)}
+  .opt:disabled{cursor:default}
+  .opt .key{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink-faint);margin-right:12px}
+  .opt.correct{border-color:var(--gold-deep);background:#FFF9E9;box-shadow:0 0 0 2px rgba(240,192,64,.4)}
+  .opt.correct .key{color:var(--gold-deep)}
+  .opt.wrong{border-color:#DADAE4;background:var(--paper-2);color:var(--ink-soft)}
+  .feedback{margin-top:16px;font-size:1.02rem;line-height:1.6;min-height:0}
+  .feedback:empty{display:none}
+  .feedback.ok{color:var(--brand-deep)}
+  .feedback.no{color:var(--ink-soft)}
+  .retry{margin-top:10px;background:none;border:none;color:var(--brand);font:inherit;font-size:.95rem;cursor:pointer;text-decoration:underline;padding:0}
+  .retry[hidden]{display:none}
+</style>
 </head>
 <body>
+
 <div class="topbar"><div class="wrap">
   <a class="brand" href="../../index.html"><b>MENG 4450</b> · PLC &amp; Robotics</a>
   <a class="home" href="../../index.html">← All modules</a>
-</div></div><div class="crumb"><div class="wrap"><a href="../../index.html">Home</a><span class="sep">/</span><a href="index.html">Module 01</a><span class="sep">/</span><span class="here">Lesson 1</span></div></div>
+</div></div>
+
+<div class="crumb"><div class="wrap">
+  <a href="../../index.html">Home</a><span class="sep">/</span><a href="index.html">Module 01</a><span class="sep">/</span><span class="here">Lesson 1</span>
+</div></div>
+
 <main>
   <div class="page-head"><div class="wrap">
     <div class="eyebrow">Module 01 · Principle</div>
@@ -22,24 +88,160 @@
   </div></div>
 
   <div class="wrap">
-    <div class="placeholder"><span class="tag">Placeholder</span><p>This lesson has not been authored yet. The outline below shows what will go here.</p></div>
+    <div class="lesson">
 
-    <section class="section">
-      <div class="section-head"><span class="eyebrow">Scaffold</span><h2>What will go here</h2></div>
-      <ul class="outline">
-<li><span class="n">01</span><span class="stack"><span class="t">Learning objectives</span><span class="d">What a student should be able to do after this lesson.</span></span></li>
-<li><span class="n">02</span><span class="stack"><span class="t">Segmented lesson</span><span class="d">The principle, revealed one step at a time to limit cognitive load.</span></span></li>
-<li><span class="n">03</span><span class="stack"><span class="t">Worked example</span><span class="d">The principle applied to this module's hardware.</span></span></li>
-<li><span class="n">04</span><span class="stack"><span class="t">Formative checks</span><span class="d">Practice questions with feedback, drawn from the course question bank.</span></span></li>
-</ul>
-    </section>
+      <!-- always visible intro -->
+      <div class="intro">
+        <p>Every automated cell begins with one question: what is the state of the world right now? A sensor answers it by turning a physical quantity — distance, presence, light, force — into an electrical signal the controller can read. This is the <strong>sense</strong> in sense–decide–act. Work through the steps below; each one appears when you are ready for it.</p>
+      </div>
 
-    <div class="pager"><a class="prev" href="index.html"><span class="lbl">Previous</span><span class="ttl">Industrial Sensing</span></a><a class="next" href="lesson-2.html"><span class="lbl">Next</span><span class="ttl">Diagnosing sensor faults: thresholds, false detection, wiring, and noise</span></a></div>
+      <!-- STEP 1 (visible by default) -->
+      <section class="step" data-step="1">
+        <h3>1 · What a sensor actually outputs</h3>
+        <p>Sensors fall into two families, and the controller treats them very differently. A <strong>discrete</strong> sensor reports one bit: present or absent, tripped or clear. A limit switch and an inductive proximity sensor are discrete. An <strong>analog</strong> sensor reports a continuous value, usually a voltage or current that rises and falls with the measured quantity. Knowing which family you are holding decides how you wire it and how you read it in the program.</p>
+      </section>
+
+      <!-- STEP 2 (hidden) -->
+      <section class="step" data-step="2" hidden>
+        <h3>2 · Sensitivity: how the signal tracks the world</h3>
+        <p>For an analog sensor, the cleanest model is a straight line: the output voltage $V_\text{out}$ is proportional to the measured quantity $x$, plus an offset.</p>
+        <div class="eqbox">
+          $$ V_\text{out} = S\,x + V_0 $$
+        </div>
+        <p>Here $V_0$ is the reading at $x = 0$, and the slope $S$ is the <strong>sensitivity</strong>, defined as the change in output per unit change in the world:</p>
+        <div class="eqbox">
+          $$ S = \frac{\Delta V_\text{out}}{\Delta x} $$
+        </div>
+        <p>A larger $S$ gives more signal for a small change, which makes weak effects easier to detect — but push it too far and the output runs into its supply rail and <strong>saturates</strong>, losing all information above that point.</p>
+      </section>
+
+      <!-- STEP 3 (hidden) -->
+      <section class="step" data-step="3" hidden>
+        <h3>3 · The trip point, and why one threshold is not enough</h3>
+        <p>To turn an analog reading into a yes/no decision, you compare it against a threshold. The trouble is noise. When $x$ sits near a single threshold, small fluctuations cross it back and forth, and the output <strong>chatters</strong> on and off many times a second. The fix is <strong>hysteresis</strong>: use two thresholds instead of one. Turn the output on only when $x > x_\text{on}$, and turn it off only when $x < x_\text{off}$, with $x_\text{on} > x_\text{off}$. The gap $x_\text{on} - x_\text{off}$ is a dead band that noise cannot repeatedly cross.</p>
+
+        <div class="quiz" data-answer="b">
+          <div class="qlabel">Check your understanding</div>
+          <p class="q">A proximity signal hovers right at a single trip threshold while the target vibrates slightly. What appears at the output, and what fixes it?</p>
+          <button class="opt" data-key="a"><span class="key">A</span>The output saturates; increase the sensitivity.</button>
+          <button class="opt" data-key="b"><span class="key">B</span>The output chatters on and off rapidly; add hysteresis with two thresholds.</button>
+          <button class="opt" data-key="c"><span class="key">C</span>The output drifts slowly; recalibrate the zero offset.</button>
+          <button class="opt" data-key="d"><span class="key">D</span>Nothing happens; the sensor ignores motion that small.</button>
+          <div class="feedback"></div>
+          <button class="retry" hidden>Try again</button>
+          <div class="explain" hidden>Near one threshold, noise crosses it repeatedly, so the discrete output toggles rapidly. Two thresholds create a dead band $x_\text{on}-x_\text{off}$ that a small fluctuation cannot cross twice, so the output holds steady.</div>
+        </div>
+      </section>
+
+      <!-- STEP 4 (hidden) -->
+      <section class="step" data-step="4" hidden>
+        <h3>4 · Putting the numbers together</h3>
+        <p>These two ideas — a linear transfer function and a sensible trip point — are almost everything you need to interpret a sensor on the bench. The last check ties the sensitivity equation to a number.</p>
+
+        <div class="quiz" data-answer="b">
+          <div class="qlabel">Check your understanding</div>
+          <p class="q">A linear sensor has $V_\text{out} = S\,x + V_0$ with sensitivity $S = 20\ \text{mV/mm}$. If $x$ increases by $3\ \text{mm}$, how much does $V_\text{out}$ change?</p>
+          <button class="opt" data-key="a"><span class="key">A</span>About 6.7 mV</button>
+          <button class="opt" data-key="b"><span class="key">B</span>60 mV</button>
+          <button class="opt" data-key="c"><span class="key">C</span>20 mV</button>
+          <button class="opt" data-key="d"><span class="key">D</span>23 mV</button>
+          <div class="feedback"></div>
+          <button class="retry" hidden>Try again</button>
+          <div class="explain" hidden>The change is $\Delta V_\text{out} = S\,\Delta x = 20\ \text{mV/mm} \times 3\ \text{mm} = 60\ \text{mV}$. The offset $V_0$ shifts the whole line but does not affect a change.</div>
+        </div>
+      </section>
+
+      <!-- reveal controls -->
+      <div class="controls">
+        <button class="continue" id="continueBtn">Continue ↓</button>
+        <span class="progress" id="progress">Step 1 of 4</span>
+      </div>
+
+      <div class="endnote" id="endNote" hidden>
+        <p style="margin:0">That is the full principle. Next, Module 1's fault-diagnosis lesson puts these ideas under stress with real wiring and noise.</p>
+      </div>
+
+      <!-- pager -->
+      <div class="pager">
+        <a class="prev" href="index.html"><span class="lbl">Previous</span><span class="ttl">Module 01</span></a>
+        <a class="next" href="lesson-2.html"><span class="lbl">Next</span><span class="ttl">Lesson 2 · Fault diagnosis</span></a>
+      </div>
+
+    </div>
   </div>
 </main>
+
 <footer><div class="wrap">
   <a class="fmono" href="../../index.html"><b>MENG 4450</b> — PLC &amp; Robotics</a>
   <span class="fmono">Fall 2026</span>
 </div></footer>
+
+<script>
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- progressive reveal ---------- */
+  (function(){
+    var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
+    var btn = document.getElementById('continueBtn');
+    var prog = document.getElementById('progress');
+    var endNote = document.getElementById('endNote');
+    var shown = 1;
+    function update(){ prog.textContent = 'Step ' + shown + ' of ' + steps.length; }
+    update();
+    btn.addEventListener('click', function(){
+      if(shown < steps.length){
+        var s = steps[shown];
+        s.hidden = false;
+        s.classList.add('revealing');
+        shown++;
+        update();
+        s.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'});
+        if(shown === steps.length){ btn.remove(); endNote.hidden = false; }
+      }
+    });
+  })();
+
+  /* ---------- quizzes ---------- */
+  (function(){
+    function typeset(el){
+      if(window.MathJax && window.MathJax.typesetPromise){ window.MathJax.typesetPromise([el]); }
+    }
+    document.querySelectorAll('.quiz').forEach(function(q){
+      var answer = q.getAttribute('data-answer');
+      var fb = q.querySelector('.feedback');
+      var retry = q.querySelector('.retry');
+      var explainEl = q.querySelector('.explain');
+      var explain = explainEl ? explainEl.innerHTML : '';
+      var opts = Array.prototype.slice.call(q.querySelectorAll('.opt'));
+
+      function reset(){
+        opts.forEach(function(o){ o.disabled=false; o.classList.remove('correct','wrong'); });
+        fb.className='feedback'; fb.innerHTML='';
+        retry.hidden=true;
+      }
+      retry.addEventListener('click', reset);
+
+      opts.forEach(function(opt){
+        opt.addEventListener('click', function(){
+          var key = opt.getAttribute('data-key');
+          if(key === answer){
+            opt.classList.add('correct');
+            opts.forEach(function(o){ o.disabled=true; });
+            fb.className='feedback ok';
+            fb.innerHTML = '<strong>Correct.</strong> ' + explain;
+            retry.hidden = true;
+            typeset(fb);
+          } else {
+            opt.classList.add('wrong');
+            opt.disabled = true;
+            fb.className='feedback no';
+            fb.innerHTML = '<strong>Not quite.</strong> Look again at the highlighted idea and try another option.';
+            retry.hidden = false;
+          }
+        });
+      });
+    });
+  })();
+</script>
 </body>
 </html>
