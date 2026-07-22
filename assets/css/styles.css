@@ -106,16 +106,37 @@ a:hover{text-decoration:underline}
 .outline li .d{color:var(--ink-soft);font-size:.98rem}
 .outline li .stack{display:flex;flex-direction:column;gap:2px}
 
-/* ---- pager (prev / next) ---- */
-.pager{display:flex;justify-content:space-between;gap:16px;margin:48px 0 8px;flex-wrap:wrap}
-.pager a,.pager span{
-  flex:1 1 220px;border:1px solid var(--line);border-radius:4px;padding:16px 18px;
-  text-decoration:none;color:inherit;transition:border-color .2s ease}
-.pager a:hover{border-color:var(--brand);text-decoration:none}
-.pager .lbl{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
-.pager .ttl{font-family:"Space Grotesk",sans-serif;font-weight:600;color:var(--ink);margin-top:4px;display:block}
-.pager .next{text-align:right}
-.pager .disabled{opacity:.4}
+/* ---- pager (prev / next) as full buttons ---- */
+.pager{display:flex;gap:16px;margin:52px 0 8px}
+.pager .prev,.pager .next{
+  flex:1 1 0;position:relative;min-height:74px;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:16px 24px;border-radius:10px;text-decoration:none;
+  transition:transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+}
+.pager a.prev:hover,.pager a.next:hover{transform:translateY(-2px);text-decoration:none}
+.pager .lbl{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;margin-bottom:5px}
+.pager .ttl{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:1.1rem;line-height:1.15;display:block}
+
+/* previous: secondary, white with outline, arrow on the left */
+.pager .prev{background:#fff;border:1px solid var(--line);color:var(--ink);align-items:flex-start;text-align:left;padding-left:54px}
+.pager .prev .lbl{color:var(--ink-faint)}
+.pager .prev::before{content:"\2190";position:absolute;left:24px;top:50%;transform:translateY(-50%);font-size:1.45rem;color:var(--brand)}
+.pager a.prev:hover{border-color:var(--brand);box-shadow:0 10px 24px rgba(56,56,144,.12)}
+
+/* next: primary, filled indigo, gold arrow on the right */
+.pager .next{background:var(--brand);border:1px solid var(--brand);color:#fff;align-items:flex-end;text-align:right;padding-right:54px}
+.pager .next .lbl{color:#C9C9E8}
+.pager .next .ttl{color:#fff}
+.pager .next::after{content:"\2192";position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:1.45rem;color:var(--gold)}
+.pager a.next:hover{background:var(--brand-deep);box-shadow:0 12px 28px rgba(56,56,144,.30)}
+
+/* disabled end-of-module placeholder */
+.pager .disabled{background:var(--paper-2);border:1px solid var(--line);color:var(--ink-faint);pointer-events:none}
+.pager .disabled .lbl,.pager .disabled .ttl{color:var(--ink-faint)}
+.pager .disabled::before,.pager .disabled::after{color:var(--ink-faint)}
+
+@media (max-width:560px){ .pager{flex-direction:column} }
 
 /* ---- footer ---- */
 footer{margin-top:72px;background:var(--brand);color:#C9C9E8;border-top:4px solid var(--gold)}
