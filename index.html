@@ -1,4 +1,349 @@
 <!doctype html>
+<html lang="en">
+<head>
 <meta charset="utf-8">
-<title>PLC and Robotics</title>
-<h1>Site is live</h1>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PLC &amp; Robotics — MENG 4450</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --panel:#191C22;        /* graphite panel */
+    --panel-2:#22262E;      /* raised panel */
+    --paper:#F4F5F2;        /* cool industrial paper */
+    --ink:#1B1E24;          /* body text on paper */
+    --ink-soft:#5A6069;     /* secondary text */
+    --line:#D3D7D1;         /* hairlines on paper */
+    --line-dark:#333944;    /* hairlines on panel */
+    --signal:#E39A12;       /* single accent: signal amber */
+    --run:#3BA55C;          /* pilot light green */
+    --stop:#CF4433;         /* pilot light red */
+    --paper-dim:#9AA0A8;    /* muted text on panel */
+    --maxw:1080px;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:13px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--signal);
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:var(--panel);
+    color:#EDEFF2;
+    border-bottom:1px solid var(--line-dark);
+  }
+  .hero .wrap{padding-top:64px;padding-bottom:64px}
+  .hero-eyebrow{color:var(--signal)}
+  .hero h1{
+    font-family:"Space Grotesk",sans-serif;
+    font-weight:700;
+    font-size:clamp(38px,7vw,68px);
+    line-height:1.02;
+    letter-spacing:-.02em;
+    margin:.35em 0 .3em;
+  }
+  .hero h1 .amp{color:var(--signal)}
+  .hero .lede{
+    max-width:44ch;
+    color:#C7CCD3;
+    font-size:clamp(17px,2.4vw,20px);
+    margin:0;
+  }
+
+  /* ---------- SIGNAL PATH (signature) ---------- */
+  .loop{
+    margin-top:48px;
+    display:flex;
+    align-items:center;
+    gap:0;
+    flex-wrap:wrap;
+  }
+  .node{
+    display:flex;flex-direction:column;gap:6px;
+    min-width:96px;
+  }
+  .node .dot{
+    width:14px;height:14px;border-radius:50%;
+    border:2px solid var(--line-dark);
+    background:transparent;
+    transition:background .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .node .lbl{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:14px;letter-spacing:.12em;
+    color:var(--paper-dim);
+    transition:color .25s ease;
+  }
+  .node.on .dot{
+    background:var(--signal);
+    border-color:var(--signal);
+    box-shadow:0 0 0 4px rgba(227,154,18,.18);
+  }
+  .node.on .lbl{color:#EDEFF2}
+  .link{
+    flex:1 1 40px;min-width:36px;height:2px;
+    background:var(--line-dark);
+    position:relative;overflow:hidden;
+    margin:0 4px 18px;
+    align-self:flex-end;
+  }
+  .link::after{
+    content:"";position:absolute;top:0;left:-30%;
+    width:30%;height:100%;
+    background:linear-gradient(90deg,transparent,var(--signal),transparent);
+    animation:travel 3.2s linear infinite;
+  }
+  .link.l2::after{animation-delay:1.06s}
+  @keyframes travel{0%{left:-30%}60%,100%{left:130%}}
+
+  /* ---------- FRAMING ---------- */
+  .framing{padding:56px 0 8px}
+  .framing p{
+    max-width:66ch;font-size:19px;color:var(--ink);
+  }
+  .framing .accent{
+    border-left:3px solid var(--signal);
+    padding-left:18px;margin-left:2px;
+    color:var(--ink-soft);font-size:16px;
+  }
+
+  /* ---------- MODULES ---------- */
+  .modules{padding:44px 0 8px}
+  .section-head{
+    display:flex;align-items:baseline;gap:16px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:12px;margin-bottom:28px;
+  }
+  .section-head h2{
+    font-family:"Space Grotesk",sans-serif;
+    font-weight:600;font-size:24px;letter-spacing:-.01em;margin:0;
+  }
+  .grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:16px;
+  }
+  .card{
+    display:block;text-decoration:none;color:inherit;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:22px 22px 20px;
+    transition:border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover,.card:focus-visible{
+    border-color:var(--signal);
+    transform:translateY(-2px);
+    box-shadow:0 6px 22px rgba(25,28,34,.08);
+    outline:none;
+  }
+  .card-top{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .card-num{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:13px;color:var(--ink-soft);letter-spacing:.08em;
+  }
+  .stage{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-soft);
+    border:1px solid var(--line);border-radius:999px;
+    padding:3px 10px;
+  }
+  .pilot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:middle}
+  .pilot.g{background:var(--run);box-shadow:0 0 0 3px rgba(59,165,92,.14)}
+  .pilot.r{background:var(--stop);box-shadow:0 0 0 3px rgba(207,68,51,.14)}
+  .card h3{
+    font-family:"Space Grotesk",sans-serif;
+    font-weight:600;font-size:20px;margin:0 0 6px;letter-spacing:-.01em;
+  }
+  .card p{margin:0;color:var(--ink-soft);font-size:15px;line-height:1.5}
+  .card .go{
+    margin-top:14px;
+    font-family:"IBM Plex Mono",monospace;font-size:13px;
+    color:var(--signal);letter-spacing:.04em;
+  }
+
+  /* ---------- METHOD STRIP ---------- */
+  .method{padding:52px 0 8px}
+  .rungs{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:2px;overflow:hidden;background:#fff}
+  .rung{padding:22px 22px;border-right:1px solid var(--line)}
+  .rung:last-child{border-right:none}
+  .rung .k{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--signal);letter-spacing:.1em}
+  .rung h4{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:18px;margin:8px 0 6px}
+  .rung p{margin:0;color:var(--ink-soft);font-size:14px;line-height:1.5}
+
+  /* ---------- FOOTER ---------- */
+  footer{margin-top:64px;background:var(--panel);color:var(--paper-dim);border-top:1px solid var(--line-dark)}
+  footer .wrap{padding:32px 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;align-items:center}
+  footer .fmono{font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.06em}
+  footer .fmono b{color:#EDEFF2;font-weight:600}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:720px){
+    .grid{grid-template-columns:1fr}
+    .rungs{grid-template-columns:1fr}
+    .rung{border-right:none;border-bottom:1px solid var(--line)}
+    .rung:last-child{border-bottom:none}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .link::after{animation:none;left:0;width:100%;opacity:.25}
+    html{scroll-behavior:auto}
+  }
+
+  :focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="wrap">
+      <div class="eyebrow hero-eyebrow">MENG 4450 · Fall 2026</div>
+      <h1>PLC <span class="amp">&amp;</span> Robotics</h1>
+      <p class="lede">Industrial automation as one applied mechatronics problem: sensing, actuation, and control integrated into working cells you can build, and debug when they fail.</p>
+
+      <!-- signature: the sense–decide–act loop -->
+      <div class="loop" aria-label="The sense, decide, act control loop">
+        <div class="node on" id="n-sense"><span class="dot"></span><span class="lbl">SENSE</span></div>
+        <div class="link l1"></div>
+        <div class="node" id="n-decide"><span class="dot"></span><span class="lbl">DECIDE</span></div>
+        <div class="link l2"></div>
+        <div class="node" id="n-act"><span class="dot"></span><span class="lbl">ACT</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="framing">
+      <div class="wrap">
+        <p>The Allen-Bradley PLC and the MELFA SCARA arm are not the subject of this course. They are the testbed. What you learn here are the principles used across all industrial automation, and this hardware is where you make them real.</p>
+        <p class="accent">Every unit rehearses a principle in open-source simulation, then applies the same principle to a different task on real hardware. You are assessed on transfer and on troubleshooting, not on reproducing a memorized sequence.</p>
+      </div>
+    </section>
+
+    <section class="modules" id="modules">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Four units</span>
+          <h2>The course, in sequence</h2>
+        </div>
+        <div class="grid">
+
+          <a class="card" href="modules/01-sensing/lesson.html">
+            <div class="card-top">
+              <span class="card-num">01</span>
+              <span class="stage">Sense</span>
+            </div>
+            <h3><span class="pilot g"></span>Industrial Sensing</h3>
+            <p>Detecting and interpreting system state. Proximity, photoelectric, and limit sensors; thresholds, false detection, wiring faults, and noisy signals.</p>
+            <div class="go">Open unit →</div>
+          </a>
+
+          <a class="card" href="modules/02-actuation/lesson.html">
+            <div class="card-top">
+              <span class="card-num">02</span>
+              <span class="stage">Act</span>
+            </div>
+            <h3><span class="pilot r"></span>Industrial Actuation</h3>
+            <p>Producing physical action. Motors, relays, solenoids, and the robot's servo axes; output-not-firing, wrong direction, timing mismatch, and unsafe sequence.</p>
+            <div class="go">Open unit →</div>
+          </a>
+
+          <a class="card" href="modules/03-control/lesson.html">
+            <div class="card-top">
+              <span class="card-num">03</span>
+              <span class="stage">Decide</span>
+            </div>
+            <h3><span class="pilot g"></span>Industrial Control</h3>
+            <p>Deciding and regulating behavior. PLC sequencing with timers, counters, interlocks, and fault handling; robot motion control as the continuous case.</p>
+            <div class="go">Open unit →</div>
+          </a>
+
+          <a class="card" href="modules/04-integration/lesson.html">
+            <div class="card-top">
+              <span class="card-num">04</span>
+              <span class="stage">Integrate</span>
+            </div>
+            <h3><span class="pilot g"></span>System Integration</h3>
+            <p>Combining all three into a detect–decide–actuate–verify–handle-faults cell, with PLC–robot handshake and HMI-style status.</p>
+            <div class="go">Open unit →</div>
+          </a>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="method">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">How each unit runs</span>
+          <h2>Simulation to hardware</h2>
+        </div>
+        <div class="rungs">
+          <div class="rung">
+            <div class="k">01 · LEARN</div>
+            <h4>Principle first</h4>
+            <p>A short, segmented lesson introduces the principle one step at a time, with practice questions to check understanding.</p>
+          </div>
+          <div class="rung">
+            <div class="k">02 · SIMULATE</div>
+            <h4>Rehearse the logic</h4>
+            <p>You write and run your own control logic in open-source simulation, change parameters, and debug against a live system.</p>
+          </div>
+          <div class="rung">
+            <div class="k">03 · BUILD</div>
+            <h4>Apply on the bench</h4>
+            <p>The same principle, a different task, on the Allen-Bradley PLC and the SCARA arm. Success is transfer, not repetition.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span class="fmono"><b>MENG 4450</b> — PLC &amp; Robotics</span>
+      <span class="fmono">Fall 2026</span>
+    </div>
+  </footer>
+
+  <script>
+    // Sense–decide–act: advance the lit node in a slow loop.
+    (function(){
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(reduce) return;
+      var nodes = [
+        document.getElementById('n-sense'),
+        document.getElementById('n-decide'),
+        document.getElementById('n-act')
+      ];
+      var i = 0;
+      setInterval(function(){
+        nodes.forEach(function(n){ n.classList.remove('on'); });
+        nodes[i].classList.add('on');
+        i = (i + 1) % nodes.length;
+      }, 1067);
+    })();
+  </script>
+</body>
+</html>
