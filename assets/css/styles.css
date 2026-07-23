@@ -5,6 +5,11 @@
    ========================================================= */
 
 :root{
+  /* Apple-style type: real SF Pro on Apple devices, Inter elsewhere */
+  --font-display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --font-sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --font-label:var(--font-sans);
+  --font-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Monaco,Consolas,"Liberation Mono",monospace;
   --brand:#383890;
   --brand-deep:#2A2A6E;
   --brand-tint:#ECECF7;
@@ -25,30 +30,30 @@
 html{scroll-behavior:smooth}
 body{
   margin:0;background:var(--paper);color:var(--ink);
-  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-family:var(--font-sans);
   font-size:18px;line-height:1.65;-webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
 }
 a{color:var(--brand);text-decoration:none}
 a:hover{text-decoration:underline}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
-.mono{font-family:"IBM Plex Mono",monospace}
+.mono{font-family:var(--font-label)}
 
 /* ---- top bar ---- */
 .topbar{background:var(--brand);border-bottom:4px solid var(--gold)}
 .topbar .wrap{display:flex;align-items:center;justify-content:space-between;padding:16px 28px}
 .topbar a.brand{
-  color:#fff;text-decoration:none;font-family:"IBM Plex Mono",monospace;
+  color:#fff;text-decoration:none;font-family:var(--font-label);
   font-weight:600;font-size:15px;letter-spacing:.06em;
 }
 .topbar a.brand:hover{text-decoration:none;color:#fff}
 .topbar a.brand b{color:var(--gold)}
-.topbar .home{color:#C9C9E8;font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.04em}
+.topbar .home{color:#C9C9E8;font-family:var(--font-label);font-size:14px;letter-spacing:.04em}
 .topbar .home:hover{color:#fff;text-decoration:none}
 
 /* ---- breadcrumb ---- */
 .crumb{border-bottom:1px solid var(--line);background:var(--paper-2)}
-.crumb .wrap{padding:14px 28px;font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.03em;color:var(--ink-faint)}
+.crumb .wrap{padding:14px 28px;font-family:var(--font-label);font-size:13px;letter-spacing:.03em;color:var(--ink-faint)}
 .crumb a{color:var(--ink-soft)}
 .crumb .sep{margin:0 8px;color:var(--ink-faint)}
 .crumb .here{color:var(--ink)}
@@ -56,11 +61,11 @@ a:hover{text-decoration:underline}
 /* ---- page header ---- */
 .page-head{padding:52px 0 8px}
 .page-head .eyebrow{
-  font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:500;
-  letter-spacing:.16em;text-transform:uppercase;color:var(--brand);
+  font-family:var(--font-label);font-size:14px;font-weight:500;
+  letter-spacing:.075em;text-transform:uppercase;color:var(--brand);
 }
 .page-head h1{
-  font-family:"Space Grotesk",sans-serif;font-weight:700;
+  font-family:var(--font-display);font-weight:600;
   font-size:clamp(2.2rem,6vw,3.6rem);line-height:1.04;letter-spacing:-.02em;
   color:var(--ink);margin:.24em 0 .28em;
 }
@@ -73,7 +78,7 @@ a:hover{text-decoration:underline}
   background:var(--brand-tint);border-left:4px solid var(--gold);border-radius:4px;
 }
 .placeholder .tag{
-  font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.14em;
+  font-family:var(--font-label);font-size:12px;font-weight:600;letter-spacing:.07em;
   text-transform:uppercase;color:var(--brand-deep);background:#fff;
   border:1px solid #D6D6EC;border-radius:999px;padding:4px 12px;white-space:nowrap;margin-top:2px;
 }
@@ -82,8 +87,8 @@ a:hover{text-decoration:underline}
 /* ---- section ---- */
 .section{padding:44px 0 8px}
 .section-head{display:flex;align-items:baseline;gap:18px;border-bottom:2px solid var(--brand);padding-bottom:12px;margin-bottom:26px;flex-wrap:wrap}
-.section-head .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--brand)}
-.section-head h2{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:clamp(1.5rem,3.4vw,2.1rem);letter-spacing:-.015em;color:var(--ink);margin:0;line-height:1}
+.section-head .eyebrow{font-family:var(--font-label);font-size:14px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--brand)}
+.section-head h2{font-family:var(--font-display);font-weight:600;font-size:clamp(1.5rem,3.4vw,2.1rem);letter-spacing:-.015em;color:var(--ink);margin:0;line-height:1}
 
 /* ---- component grid + cards (module index) ---- */
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
@@ -93,15 +98,15 @@ a:hover{text-decoration:underline}
   transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease;
 }
 .card:hover,.card:focus-visible{border-color:var(--brand);transform:translateY(-3px);box-shadow:0 12px 30px rgba(56,56,144,.15);outline:none;text-decoration:none}
-.card .kind{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
-.card h3{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:1.3rem;margin:8px 0 8px;letter-spacing:-.01em;color:var(--ink);line-height:1.2}
+.card .kind{font-family:var(--font-label);font-size:12px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint)}
+.card h3{font-family:var(--font-display);font-weight:600;font-size:1.3rem;margin:8px 0 8px;letter-spacing:-.01em;color:var(--ink);line-height:1.2}
 .card p{margin:0;color:var(--ink-soft);font-size:.98rem;line-height:1.5}
-.card .go{margin-top:16px;font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:500;color:var(--brand);letter-spacing:.03em}
+.card .go{margin-top:16px;font-family:var(--font-label);font-size:14px;font-weight:500;color:var(--brand);letter-spacing:.03em}
 
 /* ---- "what will go here" outline ---- */
 .outline{margin:8px 0 0;padding:0;list-style:none;border-top:1px solid var(--line)}
 .outline li{padding:16px 0;border-bottom:1px solid var(--line);display:flex;gap:16px;align-items:baseline}
-.outline li .n{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--brand);font-weight:600;min-width:28px}
+.outline li .n{font-family:var(--font-label);font-size:13px;color:var(--brand);font-weight:600;min-width:28px}
 .outline li .t{color:var(--ink);font-weight:500}
 .outline li .d{color:var(--ink-soft);font-size:.98rem}
 .outline li .stack{display:flex;flex-direction:column;gap:2px}
@@ -115,8 +120,8 @@ a:hover{text-decoration:underline}
   transition:transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
 }
 .pager a.prev:hover,.pager a.next:hover{transform:translateY(-2px);text-decoration:none}
-.pager .lbl{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;margin-bottom:5px}
-.pager .ttl{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:1.1rem;line-height:1.15;display:block}
+.pager .lbl{font-family:var(--font-label);font-size:12px;font-weight:500;letter-spacing:.075em;text-transform:uppercase;margin-bottom:5px}
+.pager .ttl{font-family:var(--font-display);font-weight:600;font-size:1.1rem;line-height:1.15;display:block}
 
 /* previous: solid indigo (matches the Continue button), arrow on the left */
 .pager .prev{background:var(--brand);border:1px solid var(--brand);color:#fff;align-items:flex-start;text-align:left;padding-left:56px}
@@ -142,7 +147,7 @@ a:hover{text-decoration:underline}
 /* ---- footer ---- */
 footer{margin-top:72px;background:var(--brand);color:#C9C9E8;border-top:4px solid var(--gold)}
 footer .wrap{padding:34px 28px 20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;align-items:center}
-footer .fmono{font-family:"IBM Plex Mono",monospace;font-size:15px;letter-spacing:.05em}
+footer .fmono{font-family:var(--font-label);font-size:15px;letter-spacing:.05em}
 footer a.fmono{color:#C9C9E8}
 footer a.fmono:hover{color:#fff;text-decoration:none}
 footer .fmono b{color:var(--gold);font-weight:600}
@@ -150,11 +155,11 @@ footer .lab{display:flex;align-items:center;gap:16px;text-decoration:none}
 footer .lab:hover{text-decoration:none}
 footer .labchip{background:#fff;border-radius:12px;padding:6px;display:inline-flex;line-height:0;box-shadow:0 6px 16px rgba(0,0,0,.18)}
 footer .labchip img{height:56px;width:auto;display:block}
-footer .labtxt{font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.55;color:#C9C9E8}
+footer .labtxt{font-family:var(--font-label);font-size:13px;line-height:1.55;color:#C9C9E8}
 footer .labtxt b{color:#fff;font-weight:600}
 footer .labtxt .u{color:var(--gold)}
 footer .lab:hover .labtxt .u{text-decoration:underline}
-footer .copyline{max-width:var(--maxw);margin:0 auto;padding:18px 28px 32px;border-top:1px solid rgba(255,255,255,.14);font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.6;letter-spacing:.02em;color:#AEAED2}
+footer .copyline{max-width:var(--maxw);margin:0 auto;padding:18px 28px 32px;border-top:1px solid rgba(255,255,255,.14);font-family:var(--font-label);font-size:12.5px;line-height:1.6;letter-spacing:.02em;color:#AEAED2}
 
 @media (max-width:720px){
   .grid{grid-template-columns:1fr}
