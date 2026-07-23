@@ -70,8 +70,8 @@
   }
 
   /* ===== SIGNAL PATH (signature) ===== */
-  .loop{margin-top:64px;display:flex;align-items:center;gap:0;flex-wrap:wrap}
-  .node{display:flex;flex-direction:column;gap:12px;min-width:120px}
+  .loop{margin-top:64px;display:flex;align-items:flex-start;gap:0;flex-wrap:wrap}
+  .node{display:flex;flex-direction:column;align-items:center;gap:12px;flex:0 0 auto;min-width:104px}
   .node .dot{
     width:22px;height:22px;border-radius:50%;
     border:2px solid rgba(255,255,255,.5);background:transparent;
@@ -80,7 +80,7 @@
   .node .lbl{font-family:var(--font-label);font-size:19px;font-weight:500;letter-spacing:.075em;color:#A9A9D4;transition:color .3s ease}
   .node.on .dot{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 6px rgba(240,192,64,.22)}
   .node.on .lbl{color:#fff}
-  .link{flex:1 1 48px;min-width:40px;height:2px;background:rgba(255,255,255,.2);position:relative;overflow:hidden;margin:0 8px 26px;align-self:flex-end}
+  .link{flex:1 1 40px;min-width:32px;height:2px;background:rgba(255,255,255,.2);position:relative;overflow:hidden;margin:10px 0 0}
   .link::after{content:"";position:absolute;top:0;left:-32%;width:32%;height:100%;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:travel 3.2s linear infinite}
   .link.l2::after{animation-delay:1.06s}
   @keyframes travel{0%{left:-32%}60%,100%{left:132%}}
@@ -148,6 +148,13 @@
     .hero .wrap{gap:36px}
     .hero-art{flex-basis:100%;max-width:520px}
     footer .wrap{gap:24px}
+  }
+  @media (max-width:520px){
+    .loop{flex-wrap:nowrap;margin-top:48px}
+    .node{min-width:76px;gap:10px}
+    .node .lbl{font-size:14px;letter-spacing:.06em}
+    .node .dot{width:18px;height:18px}
+    .link{flex:1 1 12px;min-width:10px;margin-top:8px}
   }
   @media (prefers-reduced-motion:reduce){
     .rise{opacity:1;animation:none}
