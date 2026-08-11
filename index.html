@@ -161,17 +161,51 @@
     .link::after{animation:none;left:0;width:100%;opacity:.5}
     html{scroll-behavior:auto}
   }
+
+  /* ===== top bar tabs ===== */
+  .topbar{background:var(--brand)}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;max-width:var(--maxw)}
+  .topbar a.brand{color:#fff;text-decoration:none;font-family:var(--font-label);font-weight:600;font-size:15px;letter-spacing:.06em}
+  .topbar a.brand b{color:var(--gold)}
+  .topbar .tabs{display:flex;gap:22px;align-items:center}
+  .topbar .tab{color:#C9C9E8;text-decoration:none;font-family:var(--font-label);font-size:14px;letter-spacing:.04em}
+  .topbar .tab:hover{color:#fff}
+
+  /* ===== half bands and module sub-heads ===== */
+  .subhead{display:flex;align-items:baseline;gap:16px;margin:52px 0 20px;padding-bottom:10px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .subhead:first-of-type{margin-top:8px}
+  .subhead h3{font-family:var(--font-display);font-weight:600;font-size:1.4rem;margin:0;color:var(--ink);letter-spacing:-.01em}
+  .subhead .note{font-size:1rem;color:var(--ink-soft)}
+  .grid.mods{grid-template-columns:repeat(3,1fr);gap:18px}
+  .grid.mods .card{padding:24px 24px 22px}
+  .grid.mods .card-num{font-size:2.5rem}
+  .grid.mods .card h3{font-size:1.22rem}
+  .grid.mods .card p{font-size:.97rem}
+  .grid.pair{grid-template-columns:repeat(2,1fr)}
+  .card-top{flex-wrap:wrap;gap:10px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .card-num.small{font-size:1.05rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint)}
+  .stage.gate{background:var(--gold);color:#3A2E04}
+  .stage.plain{background:var(--paper-2);color:var(--ink-soft);text-transform:none;letter-spacing:.02em}
+  @media (max-width:980px){ .grid.mods{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:640px){ .grid.mods,.grid.pair{grid-template-columns:1fr} }
+
   :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 </style>
 </head>
 <body>
+
+  <div class="topbar"><div class="wrap">
+    <a class="brand" href="index.html"><b>MENG 4450</b> &middot; PLC &amp; Robotics</a>
+    <nav class="tabs"><a class="tab" href="#modules">Modules</a><a class="tab" href="syllabus.html">Syllabus</a><a class="tab" href="schedule.html">Schedule</a></nav>
+  </div></div>
 
   <header class="hero">
     <div class="wrap">
       <div class="hero-copy">
         <div class="eyebrow rise d1">MENG 4450</div>
         <h1 class="rise d2">PLC <span class="amp">&amp;</span> Robotics</h1>
-        <p class="lede rise d3">Industrial automation as one applied mechatronics problem: sensing, actuation, and control integrated into working cells you can build, and debug when they fail.</p>
+        <p class="lede rise d3">Industrial automation as one working cell rather than a controller course and a robot course side by side. Build it, then find out why it does not run.</p>
         <div class="loop rise d4" aria-label="The sense, decide, act control loop">
           <div class="node on" id="n-sense"><span class="dot"></span><span class="lbl">SENSE</span></div>
           <div class="link l1"></div>
@@ -190,55 +224,118 @@
     <div class="wrap">
       <div class="eyebrow">The premise</div>
       <p>The hardware is <span class="hl">not the subject</span>. It is the testbed.</p>
-      <p class="sub">The Allen-Bradley PLC and the MELFA SCARA arm are where you make real the principles used across all industrial automation. Every module rehearses a principle in open-source simulation, then applies it to a different task on the bench. You are assessed on transfer and on troubleshooting, not on reproducing a memorized sequence.</p>
+      <p class="sub">The Allen-Bradley controller and the MELFA SCARA arm are where the principles used across all industrial automation become real. Most modules rehearse a principle in simulation, where failing costs nothing, then apply it to a different task on the bench or in the cell. You are assessed on transfer to equipment you have not seen and on finding faults you did not create.</p>
     </div>
   </section>
 
   <main>
     <section class="modules" id="modules">
       <div class="wrap">
-        <div class="section-head"><span class="eyebrow">Four modules</span><h2>The course, in sequence</h2></div>
-        <div class="grid">
+        <div class="section-head"><span class="eyebrow">Ten modules</span><h2>The course, in sequence</h2></div>
 
-          <a class="card" href="modules/01-sensing/index.html">
-            <div class="card-top"><span class="card-num">01</span><span class="stage">Sense</span></div>
-            <h3><span class="pilot"></span>Industrial Sensing</h3>
-            <p>Detecting and interpreting system state. Proximity, photoelectric, and limit sensors; thresholds, false detection, wiring faults, and noisy signals.</p>
-            <div class="go">Open module →</div>
+        <div class="subhead"><h3>First half &middot; Modules 1 to 5</h3><span class="note">Controller benches and the emulated controller. 20 August to 15 October.</span></div>
+        <div class="grid mods">
+          <a class="card" href="modules/01-relay-ladder/index.html">
+            <div class="card-top"><span class="card-num">01</span><span class="chips"><span class="stage gate">Gate</span><span class="stage plain">3 lessons &middot; 1 lab</span></span></div>
+            <h3><span class="pilot"></span>Relay Logic, Safety, and the Ladder Language</h3>
+            <p>The relay as logic and as hardware, electrical safety as a gate, and the ladder language every later module is written in.</p>
+            <div class="go">Open module &rarr;</div>
           </a>
-
-          <a class="card" href="modules/02-actuation/index.html">
-            <div class="card-top"><span class="card-num">02</span><span class="stage">Act</span></div>
-            <h3><span class="pilot"></span>Industrial Actuation</h3>
-            <p>Producing physical action. Motors, relays, solenoids, and the robot's servo axes; output-not-firing, wrong direction, timing mismatch, and unsafe sequence.</p>
-            <div class="go">Open module →</div>
+          <a class="card" href="modules/02-controller/index.html">
+            <div class="card-top"><span class="card-num">02</span><span class="chips"><span class="stage plain">2 lessons &middot; 1 sim lab &middot; 1 lab</span></span></div>
+            <h3><span class="pilot"></span>The Controller</h3>
+            <p>The program scan, the tag model, control power, and the current path through a discrete input and a discrete output.</p>
+            <div class="go">Open module &rarr;</div>
           </a>
-
-          <a class="card" href="modules/03-control/index.html">
-            <div class="card-top"><span class="card-num">03</span><span class="stage">Decide</span></div>
-            <h3><span class="pilot"></span>Industrial Control</h3>
-            <p>Deciding and regulating behavior. PLC sequencing with timers, counters, interlocks, and fault handling; robot motion control as the continuous case.</p>
-            <div class="go">Open module →</div>
+          <a class="card" href="modules/03-sensors-actuators/index.html">
+            <div class="card-top"><span class="card-num">03</span><span class="chips"><span class="stage plain">3 lessons &middot; 1 sim lab &middot; 2 labs</span></span></div>
+            <h3><span class="pilot"></span>Sensors and Actuators</h3>
+            <p>Discrete field devices, the 4 to 20 milliamp loop, motor selection, and the two functions of motor protection.</p>
+            <div class="go">Open module &rarr;</div>
           </a>
-
-          <a class="card" href="modules/04-integration/index.html">
-            <div class="card-top"><span class="card-num">04</span><span class="stage">Integrate</span></div>
-            <h3><span class="pilot"></span>System Integration</h3>
-            <p>Combining all three into a detect–decide–actuate–verify–handle-faults cell, with PLC–robot handshake and HMI-style status.</p>
-            <div class="go">Open module →</div>
+          <a class="card" href="modules/04-timing-sequence-loop/index.html">
+            <div class="card-top"><span class="card-num">04</span><span class="chips"><span class="stage plain">4 lessons &middot; 2 sim labs &middot; 2 labs</span></span></div>
+            <h3><span class="pilot"></span>Timing, Counting, Sequence, and Loop Control</h3>
+            <p>Timers against the hardware relay they replaced, the three counting failures, state machines in ladder, and a control loop configured rather than coded.</p>
+            <div class="go">Open module &rarr;</div>
           </a>
+          <a class="card" href="modules/05-fault-diagnosis/index.html">
+            <div class="card-top"><span class="card-num">05</span><span class="chips"><span class="stage plain">1 lesson &middot; 1 sim lab &middot; 1 lab</span></span></div>
+            <h3><span class="pilot"></span>Fault Diagnosis</h3>
+            <p>The most employable thing in the course and the least taught. Its own laboratory, its own examination items, and a share of the capstone.</p>
+            <div class="go">Open module &rarr;</div>
+          </a>
+        </div>
 
+        <div class="subhead"><h3>Between the halves</h3><span class="note">An unseen specification, then the examination that closes Modules 1 to 5.</span></div>
+        <div class="grid pair">
+          <a class="card" href="design-task.html">
+            <div class="card-top"><span class="card-num small">Task</span><span class="stage plain">13 October</span></div>
+            <h3><span class="pilot"></span>Design task</h3>
+            <p>An unseen machine specification, built in simulation then commissioned on hardware in one session.</p>
+            <div class="go">Open &rarr;</div>
+          </a>
+          <a class="card" href="midterm.html">
+            <div class="card-top"><span class="card-num small">Exam</span><span class="stage plain">15 October</span></div>
+            <h3><span class="pilot"></span>Midterm examination</h3>
+            <p>Modules 1 to 5, named on the paper. Transfer and fault-diagnosis items, with the recall cap stated on the instrument.</p>
+            <div class="go">Open &rarr;</div>
+          </a>
+        </div>
+
+        <div class="subhead"><h3>Second half &middot; Modules 6 to 10</h3><span class="note">Robot cells, two students to a cell. 20 October to 3 December.</span></div>
+        <div class="grid mods">
+          <a class="card" href="modules/06-robot-safety/index.html">
+            <div class="card-top"><span class="card-num">06</span><span class="chips"><span class="stage gate">Gate</span><span class="stage plain">2 lessons &middot; 1 lab</span></span></div>
+            <h3><span class="pilot"></span>Robot Safety and the Industrial Robot as a Machine</h3>
+            <p>A stationary robot is not a stopped robot. The second gate, and the specification sheet as an engineering document.</p>
+            <div class="go">Open module &rarr;</div>
+          </a>
+          <a class="card" href="modules/07-frames-motion/index.html">
+            <div class="card-top"><span class="card-num">07</span><span class="chips"><span class="stage plain">2 lessons &middot; 2 labs</span></span></div>
+            <h3><span class="pilot"></span>Frames, Teaching, and Motion</h3>
+            <p>Four frames, one orientation angle, two interpolation types, and three multiplications in the override chain.</p>
+            <div class="go">Open module &rarr;</div>
+          </a>
+          <a class="card" href="modules/08-robot-programming/index.html">
+            <div class="card-top"><span class="card-num">08</span><span class="chips"><span class="stage plain">2 lessons &middot; 1 lab</span></span></div>
+            <h3><span class="pilot"></span>Robot Programming</h3>
+            <p>Positions taught rather than typed, and the arithmetic that replaces teaching thirty-six of them by hand.</p>
+            <div class="go">Open module &rarr;</div>
+          </a>
+          <a class="card" href="modules/09-cell-integration/index.html">
+            <div class="card-top"><span class="card-num">09</span><span class="chips"><span class="stage plain">2 lessons &middot; 2 sim labs &middot; 1 lab</span></span></div>
+            <h3><span class="pilot"></span>Cell Integration</h3>
+            <p>A second controller family, a second ladder dialect, and a handshake exposed on a patch field you wire one wire at a time.</p>
+            <div class="go">Open module &rarr;</div>
+          </a>
+          <a class="card" href="modules/10-capstone/index.html">
+            <div class="card-top"><span class="card-num">10</span><span class="chips"><span class="stage gate">Gate</span><span class="stage plain">review &middot; 2 builds &middot; demo</span></span></div>
+            <h3><span class="pilot"></span>Integration Capstone</h3>
+            <p>One working cell per team, each to a different specification, with a gated design review and a fault injected into somebody else's cell.</p>
+            <div class="go">Open module &rarr;</div>
+          </a>
+        </div>
+
+        <div class="subhead"><h3>Close</h3><span class="note">Cumulative, in the university examination period.</span></div>
+        <div class="grid pair">
+          <a class="card" href="final-exam.html">
+            <div class="card-top"><span class="card-num small">Exam</span><span class="stage plain">7 to 11 December</span></div>
+            <h3><span class="pilot"></span>Final examination</h3>
+            <p>Cumulative across the declared course boundary. Translate a rung between ladder dialects, and diagnose a cell that starts but does not cycle.</p>
+            <div class="go">Open &rarr;</div>
+          </a>
         </div>
       </div>
     </section>
 
     <section class="method">
       <div class="wrap">
-        <div class="section-head"><span class="eyebrow">How each module runs</span><h2>Simulation to hardware</h2></div>
+        <div class="section-head"><span class="eyebrow">How the course runs</span><h2>Read, simulate, build</h2></div>
         <div class="rungs">
-          <div class="rung"><div class="k">01 · LEARN</div><h4>Principle first</h4><p>A short, segmented lesson introduces the principle one step at a time, with practice questions to check understanding.</p></div>
-          <div class="rung"><div class="k">02 · SIMULATE</div><h4>Rehearse the logic</h4><p>You write and run your own control logic in open-source simulation, change parameters, and debug against a live system.</p></div>
-          <div class="rung"><div class="k">03 · BUILD</div><h4>Apply on the bench</h4><p>The same principle, a different task, on the Allen-Bradley PLC and the SCARA arm. Success is transfer, not repetition.</p></div>
+          <div class="rung"><div class="k">01 · LEARN</div><h4>Principle first</h4><p>A short lesson introduces the principle one step at a time, with practice questions that are ungraded, unlimited, and worked through on submission.</p></div>
+          <div class="rung"><div class="k">02 · SIMULATE</div><h4>Rehearse the logic</h4><p>You write and run your own control logic against an emulated controller and a plant model, change parameters, and debug a live system where a mistake costs nothing.</p></div>
+          <div class="rung"><div class="k">03 · BUILD</div><h4>Apply on the bench</h4><p>The same principle, a different task, on the controller benches and the robot cells. Success is transfer, and no two benches are wired the same way.</p></div>
         </div>
       </div>
     </section>
