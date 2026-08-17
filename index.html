@@ -3,367 +3,143 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PLC &amp; Robotics — MENG 4450</title>
+<title>MENG 4450 — PLC &amp; Robotics: in-class activities</title>
+<meta name="description" content="Interactive activities run during class meetings of MENG 4450, PLC & Robotics, at Saint Louis University.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    /* Apple-style type: real SF Pro on Apple devices, Inter elsewhere */
-    --font-display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Helvetica Neue",Helvetica,Arial,sans-serif;
-    --font-sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Helvetica Neue",Helvetica,Arial,sans-serif;
-    --font-label:var(--font-sans);
-    --font-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Monaco,Consolas,"Liberation Mono",monospace;
-    --brand:#383890;
-    --brand-deep:#2A2A6E;
-    --brand-tint:#ECECF7;
-    --gold:#F0C040;
-    --gold-deep:#E0AE1E;
-    --ink:#141414;
-    --ink-soft:#565663;
-    --ink-faint:#8A8A97;
-    --paper:#FFFFFF;
-    --paper-2:#F7F7FB;
-    --line:#E6E6EC;
-    --panel:#141414;
-    --panel-soft:#B0B0B8;
-    --maxw:1140px;
-  }
-
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{
-    margin:0;background:var(--paper);color:var(--ink);
-    font-family:var(--font-sans);
-    font-size:19px;line-height:1.65;-webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
-  }
-  a{color:inherit}
-  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
-  .eyebrow{
-    font-family:var(--font-label);font-size:15px;font-weight:500;
-    letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);
-  }
-
-  /* ===== entrance animation ===== */
-  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-  .rise{opacity:0;animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
-  .d1{animation-delay:.05s}.d2{animation-delay:.16s}.d3{animation-delay:.27s}.d4{animation-delay:.4s}
-
-  /* ===== HERO (indigo brand band) ===== */
-  .hero{background:var(--brand);color:#F4F4FA;border-bottom:5px solid var(--gold);overflow:hidden}
-  .hero .wrap{padding-top:80px;padding-bottom:72px;display:flex;gap:48px;align-items:center;flex-wrap:wrap;justify-content:space-between}
-  .hero-copy{flex:0 1 500px;min-width:0}
-  .hero-art{flex:0 1 500px;min-width:300px}
-  .hero-art img{width:100%;height:auto;display:block;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.30);border:1px solid rgba(255,255,255,.18)}
-  .hero .eyebrow{color:#C9C9E8;position:relative;padding-left:32px}
-  .hero .eyebrow::before{content:"";position:absolute;left:0;top:50%;width:20px;height:2px;background:var(--gold)}
-  .hero h1{
-    font-family:var(--font-display);font-weight:600;
-    font-size:clamp(3rem,8vw,6.5rem);line-height:.98;letter-spacing:-.03em;
-    color:#fff;margin:.28em 0 .34em;
-  }
-  .hero h1 .amp{color:var(--gold);font-weight:600}
-  .hero .lede{
-    max-width:46ch;color:#DEDEF0;
-    font-size:clamp(1.02rem,1.9vw,1.24rem);line-height:1.6;font-weight:400;margin:0;
-  }
-
-  /* ===== SIGNAL PATH (signature) ===== */
-  .loop{margin-top:64px;display:flex;align-items:flex-start;gap:0;flex-wrap:wrap}
-  .node{display:flex;flex-direction:column;align-items:center;gap:12px;flex:0 0 auto;min-width:104px}
-  .node .dot{
-    width:22px;height:22px;border-radius:50%;
-    border:2px solid rgba(255,255,255,.5);background:transparent;
-    transition:background .3s ease, box-shadow .3s ease, border-color .3s ease;
-  }
-  .node .lbl{font-family:var(--font-label);font-size:19px;font-weight:500;letter-spacing:.075em;color:#A9A9D4;transition:color .3s ease}
-  .node.on .dot{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 6px rgba(240,192,64,.22)}
-  .node.on .lbl{color:#fff}
-  .link{flex:1 1 40px;min-width:32px;height:2px;background:rgba(255,255,255,.2);position:relative;overflow:hidden;margin:10px 0 0}
-  .link::after{content:"";position:absolute;top:0;left:-32%;width:32%;height:100%;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:travel 3.2s linear infinite}
-  .link.l2::after{animation-delay:1.06s}
-  @keyframes travel{0%{left:-32%}60%,100%{left:132%}}
-
-  /* ===== THESIS (black band) ===== */
-  .thesis{background:var(--panel);color:#F1F1F1}
-  .thesis .wrap{padding:78px 28px}
-  .thesis .eyebrow{color:var(--panel-soft)}
-  .thesis p{
-    max-width:24ch;font-family:var(--font-display);font-weight:500;
-    font-size:clamp(1.9rem,5vw,3.15rem);line-height:1.16;letter-spacing:-.015em;
-    margin:.4em 0 0;color:#FAFAFA;
-  }
-  .thesis p .hl{color:var(--gold)}
-  .thesis .sub{font-family:var(--font-sans);font-weight:400;font-size:clamp(1.05rem,2vw,1.3rem);color:var(--panel-soft);max-width:60ch;margin-top:26px;line-height:1.6}
-
-  /* ===== MODULES ===== */
-  .modules{padding:84px 0 8px}
-  .section-head{display:flex;align-items:baseline;gap:20px;border-bottom:2px solid var(--brand);padding-bottom:16px;margin-bottom:36px;flex-wrap:wrap}
-  .section-head .eyebrow{color:var(--brand)}
-  .section-head h2{font-family:var(--font-display);font-weight:600;font-size:clamp(1.9rem,4vw,2.7rem);letter-spacing:-.02em;color:var(--ink);margin:0;line-height:1}
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-  .card{
-    position:relative;display:block;text-decoration:none;color:inherit;background:var(--paper);
-    border:1px solid var(--line);border-radius:4px;padding:30px 30px 28px;
-    transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease;
-  }
-  .card:hover,.card:focus-visible{border-color:var(--brand);transform:translateY(-3px);box-shadow:0 14px 34px rgba(56,56,144,.16);outline:none}
-  .card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-  .card-num{font-family:var(--font-label);font-weight:600;font-size:clamp(2.4rem,5vw,3.1rem);line-height:1;color:var(--brand);letter-spacing:-.02em;transition:color .2s ease}
-  .card:hover .card-num,.card:focus-visible .card-num{color:var(--gold-deep)}
-  .stage{font-family:var(--font-label);font-size:12px;font-weight:500;letter-spacing:.075em;text-transform:uppercase;color:var(--brand);background:var(--brand-tint);border-radius:999px;padding:6px 14px}
-  .pilot{width:11px;height:11px;border-radius:50%;display:inline-block;margin-right:11px;vertical-align:middle;background:var(--brand);box-shadow:0 0 0 3px rgba(56,56,144,.12)}
-  .card h3{font-family:var(--font-display);font-weight:600;font-size:clamp(1.4rem,2.6vw,1.72rem);margin:0 0 10px;letter-spacing:-.01em;color:var(--ink);line-height:1.15}
-  .card p{margin:0;color:var(--ink-soft);font-size:1.02rem;line-height:1.55}
-  .card .go{margin-top:20px;font-family:var(--font-label);font-size:15px;font-weight:500;color:var(--brand);letter-spacing:.03em}
-
-  /* ===== METHOD STRIP ===== */
-  .method{padding:80px 0 8px}
-  .rungs{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--paper)}
-  .rung{padding:32px 28px}
-  .rung + .rung{border-left:1px solid var(--line)}
-  .rung .k{font-family:var(--font-label);font-weight:600;font-size:15px;color:var(--brand);letter-spacing:.055em}
-  .rung h4{font-family:var(--font-display);font-weight:600;font-size:clamp(1.3rem,2.4vw,1.5rem);margin:12px 0 8px;color:var(--ink)}
-  .rung p{margin:0;color:var(--ink-soft);font-size:1.02rem;line-height:1.55}
-
-  /* ===== FOOTER ===== */
-  footer{margin-top:88px;background:var(--brand);color:#C9C9E8;border-top:5px solid var(--gold)}
-  footer .wrap{padding:40px 28px 22px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;align-items:center}
-  footer .fmono{font-family:var(--font-label);font-size:16px;letter-spacing:.05em}
-  footer .fmono b{color:var(--gold);font-weight:600}
-  footer .lab{display:flex;align-items:center;gap:16px;text-decoration:none}
-  footer .labchip{background:#fff;border-radius:12px;padding:6px;display:inline-flex;line-height:0;box-shadow:0 6px 16px rgba(0,0,0,.18)}
-  footer .labchip img{height:60px;width:auto;display:block}
-  footer .labtxt{font-family:var(--font-label);font-size:13px;line-height:1.55;color:#C9C9E8}
-  footer .labtxt b{color:#fff;font-weight:600}
-  footer .labtxt .u{color:var(--gold)}
-  footer .lab:hover .labtxt .u{text-decoration:underline}
-  footer .copyline{max-width:var(--maxw);margin:0 auto;padding:18px 28px 32px;border-top:1px solid rgba(255,255,255,.14);font-family:var(--font-label);font-size:12.5px;line-height:1.6;letter-spacing:.02em;color:#AEAED2}
-
-  @media (max-width:760px){
-    .grid{grid-template-columns:1fr}
-    .rungs{grid-template-columns:1fr}
-    .rung + .rung{border-left:none;border-top:1px solid var(--line)}
-    .hero .wrap{gap:36px}
-    .hero-art{flex-basis:100%;max-width:520px}
-    footer .wrap{gap:24px}
-  }
-  @media (max-width:520px){
-    .loop{flex-wrap:nowrap;margin-top:48px}
-    .node{min-width:76px;gap:10px}
-    .node .lbl{font-size:14px;letter-spacing:.06em}
-    .node .dot{width:18px;height:18px}
-    .link{flex:1 1 12px;min-width:10px;margin-top:8px}
-  }
-  @media (prefers-reduced-motion:reduce){
-    .rise{opacity:1;animation:none}
-    .link::after{animation:none;left:0;width:100%;opacity:.5}
-    html{scroll-behavior:auto}
-  }
-
-  /* ===== top bar tabs ===== */
-  .topbar{background:var(--brand)}
-  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;max-width:var(--maxw)}
-  .topbar a.brand{color:#fff;text-decoration:none;font-family:var(--font-label);font-weight:600;font-size:15px;letter-spacing:.06em}
-  .topbar a.brand b{color:var(--gold)}
-  .topbar .tabs{display:flex;gap:22px;align-items:center}
-  .topbar .tab{color:#C9C9E8;text-decoration:none;font-family:var(--font-label);font-size:14px;letter-spacing:.04em}
-  .topbar .tab:hover{color:#fff}
-
-  /* ===== half bands and module sub-heads ===== */
-  .subhead{display:flex;align-items:baseline;gap:16px;margin:52px 0 20px;padding-bottom:10px;border-bottom:1px solid var(--line);flex-wrap:wrap}
-  .subhead:first-of-type{margin-top:8px}
-  .subhead h3{font-family:var(--font-display);font-weight:600;font-size:1.4rem;margin:0;color:var(--ink);letter-spacing:-.01em}
-  .subhead .note{font-size:1rem;color:var(--ink-soft)}
-  .grid.mods{grid-template-columns:repeat(3,1fr);gap:18px}
-  .grid.mods .card{padding:24px 24px 22px}
-  .grid.mods .card-num{font-size:2.5rem}
-  .grid.mods .card h3{font-size:1.22rem}
-  .grid.mods .card p{font-size:.97rem}
-  .grid.pair{grid-template-columns:repeat(2,1fr)}
-  .card-top{flex-wrap:wrap;gap:10px}
-  .chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-  .card-num.small{font-size:1.05rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint)}
-  .stage.gate{background:var(--gold);color:#3A2E04}
-  .stage.plain{background:var(--paper-2);color:var(--ink-soft);text-transform:none;letter-spacing:.02em}
-  @media (max-width:980px){ .grid.mods{grid-template-columns:repeat(2,1fr)} }
-  @media (max-width:640px){ .grid.mods,.grid.pair{grid-template-columns:1fr} }
-
-  :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
-</style>
+<link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
 
-  <div class="topbar"><div class="wrap">
-    <a class="brand" href="index.html"><b>MENG 4450</b> &middot; PLC &amp; Robotics</a>
-    <nav class="tabs"><a class="tab" href="#modules">Modules</a><a class="tab" href="syllabus.html">Syllabus</a><a class="tab" href="schedule.html">Schedule</a></nav>
-  </div></div>
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html">MENG 4450 &middot; <b>PLC &amp; ROBOTICS</b></a>
+    <nav class="tabs">
+      <a class="tab on" href="index.html">Activities</a>
+      <a class="tab" href="#how">How to use</a>
+    </nav>
+  </div>
+</div>
 
-  <header class="hero">
-    <div class="wrap">
-      <div class="hero-copy">
-        <div class="eyebrow rise d1">MENG 4450</div>
-        <h1 class="rise d2">PLC <span class="amp">&amp;</span> Robotics</h1>
-        <p class="lede rise d3">Learn the core lifecycle of industrial automation: sensors collect data, controllers make decisions, and actuators do the work. In this course, you’ll get hands-on experience building, operating, and troubleshooting real hardware systems so you can help keep modern production lines running.</p>
-        <div class="loop rise d4" aria-label="The sense, decide, act control loop">
-          <div class="node on" id="n-sense"><span class="dot"></span><span class="lbl">SENSE</span></div>
-          <div class="link l1"></div>
-          <div class="node" id="n-decide"><span class="dot"></span><span class="lbl">DECIDE</span></div>
-          <div class="link l2"></div>
-          <div class="node" id="n-act"><span class="dot"></span><span class="lbl">ACT</span></div>
-        </div>
-      </div>
-      <div class="hero-art rise d3">
-        <img src="assets/automation-scene.png" alt="Isometric illustration of an industrial automation cell with robot arms, a conveyor, and control electronics">
-      </div>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow rise d1">Saint Louis University &middot; Fall 2026</p>
+    <h1 class="rise d2">Activities, <span class="amp">not</span> pages.</h1>
+    <p class="lede rise d3">This site holds the interactive work we do together during a class meeting. There are no lessons here to read. The reading comes from published sources, the principles are taught at the bench, and this is where the thinking gets done out loud, in pairs, on a screen between you.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section">
+    <div class="section-head">
+      <span class="eyebrow">Live</span>
+      <h2>Ready to run</h2>
     </div>
-  </header>
+    <div class="grid">
 
-  <section class="thesis">
-    <div class="wrap">
-      <div class="eyebrow">The premise</div>
-      <p>Master <span class="hl">universal principles</span>. Adapt to any machine.</p>
-      <p class="sub">Understand the principles that govern how automated systems sense, decide, and act. With that foundation, you can approach unfamiliar machines, control systems, and robotic equipment with confidence.</p>
+      <a class="card" href="activities/syllabus-card-game.html">
+        <span class="kind"><span class="flag live">Live</span><span class="flag when">Day one</span></span>
+        <h3>Read the Syllabus</h3>
+        <p>A card game in three rounds. Place the five weights, sort eight components into graded-for-doing against graded-for-quality, then work through eight situations drawn from a pack of twelve. Every answer traces to one sentence of the syllabus, and the sentence is shown.</p>
+        <span class="go">Play &rarr;</span>
+      </a>
+
+      <div class="card soon">
+        <span class="kind"><span class="flag plan">Planned</span><span class="flag mod">Module 1</span></span>
+        <h3>Contact Forms and the Socket</h3>
+        <p>Form A, form B and form C on a relay socket diagram, matched pin by pin to the panel jacks in front of you. The bench supplies the half of the answer no model can guess.</p>
+        <span class="go">In preparation</span>
+      </div>
+
+      <div class="card soon">
+        <span class="kind"><span class="flag plan">Planned</span><span class="flag mod">Module 1</span></span>
+        <h3>Build the Rung</h3>
+        <p>Assemble a start-stop-seal circuit one element at a time, with stop priority tested by a simulated fault. Wrong orders run, and then fail in a way you can watch.</p>
+        <span class="go">In preparation</span>
+      </div>
+
+      <div class="card soon">
+        <span class="kind"><span class="flag plan">Planned</span><span class="flag mod">Module 2</span></span>
+        <h3>Sink or Source</h3>
+        <p>Trace the current path through a field device and decide which side goes to the supply, which to the input jack, and which to the output common. Get it backwards and the animation shows you nothing happening.</p>
+        <span class="go">In preparation</span>
+      </div>
+
+      <div class="card soon">
+        <span class="kind"><span class="flag plan">Planned</span><span class="flag mod">Module 2</span></span>
+        <h3>Which Slot Is Your Input?</h3>
+        <p>Photographs of eight chassis, each with its own module order. Read the faceplates, build the alias tag that is correct for that bench, and discover why a program does not travel.</p>
+        <span class="go">In preparation</span>
+      </div>
+
+      <div class="card soon">
+        <span class="kind"><span class="flag plan">Planned</span><span class="flag mod">Module 5</span></span>
+        <h3>First Test, Then Touch</h3>
+        <p>A machine that does not work and a symptom. Commit to your first test before you are allowed to change anything, then see what each outcome would have ruled out.</p>
+        <span class="go">In preparation</span>
+      </div>
+
+      <div class="card soon">
+        <span class="kind"><span class="flag plan">Planned</span><span class="flag mod">Module 7</span></span>
+        <h3>Four Frames, One Arm</h3>
+        <p>World, base, flange and tool. Move the arm, watch which coordinates change, and work the tool-offset sign trap on a diagram before you meet it on the pendant.</p>
+        <span class="go">In preparation</span>
+      </div>
+
+      <div class="card soon">
+        <span class="kind"><span class="flag plan">Planned</span><span class="flag mod">Module 6</span></span>
+        <h3>Stored Energy</h3>
+        <p>Switch off the electricity and say what is still dangerous. Air in the gripper, an unbraked vertical axis, a charged supply, a panel with one 115 V pair among the 24 V jacks.</p>
+        <span class="go">In preparation</span>
+      </div>
+
     </div>
   </section>
 
-  <main>
-    <section class="modules" id="modules">
-      <div class="wrap">
-        <div class="section-head"><span class="eyebrow">Ten modules</span><h2>The course, in sequence</h2></div>
-
-        <div class="subhead"><h3>First half &middot; Modules 1 to 5</h3><span class="note">Controller benches and the emulated controller. 20 August to 15 October.</span></div>
-        <div class="grid mods">
-          <a class="card" href="modules/01-relay-ladder/index.html">
-            <div class="card-top"><span class="card-num">01</span><span class="chips"><span class="stage gate">Gate</span><span class="stage plain">3 lessons &middot; 1 lab</span></span></div>
-            <h3><span class="pilot"></span>Relay Logic, Safety, and the Ladder Language</h3>
-            <p>The relay as logic and as hardware, electrical safety as a gate, and the ladder language every later module is written in.</p>
-            <div class="go">Open module &rarr;</div>
-          </a>
-          <a class="card" href="modules/02-controller/index.html">
-            <div class="card-top"><span class="card-num">02</span><span class="chips"><span class="stage plain">2 lessons &middot; 1 sim lab &middot; 1 lab</span></span></div>
-            <h3><span class="pilot"></span>The Controller</h3>
-            <p>The program scan, the tag model, control power, and the current path through a discrete input and a discrete output.</p>
-            <div class="go">Open module &rarr;</div>
-          </a>
-          <a class="card" href="modules/03-sensors-actuators/index.html">
-            <div class="card-top"><span class="card-num">03</span><span class="chips"><span class="stage plain">3 lessons &middot; 1 sim lab &middot; 2 labs</span></span></div>
-            <h3><span class="pilot"></span>Sensors and Actuators</h3>
-            <p>Discrete field devices, the 4 to 20 milliamp loop, motor selection, and the two functions of motor protection.</p>
-            <div class="go">Open module &rarr;</div>
-          </a>
-          <a class="card" href="modules/04-timing-sequence-loop/index.html">
-            <div class="card-top"><span class="card-num">04</span><span class="chips"><span class="stage plain">4 lessons &middot; 2 sim labs &middot; 2 labs</span></span></div>
-            <h3><span class="pilot"></span>Timing, Counting, Sequence, and Loop Control</h3>
-            <p>Timers against the hardware relay they replaced, the three counting failures, state machines in ladder, and a control loop configured rather than coded.</p>
-            <div class="go">Open module &rarr;</div>
-          </a>
-          <a class="card" href="modules/05-fault-diagnosis/index.html">
-            <div class="card-top"><span class="card-num">05</span><span class="chips"><span class="stage plain">1 lesson &middot; 1 sim lab &middot; 1 lab</span></span></div>
-            <h3><span class="pilot"></span>Fault Diagnosis</h3>
-            <p>The most employable thing in the course and the least taught. Its own laboratory, its own examination items, and a share of the capstone.</p>
-            <div class="go">Open module &rarr;</div>
-          </a>
-        </div>
-
-        <div class="subhead"><h3>Between the halves</h3><span class="note">An unseen specification, then the examination that closes Modules 1 to 5.</span></div>
-        <div class="grid pair">
-          <a class="card" href="design-task.html">
-            <div class="card-top"><span class="card-num small">Task</span><span class="stage plain">13 October</span></div>
-            <h3><span class="pilot"></span>Design task</h3>
-            <p>An unseen machine specification, built in simulation then commissioned on hardware in one session.</p>
-            <div class="go">Open &rarr;</div>
-          </a>
-          <a class="card" href="midterm.html">
-            <div class="card-top"><span class="card-num small">Exam</span><span class="stage plain">15 October</span></div>
-            <h3><span class="pilot"></span>Midterm examination</h3>
-            <p>Modules 1 to 5, named on the paper. Transfer and fault-diagnosis items, with the recall cap stated on the instrument.</p>
-            <div class="go">Open &rarr;</div>
-          </a>
-        </div>
-
-        <div class="subhead"><h3>Second half &middot; Modules 6 to 10</h3><span class="note">Robot cells, two students to a cell. 20 October to 3 December.</span></div>
-        <div class="grid mods">
-          <a class="card" href="modules/06-robot-safety/index.html">
-            <div class="card-top"><span class="card-num">06</span><span class="chips"><span class="stage gate">Gate</span><span class="stage plain">2 lessons &middot; 1 lab</span></span></div>
-            <h3><span class="pilot"></span>Robot Safety and the Industrial Robot as a Machine</h3>
-            <p>A stationary robot is not a stopped robot. The second gate, and the specification sheet as an engineering document.</p>
-            <div class="go">Open module &rarr;</div>
-          </a>
-          <a class="card" href="modules/07-frames-motion/index.html">
-            <div class="card-top"><span class="card-num">07</span><span class="chips"><span class="stage plain">2 lessons &middot; 2 labs</span></span></div>
-            <h3><span class="pilot"></span>Frames, Teaching, and Motion</h3>
-            <p>Four frames, one orientation angle, two interpolation types, and three multiplications in the override chain.</p>
-            <div class="go">Open module &rarr;</div>
-          </a>
-          <a class="card" href="modules/08-robot-programming/index.html">
-            <div class="card-top"><span class="card-num">08</span><span class="chips"><span class="stage plain">2 lessons &middot; 1 lab</span></span></div>
-            <h3><span class="pilot"></span>Robot Programming</h3>
-            <p>Positions taught rather than typed, and the arithmetic that replaces teaching thirty-six of them by hand.</p>
-            <div class="go">Open module &rarr;</div>
-          </a>
-          <a class="card" href="modules/09-cell-integration/index.html">
-            <div class="card-top"><span class="card-num">09</span><span class="chips"><span class="stage plain">2 lessons &middot; 2 sim labs &middot; 1 lab</span></span></div>
-            <h3><span class="pilot"></span>Cell Integration</h3>
-            <p>A second controller family, a second ladder dialect, and a handshake exposed on a patch field you wire one wire at a time.</p>
-            <div class="go">Open module &rarr;</div>
-          </a>
-          <a class="card" href="modules/10-capstone/index.html">
-            <div class="card-top"><span class="card-num">10</span><span class="chips"><span class="stage gate">Gate</span><span class="stage plain">review &middot; 2 builds &middot; demo</span></span></div>
-            <h3><span class="pilot"></span>Integration Capstone</h3>
-            <p>One working cell per team, each to a different specification, with a gated design review and a fault injected into somebody else's cell.</p>
-            <div class="go">Open module &rarr;</div>
-          </a>
-        </div>
-
-        <div class="subhead"><h3>Close</h3><span class="note">Cumulative, in the university examination period.</span></div>
-        <div class="grid pair">
-          <a class="card" href="final-exam.html">
-            <div class="card-top"><span class="card-num small">Exam</span><span class="stage plain">7 to 11 December</span></div>
-            <h3><span class="pilot"></span>Final examination</h3>
-            <p>Cumulative across the declared course boundary. Translate a rung between ladder dialects, and diagnose a cell that starts but does not cycle.</p>
-            <div class="go">Open &rarr;</div>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="method">
-      <div class="wrap">
-        <div class="section-head"><span class="eyebrow">How the course runs</span><h2>Read, simulate, build</h2></div>
-        <div class="rungs">
-          <div class="rung"><div class="k">01 · LEARN</div><h4>Principle first</h4><p>A short lesson introduces the principle one step at a time, with practice questions that are ungraded, unlimited, and worked through on submission.</p></div>
-          <div class="rung"><div class="k">02 · SIMULATE</div><h4>Rehearse the logic</h4><p>You write and run your own control logic against an emulated controller and a plant model, change parameters, and debug a live system where a mistake costs nothing.</p></div>
-          <div class="rung"><div class="k">03 · BUILD</div><h4>Apply on the bench</h4><p>The same principle, a different task, on the controller benches and the robot cells. Success is transfer, and no two benches are wired the same way.</p></div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="wrap">
-      <a class="lab" href="https://mecharithmlab.com" target="_blank" rel="noopener">
-        <span class="labchip"><img src="assets/mecharithm-lab-logo.png" alt="Mecharithm Lab logo"></span>
-        <span class="labtxt">Developed at <b>Mecharithm Lab</b><br><span class="u">mecharithmlab.com ↗</span></span>
-      </a>
-      <span class="fmono"><b>MENG 4450</b> — PLC &amp; Robotics</span>
+  <section class="section" id="how">
+    <div class="section-head">
+      <span class="eyebrow">How to use</span>
+      <h2>What this site is, and is not</h2>
     </div>
-    <div class="copyline">© 2026 Mecharithm Lab · Developed for MENG 4450 at Saint Louis University · All rights reserved.</div>
-  </footer>
 
-  <script>
-    (function(){
-      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if(reduce) return;
-      var nodes = [document.getElementById('n-sense'),document.getElementById('n-decide'),document.getElementById('n-act')];
-      var i = 0;
-      setInterval(function(){
-        nodes.forEach(function(n){ n.classList.remove('on'); });
-        nodes[i].classList.add('on');
-        i = (i + 1) % nodes.length;
-      }, 1067);
-    })();
-  </script>
+    <div class="grid">
+      <div class="card">
+        <span class="kind">In class</span>
+        <h3>One device between two students</h3>
+        <p>Every activity is built for pairs sharing a screen, because the argument between the two of them is where the learning happens. Nothing needs an account, nothing is submitted, and nothing is stored. Close the tab and it is gone.</p>
+      </div>
+      <div class="card">
+        <span class="kind">On any screen</span>
+        <h3>Phones, laptops, the bench machines</h3>
+        <p>Everything is tap-driven rather than drag-driven, so a phone works as well as a laptop. No installation and no login, which means no student spends the first five minutes of an activity failing to get in.</p>
+      </div>
+      <div class="card">
+        <span class="kind">Not here</span>
+        <h3>No lessons, no grades</h3>
+        <p>Principle comes from assigned reading in published sources. Grades live on Canvas. This site holds only the interactive part of a meeting, and scores shown by an activity are feedback for the pair playing it and go nowhere else.</p>
+      </div>
+      <div class="card">
+        <span class="kind">Design rule</span>
+        <h3>The answer is in the room</h3>
+        <p>Wherever an activity can, it turns on something a student has to read off the equipment in front of them: this bench, this pendant, this nameplate. Those are the questions that cannot be answered from anywhere else.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="lab" href="https://mecharithmlab.com" target="_blank" rel="noopener">
+      <span class="labchip"><img src="assets/mecharithm-lab-logo.png" alt="Mecharithm Lab logo"></span>
+      <span class="labtxt">Developed at <b>Mecharithm Lab</b><br><span class="u">mecharithmlab.com &#8599;</span></span>
+    </a>
+    <span class="fmono"><b>MENG 4450</b> &mdash; PLC &amp; Robotics</span>
+  </div>
+  <div class="copyline">&copy; 2026 Mecharithm Lab &middot; Developed for MENG 4450 at Saint Louis University &middot; All rights reserved.</div>
+</footer>
+
 </body>
 </html>
