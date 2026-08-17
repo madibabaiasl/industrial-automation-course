@@ -65,6 +65,11 @@ a:hover{text-decoration:underline}
 /* ---------- hero ---------- */
 .hero{background:var(--brand);color:#F4F4FA;border-bottom:5px solid var(--gold);overflow:hidden}
 .hero .wrap{padding-top:70px;padding-bottom:62px}
+.hero .wrap.hero-flex{display:flex;gap:48px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.hero-copy{flex:0 1 560px;min-width:0}
+.hero-art{flex:0 1 440px;min-width:280px}
+.hero-art img{width:100%;height:auto;display:block;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.30);border:1px solid rgba(255,255,255,.18)}
+@media (max-width:900px){ .hero-art{flex-basis:100%;max-width:520px} }
 .hero .eyebrow{
   font-family:var(--font-label);font-size:15px;font-weight:500;letter-spacing:.08em;
   text-transform:uppercase;color:#C9C9E8;position:relative;padding-left:32px;margin:0;
