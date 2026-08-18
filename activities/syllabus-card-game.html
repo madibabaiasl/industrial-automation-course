@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Read the Syllabus — MENG 4450 activity</title>
-<meta name="description" content="An in-class card game that teaches the MENG 4450 grading scheme, policies and safety rules from the syllabus itself.">
+<meta name="description" content="An in-class card game covering the whole MENG 4450 syllabus: weights, grading, policies, safety, AI rules, and the support resources.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@
   <header class="page-head">
     <p class="eyebrow">Day one &middot; Card game &middot; Play in pairs</p>
     <h1>Read the Syllabus</h1>
-    <p class="sub">Three rounds of cards. Where the marks go, how each piece of work is graded, and what actually happens in eight situations you will meet this term.</p>
+    <p class="sub">Four rounds of cards drawn from the whole syllabus: where the marks go, how each piece of work is graded, what actually happens in the situations you will meet this term, and a lightning round of course facts.</p>
   </header>
 </div>
 
@@ -40,10 +40,11 @@
   <!-- ============ INTRO ============ -->
   <section id="v-intro">
     <div class="play">
+      <div class="head-toon" id="introToon"></div>
       <p class="prompt">Before you start</p>
-      <h2>One device between two of you.</h2>
-      <p class="setup">Talk before you tap. If the two of you disagree, that disagreement is the point of the exercise, and whichever of you is wrong will remember this longer than reading the document would have made you.</p>
-      <p class="setup">Twenty-one cards in three rounds. Nothing is recorded and nothing is submitted. The score is only so you know whether you have actually read it.</p>
+      <h2>One device between two of you. Meet Bolty, your referee.</h2>
+      <p class="setup">Talk before you tap. When the two of you disagree, that argument is the whole point of the exercise, and whoever turns out wrong will remember this longer than reading the document would have made you.</p>
+      <p class="setup">Twenty-nine cards in four rounds, about twelve minutes. Scores stay between the two of you; they exist so you know whether you have actually read it.</p>
       <div class="controls">
         <button class="btn gold wide" type="button" id="go">Deal the first round</button>
       </div>
@@ -51,11 +52,12 @@
 
     <details class="teach">
       <summary style="cursor:pointer;font-family:var(--font-label);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)">How this runs in class</summary>
-      <p style="margin-top:12px">Twelve to fifteen minutes. Pairs, one device. Walk the room while they play; the arguments you overhear tell you which policy is unclear, and that is worth more than the scores.</p>
+      <p style="margin-top:12px">Twelve to fifteen minutes, pairs, one device. Walk the room while they play; the arguments you overhear are the misconception map for your wrap-up.</p>
       <ul>
-        <li>Round 1 is the weight table. Most pairs put the capstone above the laboratory work and are surprised they are equal.</li>
-        <li>Round 2 is the completion against quality distinction. This is the one students get wrong all term if it is not fixed on day one.</li>
-        <li>Round 3 deals eight situation cards from a pack of twelve, so a second play is not the same game.</li>
+        <li>Round 1 is the weight table. Most pairs are surprised the two exams together carry less than the capstone alone.</li>
+        <li>Round 2 fixes the completion and quality distinction early, before the first submission.</li>
+        <li>Round 3 deals ten situations from a pack of twenty-three, so a replay is a different game. Four cards cover Title IX reporting, counseling, accessibility, and basic needs; the game treats those without jokes.</li>
+        <li>Round 4 is six rapid true-or-false course facts from a pack of twelve.</li>
       </ul>
       <p>Close by asking which card caused the longest argument, and answer that one out loud.</p>
     </details>
@@ -68,6 +70,7 @@
       <span class="score" id="s1">Score <b>0</b> / <b>5</b></span>
     </div>
     <div class="play">
+      <div class="head-toon" id="r1Toon"></div>
       <p class="prompt">Place all five</p>
       <h2>Five components carry the whole grade. Give each one its weight.</h2>
       <p class="setup">Tap a percentage, then tap the box beside the component it belongs to. Tap a filled box to take the percentage back.</p>
@@ -86,7 +89,7 @@
   <!-- ============ ROUND 2 ============ -->
   <section id="v-r2" hidden>
     <div class="roundbar">
-      <span class="rname">Round 2 &middot; Doing it, or doing it well</span>
+      <span class="rname">Round 2 &middot; How is it graded?</span>
       <span class="dots" id="d2"></span>
       <span class="score" id="s2">Score <b>0</b> / <b>0</b></span>
     </div>
@@ -103,12 +106,23 @@
     <div id="m3"></div>
   </section>
 
+  <!-- ============ ROUND 4 ============ -->
+  <section id="v-r4" hidden>
+    <div class="roundbar">
+      <span class="rname">Round 4 &middot; Lightning facts</span>
+      <span class="dots" id="d4"></span>
+      <span class="score" id="s4">Score <b>0</b> / <b>0</b></span>
+    </div>
+    <div id="m4"></div>
+  </section>
+
   <!-- ============ END ============ -->
   <section id="v-end" hidden>
     <div class="play">
+      <div class="head-toon" id="endToon"></div>
       <div class="final">
         <div class="big" id="finalScore">0</div>
-        <div class="of">out of 21 cards</div>
+        <div class="of" id="finalOf">out of 29 cards</div>
         <p class="verdictline" id="finalWord"></p>
       </div>
 
@@ -124,6 +138,8 @@
           <tr class="tot"><td>Total</td><td class="w">100%</td><td></td></tr>
         </tbody>
       </table>
+
+      <p style="margin-top:22px;color:var(--ink-soft);font-size:.97rem">Also worth keeping: office hours are Thursdays 12:15&ndash;1:15 pm in MDDH 2051 and by appointment, everything is due at 11:59 pm on the date given on Canvas, and the support offices you met in Round 3 are real, free, and used by people doing fine.</p>
 
       <div class="controls">
         <button class="btn gold" type="button" id="again">Play again</button>
@@ -146,13 +162,15 @@
 </footer>
 
 <script src="../assets/js/activity.js"></script>
+<script src="../assets/js/mascot.js"></script>
 <script>
 (function(){
   'use strict';
-  var A = window.Activity;
+  var A = window.Activity, M = window.Mascot;
   var total = new A.Score();
 
-  /* ---------- data ---------- */
+  /* ======================= DATA =======================
+     Every quote below is verbatim from the finalized syllabus. */
 
   var COMPONENTS = [
     { name:'Class participation', note:'oral questions, in-class and simulation work', w:20 },
@@ -163,134 +181,275 @@
   ];
 
   var SORT = [
-    { t:'Answering when your name is called in the oral round', done:true,
-      why:'The oral round sits inside class participation, which is graded on completion. The score you are given is feedback on your reading, not a mark against your grade.' },
+    { t:'Answering when your name comes up in the oral round', done:true,
+      why:'The oral round lives inside class participation, which is graded on completion. Your answer is scored on a short scale and recorded, and that record is about showing up prepared; it is the exams and the lab work that are graded on quality.' },
     { t:'The artifact your group hands in at the end of a lesson activity', done:true,
-      why:'In-class work is part of the 20 percent graded on completion.' },
-    { t:'Simulation work done in the computer laboratory', done:true,
-      why:'Simulation work is graded on completion. The simulator is where breaking things costs nothing.' },
+      why:'In-class work sits in the 20 percent graded on completion.' },
+    { t:'Simulation work', done:true,
+      why:'Simulation work is part of class participation, graded on completion. The simulator is where breaking things costs nothing.' },
     { t:'The in-lab sheet you fill in at the bench', done:false,
-      why:'In-lab sheets are part of laboratory work, 25 percent, graded against a rubric as a group grade.' },
+      why:'In-lab sheets belong to laboratory work, 25 percent, graded against a rubric as a group grade adjusted by peer review.' },
     { t:'Your group&rsquo;s lab video presentation', done:false,
-      why:'Video presentations are part of laboratory work, 25 percent, graded against a rubric.' },
+      why:'Video presentations belong to laboratory work, graded against a rubric issued before you start.' },
     { t:'The midterm examination', done:false,
-      why:'15 percent, individual, graded on how well you did it.' },
+      why:'15 percent, individual, on paper, devices away, graded on how well you did.' },
     { t:'The final examination', done:false,
-      why:'15 percent, cumulative, individual, graded on how well you did it.' },
+      why:'15 percent, cumulative, individual, graded on how well you did.' },
     { t:'The capstone project', done:false,
-      why:'25 percent, graded against a rubric as a team grade, adjusted by peer review, with individual question answering.' }
+      why:'25 percent, rubric, team grade adjusted by peer review, with individual question answering.' }
   ];
 
+  /* serious:true = respectful feedback, no cartoon, no jokey verdict */
   var CASES = [
-    { q:'Your group finishes the lab video two days after the deadline and uploads it.',
-      opts:[ 'It is marked down by a penalty for each day it is late.',
+    { q:'Your group finishes the lab video two days late and uploads it anyway.',
+      opts:[ 'It loses some points for each late day.',
              'It is not accepted and scores zero.',
-             'It is accepted as long as you email first.' ],
+             'It is fine if you emailed first.' ],
       a:1,
-      why:'There is no late scale in this course. The deadline is the deadline.',
+      why:'There is no late scale in this course. The deadline is the deadline, and the time to talk about trouble is before it.',
       src:{label:'Syllabus, late or missing work', text:'Everything is due at 11:59 pm on the date given on Canvas. Late work is not accepted and scores zero.'} },
 
-    { q:'You are ill on a laboratory day and you have documentation.',
-      opts:[ 'Nothing can be done. Work produced in the room cannot be made up.',
-             'Tell the instructor early. The laboratory is made up individually and you submit your own report.',
-             'Your group submits on your behalf and you share their grade.' ],
+    { q:'You are ill on a laboratory day, and you have documentation.',
+      opts:[ 'The session cannot be made up under any circumstances.',
+             'Tell the instructor early; you make the laboratory up individually and submit your own report.',
+             'Your group covers for you and you take their grade.' ],
       a:1,
-      why:'The rule against making up in-room work has one exception, and this is it. Because your group will already have run that session, your makeup is individual.',
+      why:'The no-makeup rule for in-room work has exactly one exception, and this is it. Your group will already have run the session, so your makeup is individual.',
       src:{label:'Syllabus, attendance expectations', text:'A missed laboratory is made up individually at a time we agree, and the work is submitted as an individual report rather than as part of a group submission.'} },
 
-    { q:'You ask an AI model to help draft the script for your lab video.',
-      opts:[ 'Not allowed. Videos must be in your own words.',
-             'Allowed. Add a brief note saying what you used and what for.',
-             'Allowed, but only with permission asked in advance.' ],
+    { q:'You want AI to help draft the script for your lab video.',
+      opts:[ 'That has to stay your own writing.',
+             'Allowed. Add a brief statement of what you used and for what.',
+             'Allowed only if you ask permission first.' ],
       a:1,
-      why:'Tool use is open. What comes with it is the disclosure line and the fact that you own whatever you submit.',
-      src:{label:'Syllabus, generative AI policy', text:'Feel free to use any AI tool whenever you need. Please include a brief statement with each submission about what tools you used and for what purpose.'} },
+      why:'Tool use is open. What travels with it is the disclosure line, and the fact that you own whatever goes in.',
+      src:{label:'Syllabus, generative AI policy', text:'Feel free to use any AI tool whenever you need... Please include a brief statement with each submission about what tools you used and for what purpose.'} },
 
-    { q:'You want to bring your laptop to the midterm so you can check your notes.',
-      opts:[ 'Fine. The examination runs on Canvas.',
-             'No. Both examinations are on paper, in the room, with devices away.',
-             'Fine, but only for the drawing questions.' ],
+    { q:'You bring your laptop to the midterm to check your notes.',
+      opts:[ 'Fine, the exam runs on Canvas.',
+             'It stays in your bag. Both exams are on paper, in the room, devices away.',
+             'Fine for the drawing questions only.' ],
       a:1,
-      why:'The examinations are the two places in the course where nothing is open. That is what lets everything else be open.',
+      why:'The two examinations and the oral questions are the AI-free places in this course, and they are what let everything else stay open.',
       src:{label:'Syllabus, components and weights', text:'Midterm examination &mdash; Individual; on paper, in the room, devices away.'} },
 
-    { q:'A model gives you a tag address, you submit it, and it turns out to be wrong.',
-      opts:[ 'The tool produced it, so it is not counted against you.',
+    { q:'A model hands you a tag address, you submit it, and it is wrong.',
+      opts:[ 'The tool made the error, so it is set aside.',
              'It is your submission and it is graded as your work.',
-             'You declare it afterwards and the mark is voided.' ],
+             'Declaring the tool afterwards voids the mark.' ],
       a:1,
-      why:'This is the whole weight of Rule 2. Open tools, and the responsibility for the output stays with you.',
+      why:'This is the weight Rule 2 carries. The tools are open, and the responsibility for the output never moves.',
       src:{label:'Syllabus, generative AI policy', text:'What you submit is your own work. You are responsible for ensuring its accuracy, understanding the reasoning behind it, and being able to explain any part if asked.'} },
 
-    { q:'You skip a lesson meeting. Attendance is not taken.',
-      opts:[ 'Nothing at all happens.',
-             'That day&rsquo;s in-class work cannot be submitted later, which comes out of the 20 percent.',
-             'You lose a full letter grade.' ],
+    { q:'You skip a lesson meeting. Attendance is never taken in this course.',
+      opts:[ 'So nothing at all happens.',
+             'That day&rsquo;s in-class work cannot be submitted later, and that comes out of the 20 percent.',
+             'You lose a letter grade per absence.' ],
       a:1,
-      why:'Attendance is not policed, and it does not need to be. The work is produced in the room, so missing the room means missing the work.',
-      src:{label:'Syllabus, attendance expectations', text:'Missing class can affect the 20% of the grade based on completion, since that work is done during class and cannot be submitted later.'} },
+      why:'True, attendance is never taken, and the instructor will not chase you. The cost collects itself, because the work happens in the room.',
+      src:{label:'Syllabus, attendance expectations', text:'I will not take attendance... However, missing class can affect the 20% of the grade based on completion, since that work is done during class and cannot be submitted later.'} },
 
-    { q:'Your partner is inside the robot&rsquo;s safeguarded space, holding the pendant.',
-      opts:[ 'You stand outside at the emergency stop and do nothing else.',
-             'You help by jogging the arm from the second pendant.',
-             'You use the time to start the write-up.' ],
+    { q:'Your partner is inside the robot&rsquo;s safeguarded space holding the pendant. Your job?',
+      opts:[ 'Stand outside at the emergency stop, and only that.',
+             'Start the write-up while you wait.',
+             'Lean in and help guide the arm.' ],
       a:0,
-      why:'Doing nothing else is the job. A person watching the arm with a hand near the stop is a safety function, and it stops being one the moment they look at a phone.',
-      src:{label:'Syllabus, safety and security protocols', text:'Whenever anyone is inside the safeguarded space, motion is limited to reduced speed, the pendant&rsquo;s enabling device is used as designed, and a second person stands outside at the emergency stop.'} },
+      why:'The person at the stop is a safety function. The moment they are also doing something else, they are not one.',
+      src:{label:'Syllabus, safety and security protocols', text:'Whenever anyone is inside the safeguarded space, motion is limited to reduced speed, the pendant’s enabling device is used as designed, and a second person stands outside at the emergency stop.'} },
 
-    { q:'You have finished wiring your circuit and you are ready to switch on.',
-      opts:[ 'Switch on. You wired it, so you know it is right.',
-             'Someone other than the person who wired it checks it first, every time.',
-             'The instructor checks it, but only in the first laboratory of the term.' ],
+    { q:'Your wiring is finished and you are sure it is right. Power on?',
+      opts:[ 'Yes. You built it, you know it.',
+             'After someone who did not place the leads checks it, every time.',
+             'Only the first week needs checks.' ],
       a:1,
-      why:'You cannot see your own mistake, because you already believe the circuit is correct. That is exactly why the check is done by the other person, and why it has no exceptions.',
+      why:'You already believe your circuit is correct, which is exactly why you are the wrong person to check it. The rule has no exceptions on purpose.',
       src:{label:'Syllabus, safety and security protocols', text:'Wiring is verified by someone other than the person who wired it before power is applied, every time.'} },
 
-    { q:'Your total for the course comes to 89.4 percent.',
-      opts:[ 'A minus.', 'B plus.', 'B.' ],
+    { q:'Your course total lands on 89.4 percent.',
+      opts:[ 'A minus.', 'B plus.', 'Rounds up to A minus.' ],
       a:1,
-      why:'The scale is written with strict inequalities, so 89.4 falls in the band from 87 up to but not including 90. There is no rounding step hiding in it.',
-      src:{label:'Syllabus, grading scale', text:'87 &le; G &lt; 90 &rarr; B+'} },
+      why:'The bands use strict inequalities: 87 up to but short of 90 is a B+. There is no hidden rounding step.',
+      src:{label:'Syllabus, grading scale', text:'87 ≤ G < 90 → B+ · 90 ≤ G < 93 → A−'} },
 
-    { q:'One member of your group did none of the work on the lab video.',
-      opts:[ 'Everyone in the group gets the same mark whatever happened.',
+    { q:'One member of your group did nothing on the lab video.',
+      opts:[ 'Everyone gets the same mark regardless.',
              'The group grade is adjusted by peer review.',
-             'You report it to the department.' ],
+             'The video is disqualified.' ],
       a:1,
-      why:'Peer review is the mechanism that turns a group grade into an individual one. It is why laboratory work and the capstone can be graded as group products at all.',
-      src:{label:'Syllabus, components and weights', text:'Laboratory work &mdash; Rubric; group grade, adjusted by peer review.'} },
+      why:'Peer review is what turns a group grade into an individual one, on the lab work and on the capstone both.',
+      src:{label:'Syllabus, components and weights', text:'Laboratory work — Rubric; group grade, adjusted by peer review.'} },
 
-    { q:'You want to record a class meeting so you can go back over it later.',
-      opts:[ 'Fine. It is your own learning.',
-             'Meetings are not recorded, and you may not record without permission in advance.',
-             'Fine, as long as you delete it after the examination.' ],
+    { q:'You want to record the class meeting to review later.',
+      opts:[ 'Fine, it is your own study material.',
+             'Recording needs the instructor&rsquo;s prior permission, unless an approved accommodation covers it.',
+             'Fine if you delete it after the final.' ],
       a:1,
-      why:'An approved accommodation is the exception. Otherwise the room is not recorded, by you or by the instructor.',
-      src:{label:'Syllabus, policy on course recordings', text:'Class meetings are not recorded by the instructor. Students aren&rsquo;t allowed to record audio or video of class or other students&rsquo; lab work without getting prior permission from the instructor.'} },
+      why:'Meetings are also never recorded by the instructor, so the room is the one place the class happens.',
+      src:{label:'Syllabus, policy on course recordings', text:'Students aren’t allowed to record audio or video of class or other students’ lab work without getting prior permission from the instructor, unless an approved accommodation says otherwise.'} },
 
-    { q:'You walk in fifteen minutes into a lesson meeting.',
-      opts:[ 'Nothing is lost. Attendance is not taken.',
-             'You have missed the pair discussion and the oral round, and you have interrupted people already working.',
-             'You are marked absent for the whole session.' ],
+    { q:'You arrive fifteen minutes into a lesson meeting.',
+      opts:[ 'Attendance is never taken, so nothing was lost.',
+             'You missed the pair discussion and the oral round, and your arrival interrupted people mid-work.',
+             'You are locked out until the activity block.' ],
       a:1,
-      why:'The first twenty minutes are the part of the meeting that cannot be repeated for one person.',
-      src:{label:'Syllabus, attendance expectations', text:'In lesson meetings, the pair discussion and oral round take place during the first twenty minutes. Arriving late interrupts classmates who are already working and your teammate that will be waiting for you.'} }
+      why:'The first twenty minutes are the one part of a meeting that cannot be replayed for one person, and your teammate was waiting.',
+      src:{label:'Syllabus, attendance expectations', text:'In lesson meetings, the pair discussion and oral round take place during the first twenty minutes... Arriving late interrupts classmates who are already working and your teammate that will be waiting for you.'} },
+
+    { q:'Your name comes up in the oral round and your answer falls apart.',
+      opts:[ 'Points come off your final grade for the wrong answer.',
+             'The score is recorded, participation is graded on completion, and your name will come up again.',
+             'You are excused from future rounds.' ],
+      a:1,
+      why:'Being wrong out loud is affordable here; being unprepared repeatedly is what shows. Expect several turns across the term.',
+      src:{label:'Syllabus, evaluation and grading', text:'Each answer is scored on a short scale and recorded, and everyone can expect to be called several times across the term.'} },
+
+    { q:'It is 10 pm and your group cannot remember when the video is due.',
+      opts:[ 'Deadlines are announced in class only.',
+             'Canvas has the date, and the time is 11:59 pm on that date.',
+             'Videos have a rolling one-week grace window.' ],
+      a:1,
+      why:'One clock for everything in the course, and it is on Canvas.',
+      src:{label:'Syllabus, late or missing work', text:'Everything is due at 11:59 pm on the date given on Canvas.'} },
+
+    { q:'Your question needs twenty minutes, and Thursday after class you are free.',
+      opts:[ 'Office hours are by email lottery.',
+             'Walk into MDDH 2051, Thursdays 12:15 to 1:15, or email for an appointment in person or on Zoom.',
+             'Questions are answered only during lab sessions.' ],
+      a:1,
+      why:'The posted hour sits right after the Thursday meeting, and appointments exist for everything it cannot fit.',
+      src:{label:'Syllabus, instructor information', text:'Office Hours: Thursdays 12:15-1:15 pm in MDDH 2051, immediately after class. Also by appointment, in person or on Zoom. Email me, and I will find a time.'} },
+
+    { q:'Day one of lab, your teammate shows up in sandals.',
+      opts:[ 'Fashion is outside the syllabus.',
+             'Closed-toe shoes are required in every laboratory.',
+             'Sandals are fine at the simulation benches.' ],
+      a:1,
+      why:'Also on the list: loose clothing, lanyards, and dangling jewelry stay away from the arm.',
+      src:{label:'Syllabus, safety and security protocols', text:'Wear closed-toe shoes in every laboratory and keep loose clothing, lanyards, and dangling jewelry away from the arm.'} },
+
+    { q:'Power is off. Your teammate says the robot cell is now completely safe.',
+      opts:[ 'Correct, electricity was the hazard.',
+             'The gripper still holds compressed air, and the vertical axis drops under gravity if its brake releases.',
+             'It is safe once the lights stop blinking.' ],
+      a:1,
+      why:'Stored energy stays stored when the electricity leaves. That is the whole reason the syllabus names those two.',
+      src:{label:'Syllabus, safety and security protocols', text:'...has a vertical axis that drops under gravity when its brake releases, and holds compressed air in the gripper that does not disappear when the electricity is off.'} },
+
+    { q:'You flip one power switch at the bench and call the whole station dead.',
+      opts:[ 'One switch is one switch. The station has three ways to remove power, each leaving something different live.',
+             'Any switch kills everything downstream.',
+             'The bench has no line voltage anyway.' ],
+      a:0,
+      why:'Most of the bench runs at 24 V, one device on the same panel runs at 115 V alternating current, and you will be taught all three disconnects in class.',
+      src:{label:'Syllabus, safety and security protocols', text:'A station has three separate ways to remove power, each leaving something different live, so you will be expected to know all three (will be taught in class).'} },
+
+    { q:'A friend tells a professor about a sexual harassment experience and asks them to keep it between the two of them.', serious:true,
+      opts:[ 'Faculty can keep it fully confidential if asked.',
+             'The faculty member must notify the Title IX Coordinator, even when asked to keep it private. Confidential support exists at the University Counseling Center.',
+             'It stays private unless it happened on campus.' ],
+      a:1,
+      why:'Faculty are required reporters, and the Coordinator&rsquo;s role is to lay out options and support. For a fully confidential conversation, the counselors at 314-977-TALK are the route.',
+      src:{label:'Syllabus, Title IX statement', text:'...that faculty member must notify SLU’s Title IX Coordinator that you shared an experience relating to Title IX. This is true even if you ask the faculty member not to disclose the incident.'} },
+
+    { q:'The semester is heavy and it is affecting everything, including this course.', serious:true,
+      opts:[ 'Push through alone; that is what engineers do.',
+             'The University Counseling Center offers free short-term counseling at 314-977-TALK, TimelyCare adds free teletherapy, and the instructor wants course concerns brought to her.',
+             'Support exists only for documented emergencies.' ],
+      a:1,
+      why:'Seeking support is normal and it works better early. For course-related pressure specifically, the instructor has asked to hear it directly.',
+      src:{label:'Syllabus, University Counseling Center and Wellness', text:'The University Counseling Center (UCC) offers free, short-term, solution-focused counseling... All students experience stressors and challenges at some point, and seeking support is both normal and beneficial.'} },
+
+    { q:'You have a documented disability and want accommodations in this course.', serious:true,
+      opts:[ 'Tell the instructor and it is arranged informally.',
+             'Register with the Center for Accessibility and Disability Resources first, then notify the instructor to use the approved accommodations.',
+             'Accommodations apply to exams only.' ],
+      a:1,
+      why:'Two steps, in that order: CADR makes it official, and telling the instructor makes it real in this course. Reach CADR at accessibility_disability@slu.edu or 314-977-3484.',
+      src:{label:'Syllabus, disability accommodations statement', text:'Students with a documented disability who wish to request academic accommodations must formally register their disability with the University. Once successfully registered, students also must notify their course instructor...'} },
+
+    { q:'Money is tight enough this month that food and rent are both wobbling.', serious:true,
+      opts:[ 'That is outside what a university helps with.',
+             'The Dean of Students Office exists for exactly this: intake form, deanofstudents@slu.edu, or 314-977-9378. Instructors can also connect you to resources.',
+             'Support requires a minimum GPA.' ],
+      a:1,
+      why:'Basic needs pressure is a wellbeing and academics issue the university funds an office to help with. Using it is the smart move.',
+      src:{label:'Syllabus, basic needs security', text:'Students experiencing food insecurity, housing insecurity, and any other challenges that are impacting their personal and/or academic wellbeing are encouraged to contact the Dean of Students Office for support.'} },
+
+    { q:'Your capstone report reads like a robot wrote it, and a teammate suggests getting help with the writing.',
+      opts:[ 'Writing help is for humanities students.',
+             'University Writing Services runs free one-on-one consultations, booked through EAB Navigate, in person, online, or on Zoom.',
+             'Only the instructor may see drafts.' ],
+      a:1,
+      why:'Consultations cover everything from outlining to revising, for graduate and undergraduate students, on any project including capstones.',
+      src:{label:'Syllabus, University Writing Services', text:'University Writing Services offers one-on-one consultations with trained writing consultants... All appointments can be scheduled through EAB Navigate – Student.'} }
   ];
 
-  /* ---------- view switching ---------- */
-  var views = ['v-intro','v-r1','v-r2','v-r3','v-end'];
+  var FACTS = [
+    { s:'Class and lab meet in MDDH 201, the Mechatronics lab.', t:true,
+      why:'One room for the whole course.', src:{label:'Syllabus, course information', text:'Location: MDDH 201 (Mechatronics lab)'} },
+    { s:'Section A meets at 11:00 am.', t:false,
+      why:'Section A is 9:30 to 10:45; 11:00 to 12:15 is Section B. Same content on the same days either way.', src:{label:'Syllabus, course information', text:'Section A 9:30–10:45 am, Section B 11:00 am–12:15 pm. Both sections run the same content on the same days.'} },
+    { s:'You need to buy the textbook before week two.', t:false,
+      why:'Every assigned source is free, starting with Kuphaldt’s Lessons in Industrial Instrumentation.', src:{label:'Syllabus, required materials', text:'No textbook purchase is required... The main text is Tony Kuphaldt, Lessons in Industrial Instrumentation, version 2.33 (free, link will be given).'} },
+    { s:'Office hours are Thursdays right after class, in MDDH 2051.', t:true,
+      why:'12:15 to 1:15 pm, plus appointments in person or on Zoom.', src:{label:'Syllabus, instructor information', text:'Office Hours: Thursdays 12:15-1:15 pm in MDDH 2051, immediately after class.'} },
+    { s:'Patrick Beard, the mechanical engineering technician, supports the laboratory.', t:true,
+      why:'He keeps the bench stations and robot cells alive.', src:{label:'Syllabus, instructor information', text:'Laboratory support: Patrick Beard, Mechanical Engineering Technician.'} },
+    { s:'Bring your laptop, paper, and a pen or pencil to every laboratory.', t:true,
+      why:'That is the whole packing list.', src:{label:'Syllabus, required materials', text:'Bring to every laboratory: Your laptop, paper, and a pen/pencil.'} },
+    { s:'There is a graded quiz at the start of every week.', t:false,
+      why:'The weights table has no quiz row anywhere. Class opens with pair discussion and the oral round instead.', src:{label:'Syllabus, evaluation and grading', text:'You read the assigned pages before class. We open with about ten minutes of discussion in pairs about the reading... Then comes the oral round.'} },
+    { s:'Both examinations are taken on Canvas.', t:false,
+      why:'Both are on paper, in the room, devices away.', src:{label:'Syllabus, components and weights', text:'Midterm examination — Individual; on paper, in the room, devices away. Final examination, cumulative — Individual; on paper, in the room, devices away.'} },
+    { s:'A course total of 92.99 is an A.', t:false,
+      why:'An A starts at 93.00 exactly; 92.99 sits in the A− band.', src:{label:'Syllabus, grading scale', text:'G ≥ 93 → A · 90 ≤ G < 93 → A−'} },
+    { s:'The capstone grade is purely a team grade.', t:false,
+      why:'Team grade adjusted by peer review, plus individual question answering.', src:{label:'Syllabus, components and weights', text:'Capstone project — Rubric; team grade adjusted by peer review; individual question answering.'} },
+    { s:'Most of what you touch at the bench runs at 24 V direct current.', t:true,
+      why:'True, and the exception is the point: one device on the same panel runs at 115 V alternating current.', src:{label:'Syllabus, safety and security protocols', text:'Most of what you touch at a bench runs on 24 V direct current, but one device on the same panel operates at 115 V alternating current.'} },
+    { s:'The instructor runs student writing through an AI detector.', t:false,
+      why:'No detectors. Honest disclosure is what keeps the open policy open.', src:{label:'Syllabus, generative AI policy', text:'Note that I will not use any AI detector to check generative AI, so your honest disclosure is what keeps this open policy in place.'} }
+  ];
+
+  var R3_DEAL = 10, R4_DEAL = 6;
+  var TOTAL_CARDS = 5 + SORT.length + R3_DEAL + R4_DEAL;
+
+  /* ======================= VIEWS ======================= */
+  var views = ['v-intro','v-r1','v-r2','v-r3','v-r4','v-end'];
   function show(id){
     views.forEach(function(v){ A.el(v).hidden = (v !== id); });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+  A.el('introToon').outerHTML = M('cheer','toon bob');
+  A.el('r1Toon').outerHTML = M('juggle','toon');
 
-  /* ================= ROUND 1 ================= */
-  var picked = null, placed = [], chipsUsed = [];
+  /* feedback with mascot; serious cards get the plain treatment */
+  function feedback(mount, ok, body, source, serious){
+    var box = A.make('div','reveal');
+    var head = A.make('div','rev-head');
+    if (!serious){ head.innerHTML = M(ok ? 'cheer' : 'dizzy','toon'); }
+    var bodyWrap = A.make('div','rev-body');
+    var vtxt = serious ? (ok ? '✓ Correct' : '✕ Good to know')
+                       : (ok ? '✓ Bolty approves' : '✕ Bzzt. Close one');
+    bodyWrap.appendChild(A.make('p','verdict ' + (ok ? 'y' : 'n'), vtxt));
+    bodyWrap.appendChild(A.make('p', null, body));
+    if (source) bodyWrap.appendChild(A.make('div','quote','<b>' + source.label + '</b>' + source.text));
+    head.appendChild(bodyWrap);
+    box.appendChild(head);
+    mount.appendChild(box);
+    return box;
+  }
+  function card_score(node, score, tot){
+    node.innerHTML = 'Score <b>'+score.right+'</b> / <b>'+tot+'</b>';
+  }
+
+  /* ======================= ROUND 1 ======================= */
+  var picked, placed, chipsUsed, chips;
 
   function buildR1(){
     picked = null;
     placed = COMPONENTS.map(function(){ return null; });
-    var chips = A.shuffle(COMPONENTS.map(function(c){ return c.w; }));
+    chips = A.shuffle(COMPONENTS.map(function(c){ return c.w; }));
     chipsUsed = chips.map(function(){ return false; });
 
     var tray = A.el('tray');
@@ -302,7 +461,7 @@
       b.dataset.ci = ci;
       b.addEventListener('click', function(){
         if (chipsUsed[ci]) return;
-        if (picked === ci) { picked = null; } else { picked = ci; }
+        picked = (picked === ci) ? null : ci;
         paintChips();
       });
       tray.appendChild(b);
@@ -317,14 +476,8 @@
       slot.type = 'button';
       slot.dataset.ri = ri;
       slot.addEventListener('click', function(){
-        if (placed[ri] !== null) {                 // take it back
-          chipsUsed[placed[ri]] = false;
-          placed[ri] = null;
-        } else if (picked !== null) {              // place it
-          placed[ri] = picked;
-          chipsUsed[picked] = true;
-          picked = null;
-        }
+        if (placed[ri] !== null) { chipsUsed[placed[ri]] = false; placed[ri] = null; }
+        else if (picked !== null) { placed[ri] = picked; chipsUsed[picked] = true; picked = null; }
         paintChips(); paintSlots();
       });
       li.appendChild(slot);
@@ -333,6 +486,8 @@
 
     A.el('fb1').innerHTML = '';
     A.el('check1').disabled = true;
+    A.el('reset1').disabled = false;
+    A.el('s1').innerHTML = 'Score <b>0</b> / <b>5</b>';
     paintChips(); paintSlots();
 
     function paintChips(){
@@ -373,15 +528,15 @@
 
       var fb = A.el('fb1');
       A.clear(fb);
-      A.reveal(fb, got === 5,
+      feedback(fb, got === 5,
         got === 5
-          ? 'All five. The two that surprise most pairs are that laboratory work and the capstone carry the same weight, and that the two examinations together are less than either of them.'
-          : 'The correct placement is 20, 25, 15, 15, 25 in the order shown. Laboratory work and the capstone are equal at 25 each, and the two examinations together come to 30.',
+          ? 'All five. The one that surprises most pairs: the two examinations together carry 30 percent, which is less than the capstone plus five.'
+          : 'The correct placement, top to bottom, is 20, 25, 15, 15, 25. Laboratory work and the capstone are equal at 25 each, and the two examinations together come to 30.',
         { label:'Syllabus, components and weights',
-          text:'Class participation 20% &middot; Laboratory work 25% &middot; Midterm 15% &middot; Final 15% &middot; Capstone 25%. The five sum to 100.' });
+          text:'Class participation 20% · Laboratory work 25% · Midterm 15% · Final 15% · Capstone 25%. The five sum to 100.' });
 
       var cont = A.make('div','controls');
-      var b = A.make('button','btn gold wide','Next round: doing it, or doing it well');
+      var b = A.make('button','btn gold wide','Next round: how is it graded?');
       b.type = 'button';
       b.onclick = startR2;
       cont.appendChild(b);
@@ -391,11 +546,11 @@
     A.el('reset1').onclick = buildR1;
   }
 
-  /* ================= ROUND 2 ================= */
+  /* ======================= ROUND 2 ======================= */
   function startR2(){
     show('v-r2');
     var mount = A.el('m2');
-    var deck = new A.Deck({
+    new A.Deck({
       deck: SORT,
       mount: mount,
       score: new A.Score(),
@@ -404,13 +559,14 @@
         card_score(A.el('s2'), api.score, api.total);
 
         var play = A.make('div','play');
+        play.innerHTML = M('sort','toon');
         play.appendChild(A.make('p','prompt','Card '+(api.index+1)+' of '+api.total));
         play.appendChild(A.make('h2', null, card.t));
-        play.appendChild(A.make('p','setup','Is this graded on doing it, or on how well you did it?'));
+        play.appendChild(A.make('p','setup','Which way is this graded?'));
 
         var bins = A.make('div','bins');
-        var bDone = A.make('button','bin','<b>Completion</b><span>Graded for doing it. Being wrong does not cost you.</span>');
-        var bWell = A.make('button','bin','<b>Quality</b><span>Graded on how well you did it, against a rubric.</span>');
+        var bDone = A.make('button','bin','<b>Completion</b><span>Credit for doing it. A wrong answer costs nothing.</span>');
+        var bWell = A.make('button','bin','<b>Quality</b><span>Graded on how well, against a published rubric or exam key.</span>');
         bDone.type = 'button'; bWell.type = 'button';
         bins.appendChild(bDone); bins.appendChild(bWell);
         play.appendChild(bins);
@@ -423,7 +579,7 @@
           if (!ok) (saysDone ? bWell : bDone).classList.add('right');
           A.lock(bins);
           card_score(A.el('s2'), api.score, api.total);
-          A.reveal(play, ok, card.why);
+          feedback(play, ok, card.why);
           var cont = A.make('div','controls');
           var nb = A.make('button','btn gold wide', api.index+1 === api.total ? 'Next round: what actually happens' : 'Next card');
           nb.type = 'button'; nb.onclick = api.next;
@@ -433,16 +589,15 @@
         bWell.onclick = function(){ answer(false, bWell); };
       },
       onDone: startR3
-    });
-    deck.start();
+    }).start();
   }
 
-  /* ================= ROUND 3 ================= */
+  /* ======================= ROUND 3 ======================= */
   function startR3(){
     show('v-r3');
     var mount = A.el('m3');
-    var hand = A.shuffle(CASES).slice(0, 8);   // eight dealt from twelve
-    var deck = new A.Deck({
+    var hand = A.shuffle(CASES).slice(0, R3_DEAL);
+    new A.Deck({
       deck: hand,
       mount: mount,
       score: new A.Score(),
@@ -451,6 +606,7 @@
         card_score(A.el('s3'), api.score, api.total);
 
         var play = A.make('div','play');
+        play.innerHTML = M('sleuth','toon');
         play.appendChild(A.make('p','prompt','Situation '+(api.index+1)+' of '+api.total));
         play.appendChild(A.make('h2', null, card.q));
         play.appendChild(A.make('p','setup','What actually happens?'));
@@ -474,9 +630,9 @@
             }
             A.lock(opts);
             card_score(A.el('s3'), api.score, api.total);
-            A.reveal(play, ok, card.why, card.src);
+            feedback(play, ok, card.why, card.src, card.serious);
             var cont = A.make('div','controls');
-            var nb = A.make('button','btn gold wide', api.index+1 === api.total ? 'See your score' : 'Next situation');
+            var nb = A.make('button','btn gold wide', api.index+1 === api.total ? 'Last round: lightning facts' : 'Next situation');
             nb.type = 'button'; nb.onclick = api.next;
             cont.appendChild(nb); play.appendChild(cont);
           });
@@ -486,25 +642,68 @@
         play.appendChild(opts);
         mount.appendChild(play);
       },
+      onDone: startR4
+    }).start();
+  }
+
+  /* ======================= ROUND 4 ======================= */
+  function startR4(){
+    show('v-r4');
+    var mount = A.el('m4');
+    var hand = A.shuffle(FACTS).slice(0, R4_DEAL);
+    new A.Deck({
+      deck: hand,
+      mount: mount,
+      score: new A.Score(),
+      render: function(card, api){
+        A.dots(A.el('d4'), api.total, api.index);
+        card_score(A.el('s4'), api.score, api.total);
+
+        var play = A.make('div','play');
+        play.innerHTML = M('flash','toon');
+        play.appendChild(A.make('p','prompt','Fact check '+(api.index+1)+' of '+api.total));
+        play.appendChild(A.make('h2', null, card.s));
+
+        var bins = A.make('div','bins tf');
+        var bT = A.make('button','bin','<b>True</b>');
+        var bF = A.make('button','bin','<b>False</b>');
+        bT.type = 'button'; bF.type = 'button';
+        bins.appendChild(bT); bins.appendChild(bF);
+        play.appendChild(bins);
+        mount.appendChild(play);
+
+        function answer(says, node){
+          var ok = (says === card.t);
+          api.answered(ok); total.tally(ok);
+          node.classList.add(ok ? 'right' : 'wrong');
+          if (!ok) (says ? bF : bT).classList.add('right');
+          A.lock(bins);
+          card_score(A.el('s4'), api.score, api.total);
+          feedback(play, ok, card.why, card.src);
+          var cont = A.make('div','controls');
+          var nb = A.make('button','btn gold wide', api.index+1 === api.total ? 'See your score' : 'Next fact');
+          nb.type = 'button'; nb.onclick = api.next;
+          cont.appendChild(nb); play.appendChild(cont);
+        }
+        bT.onclick = function(){ answer(true,  bT); };
+        bF.onclick = function(){ answer(false, bF); };
+      },
       onDone: finish
-    });
-    deck.start();
+    }).start();
   }
 
-  function card_score(node, score, tot){
-    node.innerHTML = 'Score <b>'+score.right+'</b> / <b>'+tot+'</b>';
-  }
-
-  /* ================= END ================= */
+  /* ======================= END ======================= */
   function finish(){
     show('v-end');
+    var pct = Math.round(total.right / TOTAL_CARDS * 100);
+    A.el('endToon').innerHTML = (pct >= 70 ? M('trophy','toon bob') : M('wrench','toon')).replace(/^<div[^>]*>|<\/div>$/g,'');
     A.el('finalScore').textContent = total.right;
-    var pct = Math.round(total.right / 21 * 100);
+    A.el('finalOf').textContent = 'out of ' + TOTAL_CARDS + ' cards';
     var word;
-    if (pct >= 90)      word = 'You have read it properly. The rest of the term will hold no procedural surprises for you.';
-    else if (pct >= 70) word = 'Close. Go back to the cards you missed, because those are the rules that cost people marks in week six.';
-    else if (pct >= 45) word = 'Worth another pass through the syllabus. Nothing here is complicated, but the details decide what happens when something goes wrong.';
-    else                word = 'Read the syllabus properly before the next meeting, then play this again. Every answer in it came from a single sentence in that document.';
+    if (pct >= 90)      word = 'You have read it properly. The rest of the term should hold no procedural surprises for you.';
+    else if (pct >= 70) word = 'Solid. Revisit the cards you missed, because those are the rules that cost people marks in week six.';
+    else if (pct >= 45) word = 'Worth another pass through the syllabus. The details decide what happens when something goes wrong.';
+    else                word = 'Read the syllabus properly before the next meeting, then play this again. Every answer here came from a single sentence in that document.';
     A.el('finalWord').textContent = word;
   }
 
