@@ -213,10 +213,7 @@ button.ctl:focus-visible,label:focus-within{outline:2px solid var(--brass);outli
 
 <div class="note" id="dupNote" hidden>
   <b>Two coils, one variable.</b> Rung 1 still looks satisfied while you hold Start, yet Motor_Run reads 0 and the seal never establishes. Both rungs execute every scan, top to bottom, and the last write to a variable is the one that stands. Rung 2 writes 0 after rung 1 wrote 1.
-</div>
 
-<p class="foot">MENG 4450 · Sim Lab 1. Stop_PB is the button's own state, 1 while pressed, read by a negated contact, matching the first version of the program on p. 812 of Kuphaldt. Green means that segment is conducting on the scan just executed.</p>
-</div>
 
 <script>
 (function(){
