@@ -13,6 +13,8 @@ body{margin:0;background:var(--ground);color:var(--ink);font-family:Inter,system
 .wrap{max-width:1240px;margin:0 auto;padding:16px}
 header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
 header h1{font-size:19.2px;font-weight:700;margin:0}
+.hub{font-size:14.4px;font-weight:700;color:var(--ink);text-decoration:none;border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:2px 10px}
+.hub:hover{background:var(--panel)}
 .chip{font-size:14.4px;font-weight:700;border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:2px 10px;background:var(--ground)}
 .spacer{flex:1}
 #stepno{font-size:14.4px;font-weight:700}
@@ -64,6 +66,7 @@ button.opt.wrong{border-color:var(--muted);color:var(--muted)}
 <body>
 <div class="wrap">
   <header>
+    <a class="hub" href="../index.html">&larr; All activities</a>
     <h1>Single-phase induction motor</h1>
     <span class="chip">slowed down about 190×</span>
     <span class="spacer"></span>
@@ -441,7 +444,7 @@ function drawEnd(cv){
   const r=cv.getBoundingClientRect();const Wd=Math.round(r.width),Hd=Math.round(r.height);
   if(cv.width!==Wd*dpr){cv.width=Wd*dpr;cv.height=Hd*dpr;}
   ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,Wd,Hd);
-  const cx=Wd/2,cy=Hd/2+6,S=Math.min(Wd,Hd)/330;
+  const legendH=26;const cx=Wd/2,cy=(Hd-legendH)/2+10,S=Math.min(Wd-16,Hd-legendH-22)/318;
   const f=st.flags;
   ctx.lineJoin='round';ctx.lineCap='round';
   ctx.font='700 13px '+FONT;ctx.textAlign='center';ctx.textBaseline='middle';
@@ -491,7 +494,7 @@ function drawEnd(cv){
           ctx.beginPath();loop.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.lineWidth=4;ctx.strokeStyle=INK;ctx.stroke();
         }
       }
-      const [lx,ly]=P(140,w.axis*D2R);ctx.fillStyle=INK;ctx.fillText(w.name,lx,ly);
+      const ca0=Math.cos(w.axis*D2R);const [lx,ly]=P(156,w.axis*D2R);ctx.fillStyle=INK;ctx.textAlign=ca0>0.5?'left':(ca0<-0.5?'right':'center');ctx.fillText(w.name,lx,ly);ctx.textAlign='center';
     }
   }
   // rotor
@@ -518,8 +521,7 @@ function drawEnd(cv){
   // legend
   ctx.font='400 13px '+FONT;ctx.textAlign='left';ctx.fillStyle=INK;
   ctx.fillText('end view',10,14);
-  if(st.geometry==='slots'&&st.visible.length){ctx.fillText('● current towards you   ⨉ away from you',10,Hd-12);}
-  if(st.geometry==='salient'&&st.visible.length){ctx.fillText('● current towards you   ⨉ away from you',10,Hd-12);}
+  if(st.visible.length){ctx.fillText('● current towards you    ⨉ current away from you',10,Hd-13);}
 }
 
 /* ---------------- waveform ---------------- */
