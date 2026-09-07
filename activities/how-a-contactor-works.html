@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How a contactor works</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
+<style>
+:root{--ink:#000;--ground:#fff;--panel:#F4F2F2;--rule:#D9D9D9;--muted:#7F7F7F;--yellow:#FFE819;--stroke:1.92px;--radius:5.6px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.3}
+.wrap{max-width:1240px;margin:0 auto;padding:16px}
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+header h1{font-size:19.2px;font-weight:700;margin:0}
+.hub{font-size:14.4px;font-weight:700;color:var(--ink);text-decoration:none;border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:2px 10px}
+.hub:hover{background:var(--panel)}
+.chip{font-size:14.4px;font-weight:700;border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:2px 10px;background:var(--ground)}
+.spacer{flex:1}
+#stepno{font-size:14.4px;font-weight:700}
+.progress{height:8px;border:var(--stroke) solid var(--ink);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;background:var(--ground)}
+#pbar{height:100%;background:var(--ink);width:0;transition:width .3s}
+.main{display:flex;gap:12px;flex-wrap:wrap;align-items:stretch}
+.view3d{flex:1 1 560px;min-width:320px;border:var(--stroke) solid var(--ink);border-radius:var(--radius);position:relative;overflow:hidden;background:var(--ground);aspect-ratio:4/3;max-height:640px}
+.view3d canvas{width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+.hint{position:absolute;left:10px;bottom:8px;font-size:13.6px;color:var(--muted)}
+.viewbtn{position:absolute;right:8px;top:8px}
+.side{flex:0 1 400px;min-width:300px;display:flex;flex-direction:column;gap:12px}
+.box{border:var(--stroke) solid var(--ink);border-radius:var(--radius);background:var(--ground);overflow:hidden}
+.box canvas{width:100%;display:block}
+#c2d{aspect-ratio:4/3.1}
+#cwv{aspect-ratio:3/1.15}
+#readout{padding:8px 12px;font-size:14.4px;flex:1}
+#readout div{display:flex;gap:8px;align-items:baseline;padding:2px 0;flex-wrap:wrap}
+#readout .lab{color:var(--muted);min-width:auto}
+#readout b{font-weight:700;margin-right:10px}
+.card{margin-top:12px;border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:12px 16px;display:flex;gap:16px;flex-wrap:wrap}
+.card .txt{flex:1 1 420px}
+#stitle{font-size:19.2px;font-weight:700;margin:0 0 4px}
+#sdesc{margin:0;font-size:16px}
+#stry{margin:8px 0 0;font-size:16px;font-weight:700;display:none}
+#stry::before{content:"Try it. ";background:var(--yellow);padding:0 4px;border-radius:3px}
+#quiz{flex:1 1 300px;border-left:var(--stroke) solid var(--ink);padding-left:16px;display:none}
+#qq{font-weight:700;margin:0 0 8px}
+#qopts{display:flex;flex-direction:column;gap:6px}
+#qfb{margin:8px 0 0;display:none;font-size:14.4px}
+button{font:700 14.4px Inter,system-ui,sans-serif;background:var(--ground);border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:7px 14px;cursor:pointer;color:var(--ink);min-height:36px}
+button:hover{background:var(--panel)}
+button:disabled{color:var(--muted);border-color:var(--muted);cursor:default;background:var(--ground)}
+button.on{background:var(--ink);color:var(--ground)}
+button.opt{text-align:left;font-weight:400}
+button.opt.right{background:var(--yellow);font-weight:700}
+button.opt.wrong{border-color:var(--muted);color:var(--muted)}
+.controls{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ctl{display:none;gap:8px;align-items:center;border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:4px 10px;font-size:14.4px;font-weight:700}
+.ctl input[type=range]{accent-color:#000;width:140px}
+.grp{display:flex;gap:8px;align-items:center;font-size:14.4px;font-weight:700}
+#boatbox{flex:1 1 300px;display:none;flex-direction:column;gap:6px}
+#boat{width:100%;aspect-ratio:3/1.5;border:var(--stroke) solid var(--ink);border-radius:var(--radius)}
+#boatbox label{font-size:14.4px;font-weight:700;display:flex;gap:8px;align-items:center}
+#boatbox input{accent-color:#000;flex:1}
+.foot{margin-top:14px;font-size:13.6px;color:var(--muted)}
+@media (max-width:700px){.view3d{aspect-ratio:1/1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="hub" href="../index.html">&larr; All activities</a>
+    <h1>How a contactor works</h1>
+    <span class="chip">control power and load power</span>
+    <span class="spacer"></span>
+    <span id="stepno">Step 1</span>
+  </header>
+  <div class="progress"><div id="pbar"></div></div>
+  <div class="main">
+    <div class="view3d" style="aspect-ratio:4/3.5"><canvas id="cmech" style="cursor:default"></canvas></div>
+    <div class="side">
+      <div class="box"><canvas id="csch" style="aspect-ratio:3/1.75"></canvas></div>
+      <div class="box"><canvas id="ctrace" style="aspect-ratio:3/1.25"></canvas></div>
+      <div class="box" id="readout"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="txt"><h2 id="stitle"></h2><p id="sdesc"></p><p id="stry"></p></div>
+    <div id="quiz"><p id="qq"></p><div id="qopts"></div><p id="qfb"></p></div>
+  </div>
+  <div class="controls">
+    <div class="grp"><button id="prev">Back</button><button id="next">Next</button></div>
+    <div class="ctl" id="ctlStartstop"><button id="start">Start</button><button id="stop">Stop</button></div>
+    <div class="ctl" id="ctlSlow"><button id="slow">Slow motion</button></div>
+    <div class="ctl" id="ctlShields"><button id="shields">Shields off</button></div>
+    <div class="ctl" id="ctlSwap"><button id="swap">Swap L1 and L2</button></div>
+  </div>
+  <p class="foot">MENG 4450, Lesson 3.1. Reading: Kuphaldt, Lessons in Industrial Instrumentation v2.30, section 10.4.2, pages 730 to 732. The three-phase case is a 7.5 hp, 480 V motor at 11 A full load (NEC Table 430.250) with inrush taken as seven times that. The bench case is the Dayton 3728UP-275 at 1.3 A nameplate, with inrush estimated at six times, since it is not on the plate, and the 9.8 A rating from NEC Table 430.248 for 0.5 hp at 115 V. Pull-in and drop-out are slowed by about ten times, and the current is drawn as an RMS envelope.</p>
+</div>
+<script>
+(function(){
+'use strict';
+const TAU=Math.PI*2;
+const INK='#000000',GROUND='#FFFFFF',YEL='#FFE819',PANEL='#F4F2F2',MUTED='#7F7F7F',HAIR='#B3B3B3';
+const FONT='Inter, system-ui, -apple-system, "Segoe UI", sans-serif';
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+const MODES={
+  three:{poles:[{t:'NO'},{t:'NO'},{t:'NO'}],V:480,Irun:11,ratio:7,rating:null,name:'three-phase, 480 V'},
+  bench:{poles:[{t:'NO'},{t:'NO'},{t:'NC'},{t:'NC'}],V:115,Irun:1.3,ratio:6,rating:9.8,name:'our bench, 115 V single phase'}
+};
+const st={step:0,mode:'three',on:false,x:0,n:0,I:0,t:0,run:true,speed:1,arc:0,arcAt:null,
+  shields:true,swapped:false,trace:[],flags:{},autoT:0,seq:null};
+
+function cfg(){return MODES[st.mode];}
+function closed(){return st.x>0.86;}
+function physics(dt){
+  const k=st.on?9:15;
+  const prevClosed=closed();
+  st.x=clamp(st.x+(( st.on?1:0)-st.x)*Math.min(1,k*dt),0,1);
+  const nowClosed=closed();
+  if(prevClosed&&!nowClosed&&st.I>0.05){st.arc=1;st.arcAt=performance.now();}
+  if(st.arc>0)st.arc=Math.max(0,st.arc-dt*(st.shields?3.2:1.5));
+  const c=cfg();
+  if(nowClosed){st.n=clamp(st.n+0.85*(1-Math.pow(st.n/0.97,4))*dt,0,0.97);}
+  else{st.n=clamp(st.n-(0.55*st.n+0.12)*dt,0,1);}
+  const ILR=c.Irun*c.ratio;
+  st.I=nowClosed?(c.Irun+(ILR-c.Irun)*Math.pow(1-st.n/0.97,1.6)):(st.arc>0.25?ILR*0.10*st.arc:0);
+  st.t+=dt;
+  st.trace.push([st.t,st.I]);
+  while(st.trace.length&&st.trace[0][0]<st.t-6)st.trace.shift();
+}
+
+/* ---------- canvas helpers ---------- */
+function setup(cv,VW,VH){
+  const ctx=cv.getContext('2d');const dpr=Math.min(2,window.devicePixelRatio||1);
+  const r=cv.getBoundingClientRect();const W=Math.round(r.width),H=Math.round(r.height);
+  if(cv.width!==W*dpr){cv.width=W*dpr;cv.height=H*dpr;}
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  ctx.lineJoin='round';ctx.lineCap='round';
+  const s=Math.min(W/VW,H/VH);const ox=(W-VW*s)/2,oy=(H-VH*s)/2;
+  return {ctx,W,H,s,X:x=>ox+x*s,Y:y=>oy+y*s,L:v=>v*s};
+}
+function rect(g,x,y,w,h,fill,lw){const{ctx}=g;ctx.beginPath();ctx.rect(g.X(x),g.Y(y),g.L(w),g.L(h));if(fill!==null){ctx.fillStyle=fill||GROUND;ctx.fill();}ctx.lineWidth=lw==null?1.8:lw;ctx.strokeStyle=INK;if(lw!==0)ctx.stroke();}
+function line(g,pts,o){o=o||{};const{ctx}=g;ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(g.X(p[0]),g.Y(p[1])):ctx.moveTo(g.X(p[0]),g.Y(p[1])));
+  ctx.setLineDash((o.dash||[]).map(v=>g.L(v)));ctx.lineWidth=o.w==null?1.8:o.w;ctx.strokeStyle=o.color||INK;ctx.stroke();ctx.setLineDash([]);}
+function txt(g,x,y,s,o){o=o||{};const{ctx}=g;ctx.font=(o.weight||700)+' '+(o.size||13)+'px '+FONT;ctx.textAlign=o.align||'center';ctx.textBaseline=o.base||'middle';
+  ctx.lineWidth=5;ctx.strokeStyle=GROUND;ctx.strokeText(s,g.X(x),g.Y(y));ctx.fillStyle=o.color||INK;ctx.fillText(s,g.X(x),g.Y(y));}
+function spring(g,x,y0,y1,n,w){const pts=[[x,y0]];for(let i=0;i<n;i++){pts.push([x+(i%2?-w:w),y0+(y1-y0)*(i+0.5)/n]);}pts.push([x,y1]);line(g,pts,{w:1.6});}
+function zig(g,x0,y0,x1,y1,amp,seed){const pts=[];const N=7;for(let i=0;i<=N;i++){const t=i/N;const px=x0+(x1-x0)*t,py=y0+(y1-y0)*t;
+  const off=(i===0||i===N)?0:(Math.sin(seed*13.7+i*2.3)*amp);pts.push([px+off,py]);}return pts;}
+
+/* ---------- mechanism ---------- */
+function drawMech(cv){
+  const g=setup(cv,100,94);const c=cfg();const P=c.poles.length;
+  const dx=st.x*6;
+  const xs=P===3?[26,50,74]:[22,41,59,78];
+  const po=P===3?6:5, pw=P===3?7:6, bw=P===3?19:15, sh=P===3?15:12;
+  rect(g,6,4,88,80,GROUND,2);
+  // core and coil
+  rect(g,34,8,32,4,PANEL);rect(g,34,8,5,14,PANEL);rect(g,61,8,5,14,PANEL);rect(g,47,8,6,14,PANEL);
+  for(let i=0;i<5;i++){const y=11+i*2.1;line(g,[[43.5,y],[47,y]],{w:2.6,color:st.on?INK:MUTED});line(g,[[53,y],[56.5,y]],{w:2.6,color:st.on?INK:MUTED});}
+  txt(g,50,6,'coil, on A1 and A2',{size:12});
+  rect(g,24,18,5,4,PANEL);rect(g,71,18,5,4,PANEL);
+  // armature
+  const ay=26-dx;
+  rect(g,26,ay,48,5,PANEL);
+  txt(g,50,ay+2.5,'armature',{size:12});
+  const gap=ay-22;
+  if(gap>0.5){line(g,[[80,22],[80,ay]],{w:1.1,dash:[1.1,1.1]});line(g,[[78,22],[82,22]],{w:1.1});line(g,[[78,ay],[82,ay]],{w:1.1});txt(g,83,(22+ay)/2,'air gap',{size:11,weight:400,align:'left'});}
+  spring(g,26.5,22,ay,6,1.5);spring(g,73.5,22,ay,6,1.5);
+  txt(g,21,24,'spring',{size:11,weight:400,align:'right'});
+  // carrier
+  rect(g,13,ay+5,3,(62-dx)-(ay+5),GROUND);
+  rect(g,84,ay+5,3,(62-dx)-(ay+5),GROUND);
+  if(st.shields){
+    const fins=[];for(let i=1;i<P;i++)fins.push((xs[i-1]+xs[i])/2);
+    for(const f of fins)rect(g,f-1.2,42,2.4,14,PANEL);
+    txt(g,50,37,'arc shields stand between the poles',{size:11,weight:400});
+  }
+  rect(g,12,62-dx,76,4,PANEL);
+  for(let i=0;i<P;i++){
+    const X=xs[i],pt=c.poles[i].t,live=poleLive(i);
+    if(pt==='NO'){
+      for(const s of [-po,po]){rect(g,X+s-pw/2,48,pw,4,PANEL);line(g,[[X+s,48],[X+s,44]],{w:1.6});dotAt(g,X+s,44);}
+      const bTop=58-dx;
+      rect(g,X-bw/2,bTop,bw,4,live?YEL:GROUND);
+      if(st.arc>0.02&&bTop>52.05){
+        const amp=st.shields?0.7:1.7;
+        for(const s of [-po,po]){line(g,zig(g,X+s,52,X+s,bTop,amp,st.t*8+i+s),{w:2+3*st.arc,color:YEL});
+          line(g,zig(g,X+s,52,X+s,bTop,amp*0.55,st.t*8+i+s+7),{w:1.2,color:INK});}
+      }
+      txt(g,X,41,'NO '+(i+1),{size:11,weight:400});
+    }else{
+      for(const s of [-po,po]){rect(g,X+s-pw/2,70,pw,4,PANEL);line(g,[[X+s,74],[X+s,78]],{w:1.6});dotAt(g,X+s,78);}
+      rect(g,X-bw/2,66-dx,bw,4,live?YEL:GROUND);
+      txt(g,X,81.5,'NC '+(i+1),{size:11,weight:400});
+    }
+  }
+  txt(g,19,64-dx,'carrier',{size:12});
+  txt(g,50,90,'the pads are fixed. every bridge rides on the one carrier.',{size:12,weight:400});
+}
+function poleLive(i){
+  const p=cfg().poles[i];const cl=closed();
+  return p.t==='NO'?cl:!cl;
+}
+function dotAt(g,x,y){const c=g.ctx;c.beginPath();c.arc(g.X(x),g.Y(y),2.4,0,TAU);c.fillStyle=INK;c.fill();}
+
+/* ---------- schematic ---------- */
+function drawSch(cv){
+  const VH=st.mode==='three'?62:78;
+  const g=setup(cv,100,VH);const c=cfg();const cl=closed();
+  const dot=(x,y)=>dotAt(g,x,y);
+  const contact=(x,y,made,typ)=>{
+    line(g,[[x-2,y-4],[x-2,y+4]],{w:2.2});line(g,[[x+2,y-4],[x+2,y+4]],{w:2.2});
+    if(typ==='NC')line(g,[[x-4.6,y+4.6],[x+4.6,y-2.6]],{w:1.5});
+    if(made){line(g,[[x-2,y],[x+2,y]],{w:3.4,color:YEL});line(g,[[x-2,y],[x+2,y]],{w:1.1,color:INK});}
+  };
+  const fuse=(x,y)=>rect(g,x-4,y-2,8,4,GROUND);
+  const lw=v=>v?3.4:1.6, lc=v=>v?YEL:INK;
+  const wire=(pts,live)=>{if(live){line(g,pts,{w:4,color:YEL});line(g,pts,{w:1.1,color:INK});}else line(g,pts,{w:1.6});};
+  const coilY=st.mode==='three'?48:64;
+  const bx0=38,bx1=50;
+  if(st.mode==='three'){
+    const nm=st.swapped?['L2','L1','L3']:['L1','L2','L3'];
+    const ys=[9,19,29];
+    for(let i=0;i<3;i++){const y=ys[i];
+      txt(g,5,y,nm[i],{size:12});
+      line(g,[[9,y],[17,y]],{w:1.8});fuse(21,y);line(g,[[25,y],[42,y]],{w:1.8});
+      contact(44,y,cl,'NO');
+      txt(g,57,y-4,'T'+(i+1),{size:11,weight:400});
+      const my=[16.3,19,21.7][i];
+      wire([[46,y],[62,y],[62,my],[70.6,my]],cl);
+    }
+    txt(g,21,4.5,'fuses',{size:11,weight:400});
+    const gg=g.ctx;gg.beginPath();gg.arc(g.X(78),g.Y(19),g.L(8),0,TAU);gg.fillStyle=GROUND;gg.fill();gg.lineWidth=2;gg.strokeStyle=INK;gg.stroke();
+    txt(g,78,19,'M',{size:16});
+    if(st.n>0.05){const d=st.swapped?-1:1;
+      gg.beginPath();gg.arc(g.X(78),g.Y(19),g.L(11.5),d>0?-2.0:-1.15,d>0?-1.15:-2.0);gg.lineWidth=2.2;gg.strokeStyle=INK;gg.stroke();
+      const a=d>0?-1.15:-2.0,px=g.X(78)+g.L(11.5)*Math.cos(a),py=g.Y(19)+g.L(11.5)*Math.sin(a);
+      gg.beginPath();gg.arc(px,py,3.2,0,TAU);gg.fillStyle=INK;gg.fill();}
+  }else{
+    txt(g,5,9,'L1',{size:12});
+    line(g,[[9,9],[15,9]],{w:1.8});fuse(19,9);line(g,[[23,9],[42,9]],{w:1.8});
+    contact(44,9,cl,'NO');
+    wire([[46,9],[68,9],[68,9.5]],cl);
+    const gg=g.ctx;gg.beginPath();gg.arc(g.X(68),g.Y(14),g.L(4.5),0,TAU);gg.fillStyle=GROUND;gg.fill();gg.lineWidth=2;gg.strokeStyle=INK;gg.stroke();
+    txt(g,68,14,'M',{size:13});
+    txt(g,5,22,'N',{size:12});line(g,[[9,22],[88,22]],{w:1.8});line(g,[[68,18.5],[68,22]],{w:1.8});
+    line(g,[[31,9],[31,50]],{w:1.8});dot(31,9);
+    line(g,[[88,22],[88,50]],{w:1.8});dot(88,22);
+    line(g,[[31,36],[42,36]],{w:1.8});contact(44,36,cl,'NO');
+    wire([[46,36],[60,36]],cl);lamp(g,64,36,cl,'RUN');line(g,[[68,36],[88,36]],{w:1.8});dot(88,36);
+    line(g,[[31,50],[42,50]],{w:1.8});contact(44,50,!cl,'NC');
+    wire([[46,50],[60,50]],!cl);lamp(g,64,50,!cl,'STOP');line(g,[[68,50],[88,50]],{w:1.8});dot(88,50);
+    txt(g,19,4.5,'fuse',{size:11,weight:400});
+    txt(g,76,57,'the fourth pole is spare',{size:11,weight:400});
+  }
+  // coil loop
+  const cy=coilY;
+  const gg2=g.ctx;
+  line(g,[[bx0,cy],[40,cy]],{w:st.on?2.6:1.6,color:st.on?INK:MUTED});
+  gg2.beginPath();gg2.arc(g.X(44),g.Y(cy),g.L(4),0,TAU);gg2.fillStyle=GROUND;gg2.fill();gg2.lineWidth=st.on?2.6:1.8;gg2.strokeStyle=st.on?INK:MUTED;gg2.stroke();
+  line(g,[[48,cy],[bx1,cy]],{w:st.on?2.6:1.6,color:st.on?INK:MUTED});
+  txt(g,38,cy-4,'A1',{size:11,weight:400});txt(g,50,cy-4,'A2',{size:11,weight:400});
+  dot(bx0,cy);dot(bx1,cy);
+  const lp=[[bx0,cy],[26,cy]],rp=[[bx1,cy],[76,cy],[76,cy+6],[14,cy+6],[14,cy]];
+  line(g,lp,{w:st.on?2.6:1.6,color:st.on?INK:MUTED});
+  line(g,rp,{w:st.on?2.6:1.6,color:st.on?INK:MUTED});
+  line(g,[[14,cy],[18,cy]],{w:st.on?2.6:1.6,color:st.on?INK:MUTED});
+  dot(18,cy);dot(26,cy);
+  line(g,[[18,cy],st.on?[26,cy]:[25,cy-4.5]],{w:2.4});
+  txt(g,22,cy-7,'start',{size:11,weight:400});
+  txt(g,45,cy+9,st.mode==='three'?'120 V control power':'24 V DC control power',{size:11,weight:400});
+  // dotted box
+  line(g,[[bx0-3,3],[bx1+3,3],[bx1+3,cy+3],[bx0-3,cy+3],[bx0-3,3]],{w:1.1,dash:[1.4,1.4],color:MUTED});
+  txt(g,44,1.5,'contactor',{size:11,weight:400,color:MUTED});
+}
+function lamp(g,x,y,lit,label){
+  const c=g.ctx;c.beginPath();c.arc(g.X(x),g.Y(y),g.L(3.6),0,TAU);c.fillStyle=lit?YEL:GROUND;c.fill();c.lineWidth=2;c.strokeStyle=INK;c.stroke();
+  line(g,[[x-2.5,y-2.5],[x+2.5,y+2.5]],{w:1.3});line(g,[[x+2.5,y-2.5],[x-2.5,y+2.5]],{w:1.3});
+  txt(g,x,y-7,label,{size:11});
+}
+
+/* ---------- trace ---------- */
+function drawTrace(cv){
+  const{ctx,W,H}=setup(cv,100,40);
+  const c=cfg();const L=14,R=W-14,T=26,B=H-22;
+  const Imax=Math.max(c.Irun*c.ratio,(c.rating&&st.flags.rating)?c.rating:0)*1.15;
+  ctx.font='400 12px '+FONT;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillStyle=INK;
+  ctx.fillText('current in the load circuit, RMS amps',10,11);
+  ctx.strokeStyle=HAIR;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(L,B);ctx.lineTo(R,B);ctx.stroke();
+  const yOf=I=>B-(B-T)*clamp(I/Imax,0,1);
+  const gl=(I,lab,bold)=>{const y=yOf(I);ctx.strokeStyle=bold?INK:HAIR;ctx.setLineDash(bold?[6,4]:[4,4]);
+    ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(R,y);ctx.stroke();ctx.setLineDash([]);
+    ctx.font=(bold?'700 ':'400 ')+'11px '+FONT;ctx.textAlign='left';ctx.lineWidth=4;ctx.strokeStyle=GROUND;
+    ctx.strokeText(lab,L+4,y-7);ctx.fillStyle=bold?INK:MUTED;ctx.fillText(lab,L+4,y-7);ctx.lineWidth=1;};
+  gl(c.Irun*c.ratio,(c.Irun*c.ratio).toFixed(0)+' A inrush');
+  if(c.rating&&st.flags.rating)gl(c.rating,c.rating+' A contactor rating',true);
+  gl(c.Irun,c.Irun.toFixed(1)+' A running');
+  if(st.trace.length>1){
+    ctx.beginPath();let started=false;
+    for(const [t,I] of st.trace){const x=L+(R-L)*clamp((t-(st.t-6))/6,0,1);const y=yOf(I);started?ctx.lineTo(x,y):(ctx.moveTo(x,y),started=true);}
+    ctx.strokeStyle=INK;ctx.lineWidth=2.6;ctx.stroke();
+  }
+  ctx.fillStyle=MUTED;ctx.textAlign='center';ctx.font='400 11px '+FONT;ctx.fillText('time →',(L+R)/2,H-8);
+}
+
+/* ---------- steps ---------- */
+const STEPS=[
+ {t:'Two circuits, one device',d:'The coil circuit is on the left, at 120 volts. The load circuit runs across the top, at 480 volts. Look for a wire joining them. There is none. They meet mechanically, inside the contactor, and nowhere else.',try:'Trace the coil circuit with your finger, then the load circuit. They never touch.',mode:'three',on:false},
+ {t:'Energize the coil',d:'Press Start. Current in the coil makes a magnetic field, and the field pulls the armature towards the core against the spring. The air gap closes.',try:'Press Start and Stop a few times. Watch the air gap and the spring.',mode:'three',ctl:['startstop']},
+ {t:'Every pole closes at once',d:'The bridges all ride on one carrier, so they land on their pads at the same instant. One small coil closes three large contacts together.',try:'Press Slow, then Start, and watch all three bridges move as one piece.',mode:'three',ctl:['startstop','slow']},
+ {t:'The motor starts',d:'The load circuit is complete and the motor runs up to speed. The yellow conductors are the ones now carrying load current.',try:'Start it and watch the current trace on the right.',mode:'three',ctl:['startstop']},
+ {t:'Inrush',d:'At the instant of closing the rotor is standing still, so the motor looks like a shorted transformer and draws several times its running current. The current falls only as the rotor comes up to speed.',try:'Start it and watch the spike, then answer the question.',mode:'three',ctl:['startstop'],
+  quiz:{q:'Which current decides how big the contactor has to be?',o:['The running current, 11 A','The inrush current, about 77 A'],c:1,
+  f:['The contacts have to make and break the inrush, thousands of times, without welding or eroding. Running current only sets the continuous rating.','Right. Making and breaking the surge is the hard duty, and it is why a contactor is more than a big relay.']}},
+ {t:'Stop, and the arc',d:'De-energize the coil and the spring snaps every pole open. The current does not stop the moment metal parts. It keeps flowing through the ionized air for a moment. That is the arc.',try:'Start it, let it run, then press Stop and watch the gap.',mode:'three',ctl:['startstop','slow']},
+ {t:'Why the shields, and why silver',d:'The shields confine and cool the arc so it goes out quickly instead of reaching across to the next pole or out of the case. The pads are silver alloy because they have to survive that arc thousands of times. Copper would erode and weld.',try:'Turn the shields off, then stop the motor and compare the arc.',mode:'three',ctl:['startstop','shields'],flags:{}},
+ {t:'Our bench contactor',d:'The Allen-Bradley 100-C09E. Coil is 24 volts DC on A1 and A2. Four poles, and they are not all alike. Two are normally open and two are normally closed.',try:'Press Start and watch the RUN and STOP lamps swap. The NC poles do the opposite of the NO poles.',mode:'bench',ctl:['startstop']},
+ {t:'Our load, against the rating',d:'The Dayton gearmotor draws 1.3 amps running. UL rates this contactor at half a horsepower on 115 volts single phase, which is 9.8 amps by NEC Table 430.248. So it is about 7.5 times oversized.',try:'Start it and compare the trace to the rating line. Is oversizing good or bad? That is Tuesday.',mode:'bench',ctl:['startstop'],flags:{rating:true}},
+ {t:'Reversing',d:'Swap any two of the three supply leads and the phase sequence reverses, so the rotating field turns the other way and the motor follows. No change inside the motor, and no second winding.',try:'Press Swap L1 and L2 while it runs, and watch the arrow on the motor.',mode:'three',ctl:['startstop','swap']},
+ {t:'Control power and load power',d:'Something small decides, something large does. A pushbutton, a relay, or a PLC output drives the coil, and the coil switches a current that would destroy the pushbutton. Every session from here is a variation on this.',try:'Press Replay to go through it again.',mode:'three',ctl:['startstop','slow','shields']},
+];
+let answered=false;
+function apply(i){
+  st.step=i;const S=STEPS[i];answered=false;
+  if(S.mode!==st.mode){st.mode=S.mode;st.trace=[];st.on=false;st.x=0;st.n=0;st.swapped=false;}
+  st.flags=S.flags||{};
+  if(S.on===false){st.on=false;}
+  $('stitle').textContent=S.t;$('sdesc').textContent=S.d;
+  const tr=$('stry');tr.textContent=S.try||'';tr.style.display=S.try?'block':'none';
+  $('stepno').textContent='Step '+(i+1)+' of '+STEPS.length;
+  $('pbar').style.width=((i+1)/STEPS.length*100)+'%';
+  $('prev').disabled=i===0;$('next').textContent=i===STEPS.length-1?'Replay':'Next';
+  for(const id of ['ctlStartstop','ctlSlow','ctlShields','ctlSwap'])$(id).style.display='none';
+  for(const c of (S.ctl||[]))$('ctl'+c.charAt(0).toUpperCase()+c.slice(1)).style.display='flex';
+  const qz=$('quiz');
+  if(S.quiz){qz.style.display='block';$('qq').textContent=S.quiz.q;const ob=$('qopts');ob.innerHTML='';
+    S.quiz.o.forEach((o,j)=>{const b=document.createElement('button');b.textContent=o;b.className='opt';
+      b.onclick=()=>{if(answered)return;answered=true;const ok=j===S.quiz.c;b.classList.add(ok?'right':'wrong');
+        const fb=$('qfb');fb.textContent=S.quiz.f[j];fb.style.display='block';if(!ok)ob.children[S.quiz.c].classList.add('right');};
+      ob.appendChild(b);});
+    $('qfb').style.display='none';}else qz.style.display='none';
+  readout();
+}
+function readout(){
+  const c=cfg();
+  let h='<div><span class="lab">circuit</span><b>'+c.name+'</b></div>';
+  h+='<div><span class="lab">coil</span><b>'+(st.on?'energized':'off')+'</b><span class="lab">contacts</span><b>'+(closed()?'closed':(st.arc>0.02?'open, still arcing':'open'))+'</b></div>';
+  h+='<div><span class="lab">load current</span><b>'+st.I.toFixed(1)+' A</b><span class="lab">motor</span><b>'+Math.round(st.n/0.97*100)+' % of speed</b></div>';
+  if(st.mode==='bench')h+='<div><span class="lab">inrush shown is an estimate. it is not on the nameplate.</span></div>';
+  $('readout').innerHTML=h;
+}
+function bind(){
+  $('prev').onclick=()=>{if(st.step>0)apply(st.step-1);};
+  $('next').onclick=()=>{apply(st.step<STEPS.length-1?st.step+1:0);};
+  $('start').onclick=()=>{st.on=true;};
+  $('stop').onclick=()=>{st.on=false;};
+  $('slow').onclick=()=>{st.speed=st.speed===1?0.22:1;$('slow').classList.toggle('on',st.speed!==1);$('slow').textContent=st.speed===1?'Slow motion':'Normal speed';};
+  $('shields').onclick=()=>{st.shields=!st.shields;$('shields').classList.toggle('on',!st.shields);$('shields').textContent=st.shields?'Shields off':'Shields on';};
+  $('swap').onclick=()=>{st.swapped=!st.swapped;};
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')$('next').click();else if(e.key==='ArrowLeft')$('prev').click();});
+}
+function start(){
+  bind();apply(0);let last=performance.now();
+  function loop(now){const dt=Math.min(0.05,(now-last)/1000)*st.speed;last=now;
+    physics(dt);drawMech($('cmech'));drawSch($('csch'));drawTrace($('ctrace'));readout();
+    requestAnimationFrame(loop);}
+  requestAnimationFrame(loop);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+
+</script>
+</body>
+</html>
