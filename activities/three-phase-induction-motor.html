@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three-phase induction motor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
+<style>
+:root{--ink:#000;--ground:#fff;--panel:#F4F2F2;--rule:#D9D9D9;--muted:#7F7F7F;--yellow:#FFE819;--stroke:1.92px;--radius:5.6px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.3}
+.wrap{max-width:1240px;margin:0 auto;padding:16px}
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+header h1{font-size:19.2px;font-weight:700;margin:0}
+.chip{font-size:14.4px;font-weight:700;border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:2px 10px;background:var(--ground)}
+.spacer{flex:1}
+#stepno{font-size:14.4px;font-weight:700}
+.progress{height:8px;border:var(--stroke) solid var(--ink);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;background:var(--ground)}
+#pbar{height:100%;background:var(--ink);width:0;transition:width .3s}
+.main{display:flex;gap:12px;flex-wrap:wrap;align-items:stretch}
+.view3d{flex:1 1 560px;min-width:320px;border:var(--stroke) solid var(--ink);border-radius:var(--radius);position:relative;overflow:hidden;background:var(--ground);aspect-ratio:4/3;max-height:640px}
+.view3d canvas{width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+.hint{position:absolute;left:10px;bottom:8px;font-size:13.6px;color:var(--muted)}
+.viewbtn{position:absolute;right:8px;top:8px}
+.side{flex:0 1 400px;min-width:300px;display:flex;flex-direction:column;gap:12px}
+.box{border:var(--stroke) solid var(--ink);border-radius:var(--radius);background:var(--ground);overflow:hidden}
+.box canvas{width:100%;display:block}
+#c2d{aspect-ratio:4/3.1}
+#cwv{aspect-ratio:3/1.15}
+#readout{padding:8px 12px;font-size:14.4px;flex:1}
+#readout div{display:flex;gap:8px;align-items:baseline;padding:2px 0;flex-wrap:wrap}
+#readout .lab{color:var(--muted);min-width:auto}
+#readout b{font-weight:700;margin-right:10px}
+.card{margin-top:12px;border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:12px 16px;display:flex;gap:16px;flex-wrap:wrap}
+.card .txt{flex:1 1 420px}
+#stitle{font-size:19.2px;font-weight:700;margin:0 0 4px}
+#sdesc{margin:0;font-size:16px}
+#stry{margin:8px 0 0;font-size:16px;font-weight:700;display:none}
+#stry::before{content:"Try it. ";background:var(--yellow);padding:0 4px;border-radius:3px}
+#quiz{flex:1 1 300px;border-left:var(--stroke) solid var(--ink);padding-left:16px;display:none}
+#qq{font-weight:700;margin:0 0 8px}
+#qopts{display:flex;flex-direction:column;gap:6px}
+#qfb{margin:8px 0 0;display:none;font-size:14.4px}
+button{font:700 14.4px Inter,system-ui,sans-serif;background:var(--ground);border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:7px 14px;cursor:pointer;color:var(--ink);min-height:36px}
+button:hover{background:var(--panel)}
+button:disabled{color:var(--muted);border-color:var(--muted);cursor:default;background:var(--ground)}
+button.on{background:var(--ink);color:var(--ground)}
+button.opt{text-align:left;font-weight:400}
+button.opt.right{background:var(--yellow);font-weight:700}
+button.opt.wrong{border-color:var(--muted);color:var(--muted)}
+.controls{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ctl{display:none;gap:8px;align-items:center;border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:4px 10px;font-size:14.4px;font-weight:700}
+.ctl input[type=range]{accent-color:#000;width:140px}
+.grp{display:flex;gap:8px;align-items:center;font-size:14.4px;font-weight:700}
+#boatbox{flex:1 1 300px;display:none;flex-direction:column;gap:6px}
+#boat{width:100%;aspect-ratio:3/1.5;border:var(--stroke) solid var(--ink);border-radius:var(--radius)}
+#boatbox label{font-size:14.4px;font-weight:700;display:flex;gap:8px;align-items:center}
+#boatbox input{accent-color:#000;flex:1}
+.foot{margin-top:14px;font-size:13.6px;color:var(--muted)}
+@media (max-width:700px){.view3d{aspect-ratio:1/1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Three-phase induction motor</h1>
+    <span class="chip">slowed down about 190×</span>
+    <span class="spacer"></span>
+    <span id="stepno">Step 1</span>
+  </header>
+  <div class="progress"><div id="pbar"></div></div>
+  <div class="main">
+    <div class="view3d">
+      <canvas id="c3d"></canvas>
+      <div class="hint">drag to turn the view. double click to reset.</div>
+      <button class="viewbtn" id="resetView">Reset view</button>
+    </div>
+    <div class="side">
+      <div class="box"><canvas id="c2d"></canvas></div>
+      <div class="box" id="wavebox"><canvas id="cwv"></canvas></div>
+      <div class="box" id="readout"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="txt">
+      <h2 id="stitle"></h2>
+      <p id="sdesc"></p>
+      <p id="stry"></p>
+    </div>
+    <div id="quiz">
+      <p id="qq"></p>
+      <div id="qopts"></div>
+      <p id="qfb"></p>
+    </div>
+    <div id="boatbox">
+      <canvas id="boat"></canvas>
+      <label><span>stopped</span><input type="range" id="boatSlider" min="0" max="100" value="80"><span>wind speed</span></label>
+    </div>
+  </div>
+  <div class="controls">
+    <div class="grp"><button id="prev">Back</button><button id="next">Next</button></div>
+    <div class="grp"><button id="play">Pause</button><button id="frame">Next frame</button></div>
+    <div class="ctl" style="display:flex"><span>speed</span><input type="range" id="speed" min="0.2" max="2" step="0.1" value="1"><span id="speedv">1.0×</span></div>
+    <div class="ctl" id="ctlCurrent"><span>current in coil A</span><input type="range" id="curSlider" min="-100" max="100" value="70"><span id="curv">0.70</span></div>
+    <div class="ctl" id="ctlFrame"><span>Next frame moves the clock by 1/12 of a cycle</span></div>
+    <div class="ctl" id="ctlFreq"><span>supply</span><button id="f60" class="on">60 Hz</button><button id="f50">50 Hz</button></div>
+    <div class="ctl" id="ctlLoad"><span>load on the shaft</span><input type="range" id="loadSlider" min="2" max="90" value="30"></div>
+    <div class="ctl" id="ctlSpin"><button id="spinL">Spin it left</button><button id="spinR">Spin it right</button></div>
+  </div>
+  <p class="foot">MENG 4450, Lesson 3.1. Reading: Kuphaldt, Lessons in Industrial Instrumentation v2.30, section 10.4.1, pages 720 to 725. The animation runs about 190 times slower than a real 60 Hz motor. Bar currents are drawn without the rotor time lag, and speed follows a simple torque model, so the numbers are for understanding, not for design.</p>
+</div>
+<script>
+(function(){
+'use strict';
+const CFG = {"geometry": "slots", "bars": 14, "windings": [{"name": "A", "axis": 0, "beta": 0, "color": 0, "slot": 90}, {"name": "B", "axis": 120, "beta": 120, "color": 1, "slot": 210}, {"name": "C", "axis": 240, "beta": 240, "color": 2, "slot": 330}], "steps": [{"title": "Meet the parts", "text": "The outer ring is the stator. It is bolted down and never moves. The drum inside is the rotor. It is a cage of metal bars and it is free to turn.", "tryit": "Drag the picture to look all round it. Try to find a wire going to the rotor. There is none.", "visible": [], "k": [0, 0, 0], "flags": {"labels": "parts"}, "hideWave": true}, {"title": "One coil", "text": "A and A\u2032 are the two sides of one loop of wire. The wire runs down slot A, round the back of the ring, and back up slot A\u2032.", "tryit": "Follow the blue loop with your eye. It is one wire.", "visible": [0], "k": [0, 0, 0], "flags": {}, "hideWave": true}, {"title": "A current makes a field", "text": "Push current round the loop and a magnetic field appears across the middle. The arrow is at right angles to the loop. More current, longer arrow. Reverse the current and the arrow flips.", "tryit": "Drag the current slider below. Watch the dashes in the wire and the yellow arrow.", "visible": [0], "k": [1, 0, 0], "manual": true, "run": false, "flags": {"showField": true}, "controls": ["current"], "hideWave": true}, {"title": "AC current swings back and forth", "text": "Now the current is AC. It rises, falls, reverses, and rises again, 60 times every second. The field does the same. It grows, dies, and flips. It only ever points along one line.", "tryit": "Watch the arrow for a few cycles. Does it ever turn round? No. It only swings.", "visible": [0], "k": [1, 0, 0], "flags": {"showField": true}}, {"title": "Add two more coils", "text": "Coil B sits one third of the way round the ring. Coil C sits another third round. Each coil makes its own arrow, at right angles to itself, so the three arrows point in three different directions.", "tryit": "Find B and B\u2032, then C and C\u2032. Each pair is one loop.", "visible": [0, 1, 2], "k": [0, 0, 0], "flags": {}, "hideWave": true}, {"title": "Three currents, out of step", "text": "All three currents are the same size, but B is one third of a cycle behind A, and C is one third behind B. So the three arrows never peak at the same moment.", "tryit": "Look at the graph. When the blue curve is at its top, where are the other two?", "visible": [0, 1, 2], "k": [1, 1, 1], "flags": {"showComp": true}}, {"title": "Add the arrows. The field turns.", "text": "Add the three coloured arrows together and you get the yellow one. It keeps the same length and it goes round and round. The coils are bolted down. Only the pattern moves, like the lights on a marquee sign.", "tryit": "Press Pause, then press Next frame twelve times. That is one full cycle and one full turn.", "visible": [0, 1, 2], "k": [1, 1, 1], "flags": {"showComp": true, "showField": true}, "controls": ["frame"]}, {"title": "How fast does it turn?", "text": "One cycle of current gives one turn of the field. At 60 cycles a second that is 3600 turns a minute. This is called the synchronous speed, n\u209b. Nothing about the motor sets it except the number of poles.", "tryit": "Switch the supply to 50 Hz. The field slows down and n\u209b becomes 3000.", "visible": [0, 1, 2], "k": [1, 1, 1], "flags": {"showField": true}, "controls": ["freq"]}, {"title": "The moving field cuts the bars", "text": "Hold the rotor still. The field sweeps across the bars and pushes current through them. There is no wire and no brush. The moving field alone does it. This is induction.", "tryit": "Look inside the bars. The dashes show current. Bars near the arrow carry the most.", "visible": [0, 1, 2], "k": [1, 1, 1], "flags": {"showField": true, "showBars": true}}, {"title": "A current in a field gets pushed", "text": "Each bar now carries current and sits in a magnetic field, so it feels a sideways push. Look carefully at the direction of every push.", "tryit": "Answer the question on the right before you press Next.", "visible": [0, 1, 2], "k": [1, 1, 1], "flags": {"showField": true, "showBars": true, "showForces": true}, "quiz": {"q": "Which way will the rotor be dragged?", "options": ["The same way the field turns", "The opposite way to the field", "It will not move. The pushes cancel."], "correct": 0, "feedback": ["Yes. Every push points the way the field is moving. The rotor is dragged after the field.", "Look again. Every push points the way the field is moving, so the rotor follows it.", "The pushes do not cancel here. They all point the same way round, after the field."]}}, {"title": "Let go", "text": "Release the rotor. The pushes drag it round after the field. Watch the rotor speed climb on the right.", "tryit": "Watch the bar currents shrink as the rotor speeds up. The faster it goes, the less the field cuts the bars.", "visible": [0, 1, 2], "k": [1, 1, 1], "locked": false, "resetRotor": true, "sm": 0.2, "load": 0.3, "flags": {"showField": true, "showBars": true, "showForces": true, "showSpeed": true}}, {"title": "Can it catch up?", "text": "Think about a sailboat running with the wind. If the boat ever reached wind speed, the sail would go slack and there would be nothing to push it. The rotor is the boat and the field is the wind.", "tryit": "Slide the boat up to wind speed and watch the sail. Then answer the question.", "visible": [0, 1, 2], "k": [1, 1, 1], "locked": false, "sm": 0.2, "load": 0.3, "boat": true, "flags": {"showField": true, "showBars": true, "showForces": true, "showSpeed": true}, "quiz": {"q": "Can the rotor ever reach the field speed, 3600 rev/min?", "options": ["Yes, if you wait long enough", "No. Never, while it is driving a load"], "correct": 1, "feedback": ["It cannot. At field speed no bar is being cut, so no current flows and there is no push. It falls back at once.", "Right. At field speed no bar is being cut, so no current and no push. It always runs a little slower. That gap is called slip."]}}, {"title": "Load it", "text": "Put a load on the shaft. The rotor slows a little, the field cuts the bars faster, more current flows, and the push grows to match the load. The motor asks for more only when you ask it to do more.", "tryit": "Drag the load slider. Watch the slip and the bar currents grow together.", "visible": [0, 1, 2], "k": [1, 1, 1], "locked": false, "sm": 0.2, "load": 0.3, "controls": ["load"], "flags": {"showField": true, "showBars": true, "showForces": true, "showSpeed": true}}, {"title": "That is the whole motor", "text": "Three currents out of step make a turning field. The turning field induces current in the cage. The current gets pushed round after the field. It never catches up, and the small gap is slip.", "tryit": "Press Replay to go through it again, or drag the view around and just watch it run.", "visible": [0, 1, 2], "k": [1, 1, 1], "locked": false, "sm": 0.2, "load": 0.3, "controls": ["load"], "flags": {"showField": true, "showBars": true, "showForces": true, "showSpeed": true}}]};
+const TAU=Math.PI*2, D2R=Math.PI/180;
+const INK='#000000', GROUND='#FFFFFF', YEL='#FFE819', PANEL='#F4F2F2', MUTED='#7F7F7F', HAIR='#B3B3B3', RULE='#D9D9D9';
+const SERIES=['#0072B2','#E69F00','#009E73'];
+const FONT='Inter, system-ui, -apple-system, "Segoe UI", sans-serif';
+const FSIM=0.32;           // visual electrical frequency, Hz
+const NB=CFG.bars||14;
+
+const vsub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]];
+const vadd=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]];
+const vmul=(a,s)=>[a[0]*s,a[1]*s,a[2]*s];
+const vcross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const vdot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+const vlen=a=>Math.hypot(a[0],a[1],a[2]);
+const vnorm=a=>{const l=vlen(a)||1;return [a[0]/l,a[1]/l,a[2]/l];};
+const rotz=(p,ang)=>{const c=Math.cos(ang),s=Math.sin(ang);return [p[0]*c-p[1]*s,p[0]*s+p[1]*c,p[2]];};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const $=id=>document.getElementById(id);
+
+/* ---------------- 3D renderer: white faces, black edges, painter's sort ---------------- */
+function Renderer(canvas){
+  const ctx=canvas.getContext('2d');
+  const cam={yaw:0.62,pitch:0.30,dist:9.5,f:600};
+  let W=1,H=1,dpr=1,prims=[];
+  function resize(){
+    dpr=Math.min(2,window.devicePixelRatio||1);
+    const r=canvas.getBoundingClientRect();
+    W=Math.max(1,Math.round(r.width));H=Math.max(1,Math.round(r.height));
+    canvas.width=W*dpr;canvas.height=H*dpr;
+    cam.f=Math.min(W*1.15,H*1.55);
+  }
+  function xf(p){
+    const cy=Math.cos(cam.yaw),sy=Math.sin(cam.yaw);
+    const x=p[0]*cy+p[2]*sy, z=-p[0]*sy+p[2]*cy, y=p[1];
+    const cp=Math.cos(cam.pitch),sp=Math.sin(cam.pitch);
+    return [x, y*cp-z*sp, y*sp+z*cp];
+  }
+  function proj(q){const d=cam.dist-q[2];const s=cam.f/d;return [W/2+q[0]*s, H/2+18-q[1]*s, d];}
+  function face(pts,o){
+    o=o||{};
+    const vs=pts.map(xf);
+    let n=vcross(vsub(vs[1],vs[0]),vsub(vs[2],vs[0]));
+    if(o.hint){const h=xf(o.hint);if(vdot(n,h)<0)n=[-n[0],-n[1],-n[2]];}
+    let c=[0,0,0];for(const p of vs)c=vadd(c,p);c=vmul(c,1/vs.length);
+    const toCam=[-c[0],-c[1],cam.dist-c[2]];
+    if(o.cull!==false && vdot(n,toCam)<=0) return;
+    const ps=vs.map(proj);
+    let depth=0;for(const p of ps)depth+=p[2];depth=depth/ps.length-(o.bias||0);
+    prims.push({k:'poly',ps,depth,fill:o.fill||GROUND,stroke:o.stroke||o.fill||GROUND,lw:o.lw||0.8,dash:o.dash||null});
+  }
+  function segV(qa,qb,o){
+    o=o||{};const pa=proj(qa),pb=proj(qb);
+    prims.push({k:'seg',a:pa,b:pb,depth:(pa[2]+pb[2])/2-(o.bias||0.01),w:o.w||2,color:o.color||INK,dash:o.dash||null,off:o.off||0,cap:o.cap||'round'});
+  }
+  function polyline(pts,o){
+    o=o||{};
+    const ps=pts.map(p=>proj(xf(p)));
+    let cum=0;
+    for(let i=0;i<ps.length-1;i++){
+      const a=ps[i],b=ps[i+1];const L=Math.hypot(b[0]-a[0],b[1]-a[1]);
+      prims.push({k:'seg',a,b,depth:(a[2]+b[2])/2-(o.bias||0.01),w:o.w||2,color:o.color||INK,dash:o.dash||null,off:cum-(o.phase||0),cap:o.dash?'butt':'round'});
+      cum+=L;
+    }
+  }
+  function text(p,str,o){
+    o=o||{};const q=proj(xf(p));
+    prims.push({k:'text',x:q[0]+(o.dx||0),y:q[1]+(o.dy||0),depth:q[2]-(o.bias||0.6),str,size:o.size||14,weight:o.weight||700,color:o.color||INK,align:o.align||'center'});
+  }
+  function flush(){
+    prims.sort((p,q)=>q.depth-p.depth);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,W,H);
+    ctx.lineJoin='round';
+    for(const p of prims){
+      if(p.k==='poly'){
+        ctx.beginPath();ctx.moveTo(p.ps[0][0],p.ps[0][1]);
+        for(let i=1;i<p.ps.length;i++)ctx.lineTo(p.ps[i][0],p.ps[i][1]);
+        ctx.closePath();ctx.fillStyle=p.fill;ctx.fill();
+        ctx.setLineDash(p.dash||[]);ctx.lineDashOffset=0;
+        ctx.strokeStyle=p.stroke;ctx.lineWidth=p.lw;ctx.stroke();
+      }else if(p.k==='seg'){
+        ctx.beginPath();ctx.moveTo(p.a[0],p.a[1]);ctx.lineTo(p.b[0],p.b[1]);
+        ctx.setLineDash(p.dash||[]);ctx.lineDashOffset=p.off;
+        ctx.lineCap=p.cap;ctx.strokeStyle=p.color;ctx.lineWidth=p.w;ctx.stroke();
+      }else if(p.k==='text'){
+        ctx.setLineDash([]);
+        ctx.font=p.weight+' '+p.size+'px '+FONT;ctx.textAlign=p.align;ctx.textBaseline='middle';
+        ctx.lineWidth=5;ctx.strokeStyle=GROUND;ctx.lineJoin='round';ctx.strokeText(p.str,p.x,p.y);
+        ctx.fillStyle=p.color;ctx.fillText(p.str,p.x,p.y);
+      }
+    }
+    prims=[];
+  }
+  return {cam,resize,xf,proj,face,segV,polyline,text,flush,size:()=>[W,H]};
+}
+
+/* ---------------- geometry helpers ---------------- */
+function circlePts(r,z,n,ang0){const pts=[];for(let k=0;k<=n;k++){const a=(ang0||0)+k/n*TAU;pts.push([r*Math.cos(a),r*Math.sin(a),z]);}return pts;}
+function cylinderSides(R,r,z0,z1,n,o){
+  for(let k=0;k<n;k++){const a0=k/n*TAU,a1=(k+1)/n*TAU,am=(a0+a1)/2;
+    R.face([[r*Math.cos(a0),r*Math.sin(a0),z0],[r*Math.cos(a1),r*Math.sin(a1),z0],[r*Math.cos(a1),r*Math.sin(a1),z1],[r*Math.cos(a0),r*Math.sin(a0),z1]],{fill:o.fill,hint:[Math.cos(am),Math.sin(am),0],bias:o.bias||0});
+  }
+}
+function silhouette(R,r,z0,z1,o){
+  const a=R.xf([0,0,1]);const c=R.xf([0,0,(z0+z1)/2]);
+  const vv=[c[0],c[1],c[2]-R.cam.dist];
+  const rd=vnorm(vcross(vv,a));
+  for(const s of [1,-1]){const base=vadd(c,vmul(rd,s*r));
+    R.segV(vadd(base,vmul(a,z0-(z0+z1)/2)),vadd(base,vmul(a,z1-(z0+z1)/2)),{w:2,bias:(o&&o.bias)||0.06});
+  }
+}
+function circleSegs(R,r,z,n,o){R.polyline(circlePts(r,z,n),{w:(o&&o.w)||2,bias:(o&&o.bias)||0.06,color:(o&&o.color)||INK});}
+function solidCylinder(R,r,z0,z1,n,o){
+  o=o||{};const b=o.bias||0;
+  cylinderSides(R,r,z0,z1,n,{fill:o.fill||GROUND,bias:b});
+  const capF=circlePts(r,z1,n),capB=circlePts(r,z0,n);
+  R.face(capF,{fill:o.fill||GROUND,hint:[0,0,1],stroke:INK,lw:2,bias:b+(o.capBias||0.002)});
+  R.face(capB,{fill:o.fill||GROUND,hint:[0,0,-1],stroke:INK,lw:2,bias:b+0.002});
+  silhouette(R,r,z0,z1,{bias:b+0.06});circleSegs(R,r,z0,n,{bias:b+0.06});circleSegs(R,r,z1,n,{bias:b+0.06});
+}
+function ring(R,ri,ro,z0,z1,n,o){
+  o=o||{};
+  cylinderSides(R,ro,z0,z1,n,{fill:GROUND});
+  for(let k=0;k<n;k++){const a0=k/n*TAU,a1=(k+1)/n*TAU,am=(a0+a1)/2;
+    R.face([[ri*Math.cos(a0),ri*Math.sin(a0),z0],[ri*Math.cos(a1),ri*Math.sin(a1),z0],[ri*Math.cos(a1),ri*Math.sin(a1),z1],[ri*Math.cos(a0),ri*Math.sin(a0),z1]],{hint:[-Math.cos(am),-Math.sin(am),0]});
+    for(const [z,h] of [[z1,1],[z0,-1]]){
+      R.face([[ri*Math.cos(a0),ri*Math.sin(a0),z],[ro*Math.cos(a0),ro*Math.sin(a0),z],[ro*Math.cos(a1),ro*Math.sin(a1),z],[ri*Math.cos(a1),ri*Math.sin(a1),z]],{hint:[0,0,h],bias:0.001});
+    }
+  }
+  silhouette(R,ro,z0,z1);
+  circleSegs(R,ro,z0,n);circleSegs(R,ro,z1,n);circleSegs(R,ri,z0,n);circleSegs(R,ri,z1,n);
+}
+function box(R,x0,x1,y0,y1,z0,z1,rot,o){
+  o=o||{};
+  const P=(x,y,z)=>rotz([x,y,z],rot);
+  const F=[
+    [[x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1],[0,0,1]],
+    [[x0,y0,z0],[x1,y0,z0],[x1,y1,z0],[x0,y1,z0],[0,0,-1]],
+    [[x1,y0,z0],[x1,y1,z0],[x1,y1,z1],[x1,y0,z1],[1,0,0]],
+    [[x0,y0,z0],[x0,y1,z0],[x0,y1,z1],[x0,y0,z1],[-1,0,0]],
+    [[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1],[0,1,0]],
+    [[x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1],[0,-1,0]]];
+  for(const f of F){R.face(f.slice(0,4).map(p=>P(p[0],p[1],p[2])),{hint:rotz(f[4],rot),stroke:INK,lw:2,fill:o.fill||GROUND,bias:o.bias||0});}
+}
+function arrow3(R,from,dir2,len,z,o){
+  o=o||{};
+  if(len<0.02)return;
+  const ux=Math.cos(dir2),uy=Math.sin(dir2),px=-uy,py=ux;
+  const hw=o.hw||0.13, hl=o.hl||0.34, sw=o.sw||0.06;
+  const L=Math.max(len,hl+0.05);
+  const tip=[from[0]+ux*L,from[1]+uy*L,z];
+  const hb=[from[0]+ux*(L-hl),from[1]+uy*(L-hl),z];
+  const shaft=[[from[0]+px*sw,from[1]+py*sw,z],[hb[0]+px*sw,hb[1]+py*sw,z],[hb[0]-px*sw,hb[1]-py*sw,z],[from[0]-px*sw,from[1]-py*sw,z]];
+  const head=[[hb[0]+px*hw,hb[1]+py*hw,z],tip,[hb[0]-px*hw,hb[1]-py*hw,z]];
+  const bias=o.bias==null?60:o.bias;
+  R.face(shaft,{cull:false,fill:o.fill||YEL,stroke:o.stroke||INK,lw:2,bias:bias,dash:o.dash});
+  R.face(head,{cull:false,fill:o.fill||YEL,stroke:o.stroke||INK,lw:2,bias:bias+0.001,dash:o.dash});
+}
+function smallArrow3(R,p,dir3,len,o){
+  o=o||{};if(len<0.03)return;
+  const u=vnorm(dir3);const tip=vadd(p,vmul(u,len));
+  R.polyline([p,tip],{w:o.w||2.5,color:o.color||INK,bias:o.bias||0.05});
+  const side=vnorm(vcross(u,[0,0,1]));const hb=vadd(p,vmul(u,Math.max(0,len-0.14)));
+  R.face([vadd(hb,vmul(side,0.08)),tip,vadd(hb,vmul(side,-0.08))],{cull:false,fill:o.color||INK,stroke:o.color||INK,lw:1,bias:(o.bias||0.05)+0.01});
+}
+
+/* ---------------- state ---------------- */
+const W=CFG.windings.map((w,i)=>Object.assign({k:0,phase:0,i:0},w));
+const st={step:0,tau:0,x:0,psi:0,locked:true,run:true,speed:1,fHz:60,
+  manual:null,load:0.25,sm:0.15,F:0,R:0,thF0:0,thR0:0,
+  flags:{},barI:new Array(NB).fill(0),barF:new Array(NB).fill(0),barPh:new Array(NB).fill(0),
+  switchOpen:false,geometry:CFG.geometry,visible:[],quizDone:false,dashSpeed:110};
+function Kloss(s,sm){if(Math.abs(s)<1e-6)return 0;return 2/(s/sm+sm/s);}
+function computeFR(){
+  let fx=0,fy=0,rx=0,ry=0;
+  for(const w of W){if(w.k<=0)continue;const th=w.axis*D2R,be=w.beta*D2R;
+    fx+=0.5*w.k*Math.cos(th-be);fy+=0.5*w.k*Math.sin(th-be);
+    rx+=0.5*w.k*Math.cos(th+be);ry+=0.5*w.k*Math.sin(th+be);}
+  st.F=Math.hypot(fx,fy);st.R=Math.hypot(rx,ry);st.thF0=Math.atan2(fy,fx);st.thR0=Math.atan2(ry,rx);
+  const tot=st.F+st.R;st.Bmax=tot>1e-6?tot:1;if(tot>1e-6){st.F/=tot;st.R/=tot;}
+}
+function currents(){
+  for(const w of W){w.i=w.k>0?w.k*Math.cos(st.tau-w.beta*D2R):0;}
+  if(st.manual!=null){W[0].i=st.manual;}
+}
+function fieldVec(){let bx=0,by=0;for(const w of W){if(w.hidden)continue;bx+=w.i*Math.cos(w.axis*D2R);by+=w.i*Math.sin(w.axis*D2R);}
+  if(st.manual==null){for(const w of W){if(!w.hidden)continue;bx+=w.i*Math.cos(w.axis*D2R);by+=w.i*Math.sin(w.axis*D2R);}}
+  return [bx,by];}
+function physics(dt){
+  const f=st.flags;
+  const om=TAU*FSIM*(st.fHz/60);
+  if(st.run&&st.manual==null){st.tau+=om*dt*st.speed;}
+  currents();
+  computeFR();
+  const thF=st.thF0+st.tau, thR=st.thR0-st.tau;
+  // rotor dynamics
+  if(!st.locked&&st.manual==null){
+    const sF=1-st.x,sR=1+st.x;
+    let Te=st.F*st.F*Kloss(sF,st.sm)-st.R*st.R*Kloss(sR,st.sm);
+    const Tl=st.load*Math.sign(st.x||0);
+    let ax=(Te-Tl)*0.55*st.speed;
+    if(Math.abs(st.x)<1e-3&&Math.abs(Te)<st.load){ax=0;st.x=0;}
+    st.x=clamp(st.x+ax*dt,-1.2,1.2);
+  }
+  if(st.locked)st.x=0;
+  st.psi+=st.x*om*dt*st.speed;
+  // speed switch
+  if(f.speedSwitch&&!st.switchOpen&&st.x>0.78){st.switchOpen=true;W[1].k=0;computeFR();}
+  // bars
+  const norm=1;
+  for(let k=0;k<NB;k++){
+    const ph=st.psi+k*TAU/NB;
+    const BF=st.F*Math.cos(ph-thF),BR=st.R*Math.cos(ph-thR);
+    const ik=((1-st.x)*BF-(1+st.x)*BR)/norm;
+    st.barI[k]=ik;st.barF[k]=ik*(BF+BR)/norm;
+    st.barPh[k]+=clamp(ik*4,-1,1)*st.dashSpeed*dt*st.speed;
+  }
+  for(const w of W){w.phase+=w.i*st.dashSpeed*dt*st.speed;}
+}
+
+/* ---------------- 3D scene ---------------- */
+let R;
+function drawRotor(){
+  const f=st.flags;
+  solidCylinder(R,1.0,-1.4,1.4,40,{fill:PANEL,capBias:1.0});
+  solidCylinder(R,0.2,-2.0,-1.4,18,{fill:GROUND});
+  solidCylinder(R,0.2,1.4,1.85,18,{fill:GROUND,bias:1.1});
+  const bmax=1;
+  for(let k=0;k<NB;k++){
+    const ph=st.psi+k*TAU/NB;const c=Math.cos(ph),s=Math.sin(ph);
+    const p0=[1.05*c,1.05*s,-1.25],p1=[1.05*c,1.05*s,1.25];
+    const ik=clamp(st.barI[k]*4,-1,1);
+    const showI=f.showBars&&Math.abs(ik)>0.06;
+    R.polyline([p0,p1],{w:showI?2.2+5*Math.min(1,Math.abs(ik)):2.4,color:INK,dash:showI?[6,6]:null,phase:st.barPh[k],bias:0.03});
+    if(f.showForces){
+      const fk=st.barF[k];
+      if(Math.abs(fk)>0.06){
+        const tip=[1.05*c,1.05*s,1.5];const tdir=[-s*Math.sign(fk),c*Math.sign(fk),0];
+        smallArrow3(R,tip,tdir,0.8*Math.min(1,Math.abs(fk)*2.5),{w:3,bias:1.2});
+      }
+    }
+  }
+  for(const z of [-1.3,1.3]){R.polyline(circlePts(1.05,z,40,st.psi),{w:5,bias:0.03});}
+}
+function drawSlotCoils(){
+  const f=st.flags;
+  for(let u=0;u<W.length;u++){
+    const w=W[u];if(!st.visible.includes(u))continue;
+    const col=SERIES[w.color];const sg=w.slot*D2R;const r=1.42,zc=0.9,za=0.96+0.13*u;
+    const pts=[];
+    const arc=(a0,a1,z)=>{for(let k=0;k<=18;k++){const a=a0+(a1-a0)*k/18;pts.push([r*Math.cos(a),r*Math.sin(a),z]);}};
+    pts.push([r*Math.cos(sg),r*Math.sin(sg),-zc]);pts.push([r*Math.cos(sg),r*Math.sin(sg),zc]);
+    arc(sg,sg+Math.PI,za);
+    pts.push([r*Math.cos(sg+Math.PI),r*Math.sin(sg+Math.PI),zc]);pts.push([r*Math.cos(sg+Math.PI),r*Math.sin(sg+Math.PI),-zc]);
+    arc(sg+Math.PI,sg+TAU,-za);
+    pts.push([r*Math.cos(sg),r*Math.sin(sg),-zc]);
+    const on=Math.abs(w.i)>0.03;
+    R.polyline(pts,{w:on?2.5+4.5*Math.abs(w.i):3,color:col,dash:on?[7,7]:null,phase:w.phase,bias:0.02});
+    if(f.labels!=='none'){
+      R.text([1.42*Math.cos(sg),1.42*Math.sin(sg),1.0],w.name,{size:15,bias:2});
+      R.text([1.42*Math.cos(sg+Math.PI),1.42*Math.sin(sg+Math.PI),1.0],w.name+'′',{size:15,bias:2});
+    }
+  }
+}
+function drawPoles(){
+  const f=st.flags;
+  for(let u=0;u<W.length;u++){
+    const w=W[u];if(!st.visible.includes(u)||w.virtual)continue;
+    const col=SERIES[w.color];
+    for(const base of [w.axis,w.axis+180]){
+      const rot=(base-90)*D2R;
+      box(R,-0.5,0.5,1.5,2.16,-0.6,0.6,rot,{});
+      for(let t=0;t<5;t++){
+        const y=1.66+0.1*t;
+        const loop=[[-0.64,y,-0.74],[0.64,y,-0.74],[0.64,y,0.74],[-0.64,y,0.74],[-0.64,y,-0.74]].map(p=>rotz(p,rot));
+        const on=Math.abs(w.i)>0.03;
+        R.polyline(loop,{w:on?2.5+4*Math.abs(w.i):3,color:col,dash:on?[7,7]:null,phase:w.phase*(base===w.axis?1:-1),bias:0.02});
+      }
+      if(f.shading&&u===0){
+        const loop=[[-0.16,1.46,-0.72],[-0.16,1.46,0.72],[-0.56,1.9,0.72],[-0.56,1.9,-0.72],[-0.16,1.46,-0.72]].map(p=>rotz(p,rot));
+        R.polyline(loop,{w:6,color:INK,bias:0.08});
+        if(base===w.axis)R.text(rotz([-1.25,1.5,1.0],rot),'copper ring',{size:13,bias:2});
+      }
+    }
+    if(f.labels!=='none'){
+      const rot=(w.axis-90)*D2R;
+      R.text(rotz([0,2.35,0.75],rot),w.name,{size:15});
+    }
+  }
+}
+function drawArrows(){
+  const f=st.flags;const zA=2.05;
+  const [bx,by]=fieldVec();
+  if(f.showComp){
+    for(const w of W){if(w.hidden||Math.abs(w.i)<0.03)continue;
+      const dir=w.axis*D2R+(w.i<0?Math.PI:0);
+      arrow3(R,[0,0],dir,1.2*Math.abs(w.i)/st.Bmax,zA,{fill:GROUND,stroke:SERIES[w.color],sw:0.03,hw:0.1,hl:0.26,bias:59});
+    }
+  }
+  if(f.showHalf){
+    const thF=st.thF0+st.tau, thR=st.thR0-st.tau;
+    arrow3(R,[0,0],thF,1.2*st.F,zA,{fill:GROUND,stroke:INK,sw:0.035,hw:0.1,hl:0.26,bias:59,dash:[5,4]});
+    arrow3(R,[0,0],thR,1.2*st.R,zA,{fill:GROUND,stroke:INK,sw:0.035,hw:0.1,hl:0.26,bias:59,dash:[5,4]});
+  }
+  if(f.showField){
+    const m=Math.hypot(bx,by);
+    if(m>0.03)arrow3(R,[0,0],Math.atan2(by,bx),1.2*m/st.Bmax,zA,{});
+  }
+}
+function drawScene(){
+  const f=st.flags;
+  if(st.geometry==='slots'){ring(R,1.5,2.1,-0.6,0.6,36);drawSlotCoils();}
+  else{ring(R,2.16,2.5,-0.6,0.6,36);drawPoles();}
+  drawRotor();
+  drawArrows();
+  if(f.labels==='parts'){
+    R.text([0,2.55,0.6],'stator (fixed)',{size:15,dy:-10});
+    R.text([0,-1.15,1.45],'rotor cage (free to turn)',{size:15,dy:14});
+  }
+  R.flush();
+}
+
+/* ---------------- end view ---------------- */
+function drawEnd(cv){
+  const ctx=cv.getContext('2d');const dpr=Math.min(2,window.devicePixelRatio||1);
+  const r=cv.getBoundingClientRect();const Wd=Math.round(r.width),Hd=Math.round(r.height);
+  if(cv.width!==Wd*dpr){cv.width=Wd*dpr;cv.height=Hd*dpr;}
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,Wd,Hd);
+  const cx=Wd/2,cy=Hd/2+6,S=Math.min(Wd,Hd)/330;
+  const f=st.flags;
+  ctx.lineJoin='round';ctx.lineCap='round';
+  ctx.font='700 13px '+FONT;ctx.textAlign='center';ctx.textBaseline='middle';
+  const P=(rr,a)=>[cx+rr*S*Math.cos(a),cy-rr*S*Math.sin(a)];
+  const circ=(rr,w,col)=>{ctx.beginPath();ctx.arc(cx,cy,rr*S,0,TAU);ctx.lineWidth=w;ctx.strokeStyle=col||INK;ctx.stroke();};
+  const dotcross=(x,y,rad,sign,col,mag)=>{
+    ctx.beginPath();ctx.arc(x,y,rad,0,TAU);ctx.fillStyle=GROUND;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle=col;ctx.stroke();
+    if(Math.abs(mag)<0.04)return;
+    const q=rad*0.55*Math.min(1,Math.abs(mag))+1.2;
+    ctx.fillStyle=col;ctx.strokeStyle=col;
+    if(sign>0){ctx.beginPath();ctx.arc(x,y,q*0.55,0,TAU);ctx.fill();}
+    else{ctx.beginPath();ctx.moveTo(x-q*0.6,y-q*0.6);ctx.lineTo(x+q*0.6,y+q*0.6);ctx.moveTo(x+q*0.6,y-q*0.6);ctx.lineTo(x-q*0.6,y+q*0.6);ctx.lineWidth=2;ctx.stroke();}
+  };
+  const arrow2=(x0,y0,ang,len,o)=>{
+    if(len<4)return;
+    const ux=Math.cos(ang),uy=-Math.sin(ang),px=-uy,py=ux;
+    const hw=o.hw||8,hl=o.hl||14,sw=o.sw||3.5;
+    const L=Math.max(len,hl+2);
+    const tx=x0+ux*L,ty=y0+uy*L,bx=x0+ux*(L-hl),by=y0+uy*(L-hl);
+    ctx.beginPath();ctx.moveTo(x0+px*sw,y0+py*sw);ctx.lineTo(bx+px*sw,by+py*sw);ctx.lineTo(bx+px*hw,by+py*hw);ctx.lineTo(tx,ty);ctx.lineTo(bx-px*hw,by-py*hw);ctx.lineTo(bx-px*sw,by-py*sw);ctx.lineTo(x0-px*sw,y0-py*sw);ctx.closePath();
+    ctx.setLineDash(o.dash||[]);ctx.fillStyle=o.fill||YEL;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle=o.stroke||INK;ctx.stroke();ctx.setLineDash([]);
+  };
+  // stator
+  if(st.geometry==='slots'){
+    circ(150,2);circ(112,2);
+    for(let u=0;u<W.length;u++){const w=W[u];if(!st.visible.includes(u))continue;const col=SERIES[w.color];
+      for(const [ang,nm,sgn] of [[w.slot*D2R,w.name,1],[w.slot*D2R+Math.PI,w.name+'′',-1]]){
+        const [x,y]=P(100,ang);dotcross(x,y,11*S,sgn*Math.sign(w.i),col,w.i);
+        const [lx,ly]=P(132,ang);ctx.fillStyle=INK;ctx.fillText(nm,lx,ly);
+      }
+    }
+  }else{
+    circ(150,2);circ(128,2);
+    for(let u=0;u<W.length;u++){const w=W[u];if(!st.visible.includes(u)||w.virtual)continue;const col=SERIES[w.color];
+      for(const base of [w.axis,w.axis+180]){
+        const a=base*D2R;const ca=Math.cos(a),sa=Math.sin(a);
+        // pole shoe polygon
+        const pts=[[-34,84],[34,84],[34,128],[-34,128]].map(([px,py])=>{const X=px*ca-py*sa,Y=px*sa+py*ca;return [cx+X*S,cy-Y*S];});
+        // rotate so that local +y is along pole axis: local (px,py) with py radial
+        const pts2=[[-34,84],[34,84],[34,128],[-34,128]].map(([px,py])=>{const ang=a-Math.PI/2;const X=px*Math.cos(ang)-py*Math.sin(ang),Y=px*Math.sin(ang)+py*Math.cos(ang);return [cx+X*S,cy-Y*S];});
+        ctx.beginPath();pts2.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=GROUND;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle=INK;ctx.stroke();
+        // coil marks each side of the neck
+        for(const sx of [-1,1]){for(let t=0;t<3;t++){const px=sx*42,py=98+t*10;const ang=a-Math.PI/2;const X=px*Math.cos(ang)-py*Math.sin(ang),Y=px*Math.sin(ang)+py*Math.cos(ang);
+          const sgn=(base===w.axis?1:-1)*sx;dotcross(cx+X*S,cy-Y*S,4.5*S,sgn*Math.sign(w.i),col,w.i);}}
+        if(f.shading&&u===0){
+          const ang=a-Math.PI/2;const loop=[[-12,84],[-12,96],[-40,96],[-40,84]].map(([px,py])=>{const X=px*Math.cos(ang)-py*Math.sin(ang),Y=px*Math.sin(ang)+py*Math.cos(ang);return [cx+X*S,cy-Y*S];});
+          ctx.beginPath();loop.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.lineWidth=4;ctx.strokeStyle=INK;ctx.stroke();
+        }
+      }
+      const [lx,ly]=P(140,w.axis*D2R);ctx.fillStyle=INK;ctx.fillText(w.name,lx,ly);
+    }
+  }
+  // rotor
+  ctx.beginPath();ctx.arc(cx,cy,78*S,0,TAU);ctx.fillStyle=PANEL;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle=INK;ctx.stroke();
+  ctx.beginPath();ctx.arc(cx,cy,14*S,0,TAU);ctx.fillStyle=GROUND;ctx.fill();ctx.stroke();
+  for(let k=0;k<NB;k++){
+    const ph=st.psi+k*TAU/NB;const [x,y]=P(70,ph);
+    const ik=f.showBars?clamp(st.barI[k]*4,-1,1):0;
+    dotcross(x,y,5.5*S,Math.sign(ik),INK,ik);
+    if(f.showForces){const fk=st.barF[k];if(Math.abs(fk)>0.05){const [fx0,fy0]=P(88,ph);arrow2(fx0,fy0,ph+Math.PI/2*Math.sign(fk),34*S*Math.min(1,Math.abs(fk)*2.5),{fill:INK,stroke:INK,hw:5,hl:8,sw:1.6});}}
+  }
+  // rotation indicator
+  if(Math.abs(st.x)>0.02){
+    const dir=Math.sign(st.x);ctx.beginPath();ctx.arc(cx,cy,24*S,-Math.PI/2*dir,dir>0?-Math.PI/2-1.8:-Math.PI/2*dir+1.8,dir>0);
+    ctx.lineWidth=2.5;ctx.strokeStyle=INK;ctx.stroke();
+    const ea=dir>0?-Math.PI/2-1.8:Math.PI/2+1.8;const ex=cx+24*S*Math.cos(ea),ey=cy+24*S*Math.sin(ea);
+    ctx.beginPath();ctx.arc(ex,ey,3.5,0,TAU);ctx.fillStyle=INK;ctx.fill();
+  }
+  // arrows
+  const [bx,by]=fieldVec();
+  if(f.showComp){for(const w of W){if(w.hidden||Math.abs(w.i)<0.03)continue;arrow2(cx,cy,w.axis*D2R+(w.i<0?Math.PI:0),66*S*Math.abs(w.i)/st.Bmax,{fill:GROUND,stroke:SERIES[w.color],sw:2,hw:6,hl:11});}}
+  if(f.showHalf){const thF=st.thF0+st.tau,thR=st.thR0-st.tau;arrow2(cx,cy,thF,66*S*st.F,{fill:GROUND,stroke:INK,sw:2,hw:6,hl:11,dash:[5,4]});arrow2(cx,cy,thR,66*S*st.R,{fill:GROUND,stroke:INK,sw:2,hw:6,hl:11,dash:[5,4]});}
+  if(f.showField){const m=Math.hypot(bx,by);if(m>0.03)arrow2(cx,cy,Math.atan2(by,bx),66*S*m/st.Bmax,{});}
+  // legend
+  ctx.font='400 13px '+FONT;ctx.textAlign='left';ctx.fillStyle=INK;
+  ctx.fillText('end view',10,14);
+  if(st.geometry==='slots'&&st.visible.length){ctx.fillText('● current towards you   ⨉ away from you',10,Hd-12);}
+  if(st.geometry==='salient'&&st.visible.length){ctx.fillText('● current towards you   ⨉ away from you',10,Hd-12);}
+}
+
+/* ---------------- waveform ---------------- */
+function drawWave(cv){
+  const ctx=cv.getContext('2d');const dpr=Math.min(2,window.devicePixelRatio||1);
+  const r=cv.getBoundingClientRect();const Wd=Math.round(r.width),Hd=Math.round(r.height);
+  if(cv.width!==Wd*dpr){cv.width=Wd*dpr;cv.height=Hd*dpr;}
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,Wd,Hd);
+  const L=46,Rr=Wd-40,T=18,B=Hd-22,mid=(T+B)/2,amp=(B-T)/2*0.82;
+  ctx.font='400 13px '+FONT;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillStyle=INK;
+  ctx.fillText('current in each coil',10,12);
+  ctx.strokeStyle=HAIR;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(L,mid);ctx.lineTo(Rr,mid);ctx.stroke();
+  ctx.fillStyle=MUTED;ctx.font='400 12px '+FONT;ctx.textAlign='right';ctx.fillText('+',L-8,T+6);ctx.fillText('−',L-8,B-6);
+  ctx.textAlign='center';ctx.fillText('time →',(L+Rr)/2,Hd-8);
+  const span=2*TAU;
+  const anyOn=W.some(w=>w.k>0&&!w.hidden);
+  if(!anyOn&&st.manual==null){return;}
+  for(const w of W){if(w.k<=0||w.hidden)continue;
+    ctx.beginPath();
+    for(let px=L;px<=Rr;px++){const tt=st.tau-span*(Rr-px)/(Rr-L);const v=w.k*Math.cos(tt-w.beta*D2R);const y=mid-v*amp;px===L?ctx.moveTo(px,y):ctx.lineTo(px,y);}
+    ctx.strokeStyle=SERIES[w.color];ctx.lineWidth=2.5;ctx.stroke();
+    ctx.fillStyle=SERIES[w.color];ctx.font='700 13px '+FONT;ctx.textAlign='left';ctx.fillText(w.name,Rr+6,mid-w.i*amp);
+  }
+  ctx.strokeStyle=INK;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(Rr,T);ctx.lineTo(Rr,B);ctx.stroke();
+  ctx.fillStyle=INK;ctx.font='700 12px '+FONT;ctx.textAlign='right';ctx.fillText('now',Rr-4,T-4);
+}
+
+/* ---------------- UI ---------------- */
+const STEPS=CFG.steps;
+let quizAnswered=false;
+function fmt(n){return Math.round(n).toLocaleString('en-US');}
+function updateReadout(){
+  const f=st.flags;const P=2;const ns=120*st.fHz/P;
+  const n=st.x*ns;const s=st.locked?1:(1-st.x);
+  let html='';
+  html+='<div><span class="lab">supply</span><b>'+st.fHz+' Hz</b><span class="lab">poles</span><b>2</b></div>';
+  html+='<div><span class="lab">field speed nₛ</span><b>'+fmt(ns)+' rev/min</b></div>';
+  if(f.showSpeed){
+    html+='<div><span class="lab">rotor speed n</span><b>'+(st.locked?'held at 0':fmt(Math.abs(n)))+' rev/min</b></div>';
+    html+='<div><span class="lab">slip s</span><b>'+(st.locked?'100':(100*s).toFixed(1))+' %</b></div>';
+  }
+  if(f.speedSwitch){html+='<div><span class="lab">start switch</span><b>'+(st.switchOpen?'open (start coil off)':'closed (start coil on)')+'</b></div>';}
+  $('readout').innerHTML=html;
+}
+function applyStep(i){
+  st.step=i;const S=STEPS[i];quizAnswered=false;
+  st.flags=Object.assign({},S.flags||{});
+  st.visible=S.visible||[];
+  for(let u=0;u<W.length;u++){W[u].k=(S.k&&S.k[u]!=null)?S.k[u]:0;W[u].hidden=!!W[u].virtual;}
+  st.locked=S.locked!==false;
+  st.run=S.run!==false;
+  st.manual=S.manual?0.7:null;
+  st.load=S.load!=null?S.load:0.25;
+  st.sm=S.sm||0.15;
+  st.switchOpen=false;
+  if(S.resetRotor){st.x=0;}
+  if(S.spin!=null){st.x=S.spin;}
+  if(S.tau!=null){st.tau=S.tau;}
+  computeFR();
+  $('stitle').textContent=S.title;
+  $('sdesc').textContent=S.text;
+  const tr=$('stry');tr.textContent=S.tryit||'';tr.style.display=S.tryit?'block':'none';
+  $('stepno').textContent='Step '+(i+1)+' of '+STEPS.length;
+  $('pbar').style.width=((i+1)/STEPS.length*100)+'%';
+  $('prev').disabled=i===0;
+  $('next').textContent=i===STEPS.length-1?'Replay':'Next';
+  // controls
+  for(const id of ['ctlCurrent','ctlFrame','ctlFreq','ctlLoad','ctlSpin']){$(id).style.display='none';}
+  for(const c of (S.controls||[])){$('ctl'+c.charAt(0).toUpperCase()+c.slice(1)).style.display='flex';}
+  if(S.manual){$('curSlider').value=70;}
+  $('loadSlider').value=Math.round(st.load*100);
+  $('wavebox').style.display=(S.hideWave?'none':'block');$('boatbox').style.display=(S.boat?'flex':'none');
+  // quiz
+  const qz=$('quiz');
+  if(S.quiz){qz.style.display='block';$('qq').textContent=S.quiz.q;const ob=$('qopts');ob.innerHTML='';
+    S.quiz.options.forEach((o,j)=>{const b=document.createElement('button');b.textContent=o;b.className='opt';b.onclick=()=>{
+      if(quizAnswered)return;quizAnswered=true;
+      const ok=j===S.quiz.correct;b.classList.add(ok?'right':'wrong');
+      const fb=$('qfb');fb.textContent=S.quiz.feedback[j];fb.style.display='block';
+      if(!ok){ob.children[S.quiz.correct].classList.add('right');}
+      if(S.quiz.after){st.flags=Object.assign(st.flags,S.quiz.after);}
+    };ob.appendChild(b);});
+    $('qfb').style.display='none';
+  }else{qz.style.display='none';}
+  $('play').textContent=st.run?'Pause':'Play';
+  updateReadout();
+}
+function bindUI(){
+  $('prev').onclick=()=>{if(st.step>0)applyStep(st.step-1);};
+  $('next').onclick=()=>{applyStep(st.step<STEPS.length-1?st.step+1:0);};
+  $('play').onclick=()=>{st.run=!st.run;$('play').textContent=st.run?'Pause':'Play';};
+  $('frame').onclick=()=>{st.run=false;$('play').textContent='Play';st.tau+=TAU/12;};
+  $('speed').oninput=e=>{st.speed=parseFloat(e.target.value);$('speedv').textContent=st.speed.toFixed(1)+'×';};
+  $('curSlider').oninput=e=>{st.manual=parseInt(e.target.value,10)/100;$('curv').textContent=st.manual.toFixed(2);};
+  $('loadSlider').oninput=e=>{st.load=parseInt(e.target.value,10)/100;};
+  $('f50').onclick=()=>{st.fHz=50;$('f50').classList.add('on');$('f60').classList.remove('on');};
+  $('f60').onclick=()=>{st.fHz=60;$('f60').classList.add('on');$('f50').classList.remove('on');};
+  $('spinL').onclick=()=>{st.x=0.5;};
+  $('spinR').onclick=()=>{st.x=-0.5;};
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){$('next').click();}else if(e.key==='ArrowLeft'){$('prev').click();}});
+  // orbit
+  const c3=$('c3d');let drag=null;
+  const down=(x,y)=>{drag={x,y,yaw:R.cam.yaw,pitch:R.cam.pitch};c3.style.cursor='grabbing';};
+  const move=(x,y)=>{if(!drag)return;R.cam.yaw=drag.yaw+(x-drag.x)*0.008;R.cam.pitch=clamp(drag.pitch+(y-drag.y)*0.008,-1.2,1.2);};
+  c3.addEventListener('mousedown',e=>down(e.clientX,e.clientY));
+  window.addEventListener('mousemove',e=>move(e.clientX,e.clientY));
+  window.addEventListener('mouseup',()=>{drag=null;c3.style.cursor='grab';});
+  c3.addEventListener('touchstart',e=>{const t=e.touches[0];down(t.clientX,t.clientY);},{passive:true});
+  c3.addEventListener('touchmove',e=>{const t=e.touches[0];move(t.clientX,t.clientY);},{passive:true});
+  c3.addEventListener('touchend',()=>{drag=null;});
+  c3.addEventListener('dblclick',()=>{R.cam.yaw=0.62;R.cam.pitch=0.30;});
+  $('resetView').onclick=()=>{R.cam.yaw=0.62;R.cam.pitch=0.30;};
+}
+function start(){
+  const c3=$('c3d');R=Renderer(c3);
+  R.resize();window.addEventListener('resize',()=>R.resize());
+  bindUI();applyStep(0);
+  let last=performance.now();
+  function loop(now){
+    const dt=Math.min(0.05,(now-last)/1000);last=now;
+    physics(dt);
+    drawScene();drawEnd($('c2d'));drawWave($('cwv'));
+    updateReadout();
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+
+</script>
+<script>
+/* ---------------- sailboat analogy (slip) ---------------- */
+(function(){
+const FONT='Inter, system-ui, -apple-system, "Segoe UI", sans-serif';
+const INK='#000000',GROUND='#FFFFFF',YEL='#FFE819',MUTED='#7F7F7F';
+let t0=performance.now();
+function drawBoat(cv,ratio){
+  const ctx=cv.getContext('2d');const dpr=Math.min(2,window.devicePixelRatio||1);
+  const r=cv.getBoundingClientRect();const Wd=Math.round(r.width),Hd=Math.round(r.height);
+  if(cv.width!==Wd*dpr){cv.width=Wd*dpr;cv.height=Hd*dpr;}
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,Wd,Hd);
+  const now=(performance.now()-t0)/1000;
+  const wind=80; // px per s
+  const boat=wind*ratio;
+  // wind streaks
+  ctx.strokeStyle=MUTED;ctx.lineWidth=1.5;ctx.lineCap='round';
+  for(let k=0;k<7;k++){const y=18+k*13;const off=((now*wind)+k*37)%(Wd+60)-30;
+    for(let x=off-Wd-60;x<Wd+60;x+=140){ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+34,y);ctx.stroke();ctx.beginPath();ctx.moveTo(x+28,y-4);ctx.lineTo(x+34,y);ctx.lineTo(x+28,y+4);ctx.stroke();}
+  }
+  // water
+  const wy=Hd-26;ctx.strokeStyle=INK;ctx.lineWidth=2;ctx.beginPath();
+  for(let x=0;x<=Wd;x+=4){const y=wy+Math.sin((x-now*boat)/14)*2.5;x?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.stroke();
+  // boat: stays centered, world moves
+  const bx=Wd*0.5,by=wy-2;
+  ctx.fillStyle=GROUND;ctx.strokeStyle=INK;ctx.lineWidth=2;ctx.lineJoin='round';
+  ctx.beginPath();ctx.moveTo(bx-46,by-14);ctx.lineTo(bx+50,by-14);ctx.lineTo(bx+36,by+6);ctx.lineTo(bx-36,by+6);ctx.closePath();ctx.fill();ctx.stroke();
+  // mast
+  ctx.beginPath();ctx.moveTo(bx-4,by-14);ctx.lineTo(bx-4,by-92);ctx.stroke();
+  // sail: bulge proportional to (wind - boat)
+  const rel=1-ratio; const bulge=52*rel;
+  ctx.beginPath();ctx.moveTo(bx-4,by-90);ctx.quadraticCurveTo(bx-4+bulge,by-52,bx-4,by-16);
+  ctx.lineWidth=2;ctx.strokeStyle=INK;
+  if(rel<0.06){ctx.setLineDash([4,4]);}
+  ctx.fillStyle=YEL;ctx.fill();ctx.stroke();ctx.setLineDash([]);
+  // labels
+  ctx.font='700 13px '+FONT;ctx.fillStyle=INK;ctx.textAlign='left';ctx.textBaseline='middle';
+  ctx.fillText('wind '+Math.round(wind/8)+' knots',10,Hd-10);
+  ctx.textAlign='right';ctx.fillText('boat '+(boat/8).toFixed(1)+' knots',Wd-10,Hd-10);
+  ctx.textAlign='center';const msg=rel<0.06?'sail slack. no push.':(rel<0.3?'sail half full. small push.':'sail full. strong push.');
+  const tw=ctx.measureText(msg).width+16;ctx.fillStyle=GROUND;ctx.fillRect(bx-tw/2,by-120,tw,22);ctx.strokeStyle=INK;ctx.lineWidth=1.5;ctx.strokeRect(bx-tw/2,by-120,tw,22);ctx.fillStyle=INK;ctx.fillText(msg,bx,by-109);
+}
+function init(){
+  const cv=document.getElementById('boat');if(!cv)return;
+  const sl=document.getElementById('boatSlider');
+  function loop(){const ratio=parseInt(sl.value,10)/100;drawBoat(cv,ratio);requestAnimationFrame(loop);}
+  requestAnimationFrame(loop);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+
+</script>
+</body>
+</html>
