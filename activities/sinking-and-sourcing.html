@@ -354,8 +354,8 @@ const STEPS = [
   tryit:'Engage the target and trace the closed-loop current path.',
   controls:['tgt','read'], enter(){ showCard=false; type='PNP'; load='A'; }},
 
- {title:'The load must complete the path to the opposite rail',
-  text:'<p>A lamp requires a complete circuit. A sourcing output delivers current out of the control wire, so the lamp must return that current to 0 V. Place the lamp between the positive rail and the output instead, and when the transistor conducts both terminals of the lamp are held at 24 V, so no potential difference exists across it and no current flows. When the transistor is open the lamp has no supply at all.</p><p>The sensor is functioning correctly in both cases. Only the wiring distinguishes them.</p>',
+ {title:'The load must complete the circuit.',
+  text:'<p>A sourcing output supplies current via the control wire, requiring the load to complete the circuit to 0 V.</p>',
   tryit:'Predict the result first, then move the lamp to position B with the target present.',
   controls:['tgt','load','read'],
   quiz:{q:'A PNP sensor detects a target. The lamp is wired from +24 V to the output, which is position B. What happens?',
