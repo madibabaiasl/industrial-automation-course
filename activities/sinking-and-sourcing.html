@@ -372,7 +372,7 @@ const STEPS = [
   controls:['type','tgt','load','read']},
 
  {title:'Now the load is a controller input channel',
-  text:'<p>Each channel of a discrete input module is a light emitting diode within an optocoupler, as page 779 shows. Energising the channel illuminates the diode, the phototransistor on the isolated side conducts, and one bit is set in the input image.</p><p>The module on your bench is a 1756-IB16. Its two commons, GND-0 and GND-1, are taken to the negative of the field supply, so current must enter a point at IN-x and leave through the common. The module therefore sinks, and the field device must source.</p>',
+  text:'<p>Each channel of a discrete input module is a light emitting diode within an optocoupler. Energizing the channel illuminates the diode, and the phototransistor on the isolated side conducts, and one bit is set in the input image.</p><p>The input module on your bench is a 1756-IB16. Its two commons, GND-0 and GND-1, are taken to the negative of the field supply, so current must enter a point at IN-x and leave through the common. The module therefore sinks, and the field device must source.</p>',
   tryit:'Connect the PNP sensor to the IB16 with the target present. Then try the NPN sensor on the same module.',
   controls:['type','tgt','read'], enter(){ showCard=true; card='IB16'; type='PNP'; target=true; },
   quiz:{q:'The 1756-IB16 takes its commons to DC COM minus. Which output stage can it read?',
