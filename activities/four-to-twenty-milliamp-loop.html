@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The 4 to 20 mA loop</title>
+<meta name="description" content="Live zero, current against voltage over distance, the receiving resistor, converter counts and the scaling line, for MENG 4450 Lesson 3.2.">
+<style>:root{--ink:#000;--ground:#fff;--panel:#F1EFEF;--rule:#BBB;--yellow:#FFE819;--stroke:2px;--radius:6px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:Arial,Helvetica,"Liberation Sans",sans-serif;font-size:19px;line-height:1.45}
+.wrap{max-width:1320px;margin:0 auto;padding:18px}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+header h1{font-size:27px;font-weight:700;margin:0;letter-spacing:-.01em}
+.hub{font-size:17px;font-weight:700;color:var(--ink);text-decoration:none;border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:4px 12px}
+.hub:hover{background:var(--panel)}
+.chip{font-size:17px;font-weight:700;border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:4px 12px;background:var(--ground)}
+.spacer{flex:1}
+#stepno{font-size:19px;font-weight:700}
+.progress{height:10px;border:var(--stroke) solid var(--ink);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;background:var(--ground)}
+#pbar{height:100%;background:var(--ink);width:0;transition:width .3s}
+.main{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+.stage{flex:1 1 720px;min-width:320px;border:var(--stroke) solid var(--ink);border-radius:var(--radius);background:var(--ground);padding:10px}
+.stage svg{width:100%;height:auto;display:block;font-family:Arial,Helvetica,"Liberation Sans",sans-serif}
+.side{flex:1 1 380px;min-width:300px;display:flex;flex-direction:column;gap:14px}
+.box{border:var(--stroke) solid var(--ink);border-radius:var(--radius);background:var(--ground);padding:14px 16px}
+.box h2{font-size:22px;font-weight:700;margin:0 0 8px}
+.box p{margin:0 0 10px;font-size:19px}
+.box p:last-child{margin-bottom:0}
+.tryit{border:var(--stroke) solid var(--ink);border-radius:var(--radius);background:var(--panel);padding:10px 12px;margin-top:10px;font-size:18px}
+.tryit b{display:block;font-size:17px;margin-bottom:3px;letter-spacing:.02em;text-transform:uppercase}
+.readout{display:grid;grid-template-columns:1fr auto;gap:6px 16px;font-size:18px;border-top:2px solid var(--rule);padding-top:10px;margin-top:12px}
+.readout b{font-weight:700;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.ctl{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.ctl label{font-size:18px;font-weight:700}
+.ctl input[type=range]{width:100%;accent-color:#000;height:26px}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+button{font:700 17px Arial,Helvetica,sans-serif;color:var(--ink);background:var(--ground);border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:9px 15px;cursor:pointer;min-height:42px}
+button:hover{background:var(--panel)}
+button[disabled]{opacity:.4;cursor:default}
+button.on{background:var(--ink);color:var(--ground)}
+.seg button{padding:8px 13px;min-height:40px}
+.quiz{margin-top:14px;border-top:2px solid var(--rule);padding-top:12px}
+.quiz .q{font-weight:700;margin-bottom:9px;font-size:19px}
+.quiz .opts{display:flex;flex-direction:column;gap:8px}
+.quiz .opts button{text-align:left;font-weight:400;padding:11px 13px;font-size:18px}
+.quiz .opts button.on{font-weight:700}
+.quiz .fb{margin-top:10px;font-size:18px;min-height:1.4em}
+.quiz .fb.ok{font-weight:700}
+.controls{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.controls .note{font-size:17px;font-weight:700}
+.foot{margin-top:22px;border-top:2px solid var(--rule);padding-top:10px;font-size:16px}
+.foot p{margin:0 0 6px}
+.hidden{display:none !important}
+/* svg helpers, all text black */
+.blk{fill:#fff;stroke:#000;stroke-width:2.4}
+.pan{fill:#F1EFEF;stroke:#000;stroke-width:2.4}
+.ln{fill:none;stroke:#000;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.thin{fill:none;stroke:#000;stroke-width:1.4}
+.grid{fill:none;stroke:#BBB;stroke-width:1.2}
+.t{font-size:21px;fill:#000}
+.tb{font-size:23px;font-weight:700;fill:#000}
+.ts{font-size:19px;fill:#000}
+.tn{font-size:17px;fill:#000}
+.acc{fill:#FFE819;stroke:#000;stroke-width:2.4}
+.wire{fill:none;stroke:#000;stroke-width:2.6;stroke-linecap:round}
+.cur{fill:none;stroke:#E69F00;stroke-width:5;stroke-linecap:round;stroke-dasharray:6 12;animation:flow .55s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-18}}
+@media (prefers-reduced-motion:reduce){.cur{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="hub" href="../index.html">&larr; All activities</a>
+    <h1>The 4 to 20 mA loop</h1>
+    <span class="chip">live zero to engineering units</span>
+    <span class="spacer"></span>
+    <span id="stepno">Step 1</span>
+  </header>
+  <div class="progress"><div id="pbar"></div></div>
+
+  <div class="main">
+    <div class="stage">
+      <svg id="stage" viewBox="0 0 1060 800" role="img" aria-label="A tank with a level transmitter, a two wire loop to a controller analog input, and a graph of loop current against level">
+        <!-- tank -->
+        <g>
+          <rect class="blk" x="44" y="120" width="110" height="250" rx="5"/>
+          <rect id="liquid" x="47" y="250" width="104" height="117" fill="#BCE7FC"/>
+          <rect class="blk" x="44" y="120" width="110" height="250" rx="5" style="fill:none"/>
+          <text class="ts" x="99" y="108" text-anchor="middle">tank</text>
+          <text class="ts" id="lvlTxt" x="99" y="400" text-anchor="middle">level 50 %</text>
+        </g>
+        <!-- transmitter -->
+        <g>
+          <rect class="blk" x="196" y="182" width="230" height="150" rx="6"/>
+          <text class="tb" x="311" y="220" text-anchor="middle" id="txName">level transmitter</text>
+          <text class="tn" x="311" y="248" text-anchor="middle" id="txSub">two wire, loop powered</text>
+          <text class="tb" x="311" y="300" text-anchor="middle" id="txI" style="font-size:30px">12.0 mA</text>
+          <path class="ln" d="M154 246 H196" stroke-dasharray="6 6"/>
+          <text class="tn" x="196" y="360">it regulates the current in the loop</text>
+        </g>
+        <!-- the loop -->
+        <g>
+          <path class="wire" id="wTop" d="M426 212 H739 V228"/>
+          <path class="wire" id="wBot" d="M426 282 H500 V440 H739 V310"/>
+          <text class="ts" x="470" y="174">two conductors, <tspan id="lenTxt">300 m</tspan></text>
+          <g id="brk" class="hidden">
+            <rect x="596" y="198" width="34" height="28" fill="#fff"/>
+            <path class="ln" d="M602 224 l10 -22 l10 22" style="stroke:#D55E00;stroke-width:3.4"/>
+            <text class="tb" x="613" y="192" text-anchor="middle" style="font-size:19px">cut</text>
+          </g>
+          <g id="rwire" class="hidden">
+            <rect class="blk" x="520" y="196" width="56" height="32" rx="4"/>
+            <text class="tn" x="548" y="219" text-anchor="middle">R</text>
+            <text class="tn" id="rwTxt" x="548" y="252" text-anchor="middle">20 &#8486;</text>
+          </g>
+        </g>
+        <!-- loop supply -->
+        <g id="supply2">
+          <rect class="blk" x="500" y="440" width="110" height="86" rx="6"/>
+          <text class="ts" x="555" y="472" text-anchor="middle">24 V</text>
+          <text class="ts" x="555" y="498" text-anchor="middle">supply</text>
+          <text class="tb" x="482" y="436">+</text>
+        </g>
+        <g id="supply4" class="hidden">
+          <rect class="blk" x="212" y="386" width="110" height="80" rx="6"/>
+          <text class="ts" x="267" y="416" text-anchor="middle">power</text>
+          <text class="ts" x="267" y="442" text-anchor="middle">at the tx</text>
+          <path class="wire" d="M240 386 V332 M294 386 V332"/>
+        </g>
+        <!-- receiver -->
+        <g>
+          <rect class="blk" x="700" y="150" width="320" height="270" rx="6"/>
+          <text class="tb" x="860" y="188" text-anchor="middle">Controller analog input</text>
+          <rect class="blk" x="722" y="228" width="34" height="82" rx="4"/>
+          <text class="ts" x="768" y="258">250 &#8486;</text>
+          <text class="ts" x="768" y="286" id="vTxt">3.00 V</text>
+          <rect class="blk" x="890" y="228" width="110" height="70" rx="5"/>
+          <text class="ts" x="945" y="258" text-anchor="middle">ADC</text>
+          <text class="ts" x="945" y="286" text-anchor="middle" id="bitsTxt">16 bit</text>
+          <path class="ln" d="M756 302 H890" stroke-dasharray="6 6"/>
+          <text class="tb" x="860" y="348" text-anchor="middle" id="countsTxt">9830 counts</text>
+          <text class="ts" x="860" y="378" text-anchor="middle" id="euTxt">350 GPM</text>
+          <text class="tn" x="860" y="404" text-anchor="middle" id="euNote">y = (700/13107)x &minus; 175</text>
+        </g>
+        <!-- animated current -->
+        <g id="currents"></g>
+        <!-- graph, its own band at the bottom left -->
+        <g id="graph" transform="translate(60,540)">
+          <text class="ts" x="70" y="18">loop current, mA</text>
+          <rect class="blk" x="70" y="30" width="430" height="160" rx="5"/>
+          <g id="ggrid"></g>
+          <path id="gline" class="ln" style="stroke:#0072B2;stroke-width:3" d=""/>
+          <circle id="gpt" r="8" fill="#000"/>
+          <text class="ts" x="285" y="246" text-anchor="middle">tank level, percent</text>
+          <g id="liveZero"><circle class="acc" cx="0" cy="0" r="23"/><text class="tb" style="font-size:18px" text-anchor="middle" dy="7">4</text></g>
+        </g>
+        <!-- statements, in the clear space to the right of the graph -->
+        <text id="verdict"  class="tb" x="620" y="616" style="font-size:20px"></text>
+        <text id="verdict2" class="ts" x="620" y="650" style="font-size:18px"></text>
+      </svg>
+    </div>
+
+    <div class="side">
+      <div class="box">
+        <h2 id="steptitle"></h2>
+        <div id="steptext"></div>
+        <div class="tryit hidden" id="tryit"></div>
+
+        <div class="ctl hidden" data-ctl="lvl"><label for="lvl">Tank level: <span id="lvlVal">50</span> percent</label><input type="range" id="lvl" min="0" max="100" step="1" value="50"></div>
+        <div class="ctl hidden" data-ctl="cut"><label>Condition of the cable</label><div class="seg" id="cutSeg"></div></div>
+        <div class="ctl hidden" data-ctl="sig"><label>Signal standard</label><div class="seg" id="sigSeg"></div></div>
+        <div class="ctl hidden" data-ctl="len"><label for="len">Cable run: <span id="lenVal">300</span> m, at 3.3 &#8486; per 100 m per conductor</label><input type="range" id="len" min="10" max="1000" step="10" value="300"></div>
+        <div class="ctl hidden" data-ctl="bits"><label>Converter resolution</label><div class="seg" id="bitsSeg"></div></div>
+        <div class="ctl hidden" data-ctl="wires"><label>Transmitter type</label><div class="seg" id="wiresSeg"></div></div>
+
+        <div class="readout hidden" data-ctl="read">
+          <span>Process variable</span><b id="rPV">50 %</b>
+          <span>Loop current</span><b id="rI">12.00 mA</b>
+          <span>Across the 250 &#8486; resistor</span><b id="rV">3.00 V</b>
+          <span>Converter counts</span><b id="rC">&mdash;</b>
+          <span>One count is worth</span><b id="rRes">&mdash;</b>
+          <span>Scaled value</span><b id="rEU">&mdash;</b>
+        </div>
+
+        <div class="quiz hidden" id="quiz"><div class="q" id="quizq"></div><div class="opts" id="quizopts"></div><div class="fb" id="quizfb"></div></div>
+      </div>
+      <div class="controls">
+        <button id="back" type="button">&larr; Back</button>
+        <button id="next" type="button">Next &rarr;</button>
+        <span class="note">Arrow keys also move between steps</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <p>MENG 4450, Lesson 3.2. Assigned reading: Kuphaldt, <i>Lessons in Industrial Instrumentation</i> v2.30, section 13.1 pages 863 to 866, section 13.2 pages 867 to 868, section 13.2.6 pages 880 to 882, sections 13.4 and 13.5 pages 891 to 894, and section 12.2.2 pages 786 to 787.</p>
+    <p>Model. The transmitter is taken as ideal, so I = 4 + 16(level/100) mA. Conductor resistance is 3.3 &#8486; per 100 m per conductor, which is close to 18 AWG copper. In the voltage comparison the sender delivers 1 to 5 V into the 250 &#8486; receiver and the conductor resistance appears in series with it. Converter counts follow the worked example on page 880, where a 16 bit card returns 3277 counts at 4 mA and 16384 counts at 20 mA, and the other resolutions are scaled from that. The moving dashes indicate the presence and magnitude of current and are not to any time scale.</p>
+  </div>
+</div>
+
+<script>// MENG 4450 - step engine shared by the Lesson 3.2 activity pages.
+function makeSteps(STEPS, opts){
+  opts = opts || {};
+  const el = id => document.getElementById(id);
+  let k = 0;
+  const stepno=el('stepno'), pbar=el('pbar'), title=el('steptitle'), text=el('steptext'), tryit=el('tryit');
+  const quiz=el('quiz'), qq=el('quizq'), qopts=el('quizopts'), qfb=el('quizfb');
+  const back=el('back'), next=el('next');
+  const allCtl = Array.from(document.querySelectorAll('[data-ctl]'));
+  function show(i){
+    if (STEPS[k] && STEPS[k].exit) STEPS[k].exit();
+    k = Math.max(0, Math.min(STEPS.length - 1, i));
+    const s = STEPS[k];
+    stepno.textContent = 'Step ' + (k + 1) + ' of ' + STEPS.length;
+    pbar.style.width = ((k + 1) / STEPS.length * 100) + '%';
+    title.textContent = s.title;
+    text.innerHTML = s.text;
+    if (s.tryit){ tryit.classList.remove('hidden'); tryit.innerHTML = '<b>Try it</b>' + s.tryit; }
+    else tryit.classList.add('hidden');
+    allCtl.forEach(c => c.classList.toggle('hidden', !(s.controls || []).includes(c.dataset.ctl)));
+    if (s.quiz){
+      quiz.classList.remove('hidden'); qq.textContent = s.quiz.q; qopts.innerHTML = ''; qfb.textContent = ''; qfb.className = 'fb';
+      s.quiz.opts.forEach((o, i) => {
+        const b = document.createElement('button'); b.type = 'button'; b.textContent = o;
+        b.onclick = () => {
+          const ok = i === s.quiz.answer;
+          qfb.className = 'fb' + (ok ? ' ok' : '');
+          qfb.textContent = (ok ? 'Correct. ' : 'Not quite. ') + s.quiz.why;
+          Array.from(qopts.children).forEach((c, j) => c.classList.toggle('on', j === i));
+        };
+        qopts.appendChild(b);
+      });
+    } else quiz.classList.add('hidden');
+    back.disabled = k === 0; next.disabled = k === STEPS.length - 1;
+    if (s.enter) s.enter();
+    if (opts.onStep) opts.onStep(k);
+  }
+  back.onclick = () => show(k - 1);
+  next.onclick = () => show(k + 1);
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+    if (e.key === 'ArrowRight') show(k + 1);
+    if (e.key === 'ArrowLeft') show(k - 1);
+  });
+  show(0);
+  return { show, get k(){ return k; } };
+}
+function seg(id, values, onpick, init){
+  const box = document.getElementById(id); box.innerHTML = '';
+  values.forEach(v => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = v.label;
+    b.onclick = () => { Array.from(box.children).forEach(c => c.classList.remove('on')); b.classList.add('on'); onpick(v.value); };
+    if (v.value === init) b.classList.add('on');
+    box.appendChild(b);
+  });
+}
+const fmt = (x, d) => (Math.round(x * Math.pow(10, d)) / Math.pow(10, d)).toFixed(d);
+</script>
+<script>
+const $ = id => document.getElementById(id);
+let level=50, cut=false, sig='I', lenM=300, bits=16, wires=2;
+const RPER100 = 3.3;
+
+function counts(I){
+  const full = Math.pow(2,bits)/Math.pow(2,16);
+  const lo = 3277*full, hi = 16384*full;
+  return Math.round(lo + (hi-lo)*(I-4)/16);
+}
+
+function update(){
+  const I = cut ? 0 : 4 + 16*level/100;
+  const Rw = 2*RPER100*lenM/100;
+
+  const h = 245*level/100;
+  $('liquid').setAttribute('y', 367-h); $('liquid').setAttribute('height', h);
+  $('lvlTxt').textContent = 'level ' + level + ' %';
+  $('lvlVal').textContent = level; $('lenVal').textContent = lenM; $('lenTxt').textContent = lenM + ' m';
+
+  $('txI').textContent = sig==='I' ? fmt(I,1) + ' mA' : fmt(cut?0:1+4*level/100,2) + ' V';
+  $('txSub').textContent = sig==='I' ? (wires===2 ? 'two wire, loop powered' : 'four wire, self powered') : 'voltage output, 1 to 5 V';
+  $('brk').classList.toggle('hidden', !cut);
+  $('supply2').classList.toggle('hidden', !(sig==='I' && wires===2));
+  $('supply4').classList.toggle('hidden', !(sig==='I' && wires===4));
+  $('rwire').classList.toggle('hidden', !(sig==='V' || lenM>=600));
+  $('rwTxt').textContent = fmt(Rw,0) + ' Ω';
+
+  let V, Ieff = I;
+  if(sig==='I'){ V = I*0.25; }
+  else { const Vs = cut ? 0 : 1+4*level/100; Ieff = Vs/(250+Rw)*1000; V = Ieff*0.25; }
+  $('vTxt').textContent = fmt(V,2) + ' V';
+
+  const c = counts(sig==='I' ? I : V/0.25);
+  $('countsTxt').textContent = c + ' counts';
+  $('bitsTxt').textContent = bits + ' bit';
+  const full = Math.pow(2,bits)/Math.pow(2,16), lo = 3277*full, hi = 16384*full;
+  const m = 700/(hi-lo), b = -m*lo;
+  const eu = m*c + b;
+  $('euTxt').textContent = fmt(eu,0) + ' GPM';
+  $('euNote').textContent = 'y = (700/' + Math.round(hi-lo) + ')x ' + (b<0?'−':'+') + ' ' + fmt(Math.abs(b),0);
+
+  const path = 'M426 212 H739 V228 M739 310 V440 H500 V282 H426';
+  $('currents').innerHTML = (I>0 && sig==='I') ? `<path class="cur" d="${path}"/>` : '';
+
+  $('rPV').textContent = level + ' %';
+  $('rI').textContent  = sig==='I' ? fmt(I,2)+' mA' : fmt(Ieff,2)+' mA reaching the resistor';
+  $('rV').textContent  = fmt(V,2)+' V' + (sig==='V' && !cut ? ', sent as '+fmt(1+4*level/100,2)+' V' : '');
+  $('rC').textContent  = c;
+  const uA = 16/(hi-lo);
+  $('rRes').textContent = fmt(uA*1000,2)+' µA, '+fmt(100*uA/16,3)+' % of span';
+  $('rEU').textContent = fmt(eu,1)+' GPM';
+
+  const PL=70, PR=500, PT=30, PB=190;
+  const gx = p => PL + (PR-PL)*p/100, gy = mA => PB - (PB-PT)*mA/24;
+  let g = '';
+  for(let mA=0; mA<=24; mA+=4){
+    g += `<line class="grid" x1="${PL}" x2="${PR}" y1="${gy(mA)}" y2="${gy(mA)}"/>` +
+         `<text class="tn" x="${PL-10}" y="${gy(mA)+6}" text-anchor="end">${mA}</text>`;
+  }
+  for(let p=0; p<=100; p+=25){
+    g += `<line class="grid" y1="${PT}" y2="${PB}" x1="${gx(p)}" x2="${gx(p)}"/>` +
+         `<text class="tn" x="${gx(p)}" y="${PB+28}" text-anchor="middle">${p}</text>`;
+  }
+  $('ggrid').innerHTML = g;
+  $('gline').setAttribute('d', `M${gx(0)} ${gy(4)} L${gx(100)} ${gy(20)}`);
+  $('gpt').setAttribute('cx', gx(level)); $('gpt').setAttribute('cy', gy(I));
+  $('gpt').style.fill = cut ? '#D55E00' : '#000';
+  $('liveZero').setAttribute('transform', `translate(${PL-62},${gy(4)})`);
+
+  let v='', v2='';
+  if(cut){ v = 'Below the live zero.';
+           v2 = 'A genuine empty tank reads 4 mA.'; }
+  else if(sig==='V'){ v = 'Lost in the conductors: ' + fmt((1+4*level/100)-V,2) + ' V.';
+           v2 = 'Receiver reads ' + fmt((V-1)/4*100,1) + ' %. Tank is at ' + level + ' %.'; }
+  else if(lenM>=600){ v = 'Same current at every point.';
+           v2 = 'The conductors drop volts, not milliamps.'; }
+  $('verdict').textContent = v; $('verdict2').textContent = v2;
+}
+
+$('lvl').addEventListener('input', e => { level = parseInt(e.target.value); update(); });
+$('len').addEventListener('input', e => { lenM = parseInt(e.target.value); update(); });
+seg('cutSeg',[{label:'intact',value:false},{label:'conductor cut',value:true}], v=>{cut=v;update();}, false);
+seg('sigSeg',[{label:'4 to 20 mA current',value:'I'},{label:'1 to 5 V voltage',value:'V'}], v=>{sig=v;update();}, 'I');
+seg('bitsSeg',[{label:'12 bit',value:12},{label:'14 bit',value:14},{label:'16 bit',value:16}], v=>{bits=v;update();}, 16);
+seg('wiresSeg',[{label:'two wire, loop powered',value:2},{label:'four wire, self powered',value:4}], v=>{wires=v;update();}, 2);
+
+const STEPS = [
+ {title:'A transmitter converts a physical quantity into a standard signal',
+  text:'<p>The tank has no notion of what a controller is. A level transmitter senses the level and regulates the current in a pair of conductors so that the current stands for the level. Four milliamps denotes nought percent of the calibrated range and twenty milliamps denotes one hundred percent.</p><p>Kuphaldt describes this on page 863 as the most widely used form of signal transmission in modern industrial instrumentation, and the reason is compatibility. Any transmitter can drive any receiver, because both are built to the same standard.</p>',
+  tryit:'Move the level and observe the current the transmitter regulates.',
+  controls:['lvl','read'], enter(){ cut=false; sig='I'; wires=2; }},
+
+ {title:'The correspondence is linear',
+  text:'<p>The table on page 863 is committed to memory by every instrument technician: 4, 8, 12, 16 and 20 milliamps for nought, twenty five, fifty, seventy five and one hundred percent of range. The graph plots that relation and the marker shows the present operating point.</p><p>Inverting the relation gives the percentage directly: one takes the measured current, subtracts the live zero of 4 mA, and divides by the span of 16 mA.</p>',
+  tryit:'Set the level to seventy five percent and confirm the current against the graph.',
+  controls:['lvl','read'],
+  quiz:{q:'A loop reads 12 mA. What percentage of range does that represent?',
+    opts:['Fifty percent','Sixty percent','Twelve percent'],
+    answer:0, why:'Twelve milliamps lies midway between 4 and 20, so the signal is at fifty percent. In general the percentage is (I minus 4) divided by 16.'}},
+
+ {title:'Live zero. Four milliamps means empty, nought milliamps means broken.',
+  text:'<p>The range deliberately begins above zero. A genuine reading of nought percent is 4 mA, so a reading of 0 mA can arise only from a severed conductor, a failed transmitter or a lost supply. Page 864 names this property the live zero and observes that the older 3 to 15 psi pneumatic standard was arranged the same way for the same reason.</p><p>A signal standard whose range begins at zero cannot make that distinction. The footnote on the same page records a system ranged from minus ten to plus ten volts, in which a failed signal path read as fifty percent and aroused no suspicion at all.</p>',
+  tryit:'Set the tank to nought percent and read the current, then cut the conductor and read it again.',
+  controls:['lvl','cut','read'],
+  quiz:{q:'A level loop reads 0.0 mA at the controller. What may be concluded?',
+    opts:['The loop is broken or unpowered, since a genuinely empty tank reads 4 mA','The tank is empty','The tank is full'],
+    answer:0, why:'No legitimate process value lies below 4 mA. The correct response of the program is an alarm on the instrument, not a report of an empty tank.'}},
+
+ {title:'Current survives the conductors, and voltage does not',
+  text:'<p>Conductors have resistance, and a long run has a great deal of it. A voltage signal therefore arrives at the receiver smaller than it left the transmitter, diminished by the product of the current and the conductor resistance, and the receiver has no means of detecting the loss.</p><p>In a series loop the current is the same at every point by Kirchhoff’s current law. The conductors drop volts, the loop supply makes those volts good, and the milliamps arrive unaltered. A current loop also rejects electromagnetically induced interference more effectively, because a low impedance loop develops little voltage from an induced emf.</p>',
+  tryit:'Select the voltage standard and extend the run to one thousand metres. Then return to the current standard at the same length.',
+  controls:['lvl','sig','len','read'], enter(){ cut=false; lenM=1000; $('len').value=1000; },
+  quiz:{q:'A 1 to 5 V signal leaves the transmitter at 3.0 V and arrives at the receiver as 2.8 V. What level does the controller report?',
+    opts:['Forty five percent, and nothing in the system reveals the error','Fifty percent','An instrument fault'],
+    answer:0, why:'The receiver computes (2.8 minus 1) divided by 4, which is forty five percent, while the true value is fifty. A current loop at the same length would still deliver 12.0 mA.'}},
+
+ {title:'The receiver converts the current back into a voltage it can measure',
+  text:'<p>Most analog inputs measure voltage rather than current, so a precision resistor is placed across the input terminals to perform the conversion by Ohm’s law. A value of 250 ohms turns the 4 to 20 mA range into 1 to 5 V, which is the standard receiving range described on page 891.</p><p>That voltage is then presented to an analog to digital converter.</p>',
+  tryit:'Move the level and read the voltage developed across the resistor.',
+  controls:['lvl','read'], enter(){ sig='I'; lenM=300; $('len').value=300; },
+  quiz:{q:'What voltage does 16 mA develop across 250 ohms?',
+    opts:['4.0 V','1.6 V','16 V'],
+    answer:0, why:'V equals I times R, so 0.016 A times 250 ohms is 4.0 V, which is seventy five percent of the 1 to 5 V receiving range.'}},
+
+ {title:'The converter returns an integer, and its width sets the resolution',
+  text:'<p>Every analog input module contains a converter that renders the measured voltage as an integer, described on page 786. These integers are the raw counts. A wider converter distributes more counts across the same 16 mA span, so each count corresponds to a smaller change in the measured quantity.</p><p>Resolution is the smallest change the instrument can register, and it is not the same property as accuracy. Accuracy is set by the transmitter, the precision resistor and the calibration. No increase in converter width improves it; a wider converter simply reports the same error to more decimal places.</p>',
+  tryit:'Change the converter width and read what one count is worth.',
+  controls:['lvl','bits','read'],
+  quiz:{q:'Replacing a 12 bit converter with a 16 bit converter has what effect on one count?',
+    opts:['It is worth one sixteenth as much current','It makes the measurement more accurate','It doubles the measuring span'],
+    answer:0, why:'Four additional bits give sixteen times as many counts across the same span, so each count is worth one sixteenth as much. Accuracy is unchanged, since it is fixed by the transmitter and the resistor.'}},
+
+ {title:'From counts to engineering units by a single straight line',
+  text:'<p>Page 880 works the case directly. A 16 bit card returns 3277 counts at 4 mA and 16384 counts at 20 mA, and a flowmeter ranged nought to seven hundred gallons per minute occupies the loop. Two points determine a line, so the slope is 700 divided by 13107 and the intercept follows from the zero point as minus 175.</p><p>Page 882 notes that Allen-Bradley provides an instruction for exactly this calculation, in which the slope is called the rate and the intercept the offset, with the rate expressed over a fixed denominator of ten thousand. The arithmetic is identical and only the vocabulary differs.</p>',
+  tryit:'Set the level to fifty percent and confirm that 9830 counts scale to 350 gallons per minute.',
+  controls:['lvl','read'], enter(){ bits=16; },
+  quiz:{q:'The card returns 6554 counts on that loop. What flow does the program report?',
+    opts:['175 GPM','350 GPM','6554 GPM'],
+    answer:0, why:'Seven hundred divided by 13107, multiplied by 6554, is 350, and subtracting the intercept of 175 leaves 175 gallons per minute. That is twenty five percent of range, which corresponds to 8 mA.'}},
+
+ {title:'Two conductors or four, according to where the power comes from',
+  text:'<p>A two wire transmitter derives its own operating power from the very loop whose current it regulates. It behaves as a load that determines how much current the loop supply may deliver, and its internal circuitry must therefore operate on less than 4 mA at about nineteen volts, as page 893 sets out. This is a second reason for placing the zero at 4 mA rather than at nought.</p><p>A four wire transmitter has an independent supply and drives the loop as a true source, described on page 891. Any instrument requiring appreciable power, such as a chromatograph with heaters and an onboard computer, must be of this kind.</p>',
+  tryit:'Switch between the two arrangements and note where the power source sits.',
+  controls:['lvl','wires','read']},
+
+ {title:'Summary, and where this sits in the course',
+  text:'<p>A standard signal allows any transmitter to address any receiver. Current survives the conductors where voltage does not. The live zero renders a failed loop distinguishable from a genuine zero. A precision resistor and a converter reduce the current to an integer, and one line in the program converts that integer into engineering units.</p><p>Every sensing device on the benches in this course is discrete, and slot three of your chassis, which would carry an analog input module, is empty. The material on this page is therefore examinable rather than wireable, and the arithmetic of the last two steps is what you will be asked to perform on paper.</p>',
+  controls:['lvl','bits','read']}
+];
+makeSteps(STEPS, {onStep:()=>update()});
+update();
+</script>
+</body>
+</html>

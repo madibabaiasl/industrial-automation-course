@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sinking and sourcing</title>
+<meta name="description" content="Three-wire DC sensors, the direction of current in the control wire, and the 1756-IB16 input module, for MENG 4450 Lesson 3.2.">
+<style>:root{--ink:#000;--ground:#fff;--panel:#F1EFEF;--rule:#BBB;--yellow:#FFE819;--stroke:2px;--radius:6px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:Arial,Helvetica,"Liberation Sans",sans-serif;font-size:19px;line-height:1.45}
+.wrap{max-width:1320px;margin:0 auto;padding:18px}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+header h1{font-size:27px;font-weight:700;margin:0;letter-spacing:-.01em}
+.hub{font-size:17px;font-weight:700;color:var(--ink);text-decoration:none;border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:4px 12px}
+.hub:hover{background:var(--panel)}
+.chip{font-size:17px;font-weight:700;border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:4px 12px;background:var(--ground)}
+.spacer{flex:1}
+#stepno{font-size:19px;font-weight:700}
+.progress{height:10px;border:var(--stroke) solid var(--ink);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;background:var(--ground)}
+#pbar{height:100%;background:var(--ink);width:0;transition:width .3s}
+.main{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+.stage{flex:1 1 720px;min-width:320px;border:var(--stroke) solid var(--ink);border-radius:var(--radius);background:var(--ground);padding:10px}
+.stage svg{width:100%;height:auto;display:block;font-family:Arial,Helvetica,"Liberation Sans",sans-serif}
+.side{flex:1 1 380px;min-width:300px;display:flex;flex-direction:column;gap:14px}
+.box{border:var(--stroke) solid var(--ink);border-radius:var(--radius);background:var(--ground);padding:14px 16px}
+.box h2{font-size:22px;font-weight:700;margin:0 0 8px}
+.box p{margin:0 0 10px;font-size:19px}
+.box p:last-child{margin-bottom:0}
+.tryit{border:var(--stroke) solid var(--ink);border-radius:var(--radius);background:var(--panel);padding:10px 12px;margin-top:10px;font-size:18px}
+.tryit b{display:block;font-size:17px;margin-bottom:3px;letter-spacing:.02em;text-transform:uppercase}
+.readout{display:grid;grid-template-columns:1fr auto;gap:6px 16px;font-size:18px;border-top:2px solid var(--rule);padding-top:10px;margin-top:12px}
+.readout b{font-weight:700;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.ctl{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.ctl label{font-size:18px;font-weight:700}
+.ctl input[type=range]{width:100%;accent-color:#000;height:26px}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+button{font:700 17px Arial,Helvetica,sans-serif;color:var(--ink);background:var(--ground);border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:9px 15px;cursor:pointer;min-height:42px}
+button:hover{background:var(--panel)}
+button[disabled]{opacity:.4;cursor:default}
+button.on{background:var(--ink);color:var(--ground)}
+.seg button{padding:8px 13px;min-height:40px}
+.quiz{margin-top:14px;border-top:2px solid var(--rule);padding-top:12px}
+.quiz .q{font-weight:700;margin-bottom:9px;font-size:19px}
+.quiz .opts{display:flex;flex-direction:column;gap:8px}
+.quiz .opts button{text-align:left;font-weight:400;padding:11px 13px;font-size:18px}
+.quiz .opts button.on{font-weight:700}
+.quiz .fb{margin-top:10px;font-size:18px;min-height:1.4em}
+.quiz .fb.ok{font-weight:700}
+.controls{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.controls .note{font-size:17px;font-weight:700}
+.foot{margin-top:22px;border-top:2px solid var(--rule);padding-top:10px;font-size:16px}
+.foot p{margin:0 0 6px}
+.hidden{display:none !important}
+/* svg helpers, all text black */
+.blk{fill:#fff;stroke:#000;stroke-width:2.4}
+.pan{fill:#F1EFEF;stroke:#000;stroke-width:2.4}
+.ln{fill:none;stroke:#000;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.thin{fill:none;stroke:#000;stroke-width:1.4}
+.grid{fill:none;stroke:#BBB;stroke-width:1.2}
+.t{font-size:21px;fill:#000}
+.tb{font-size:23px;font-weight:700;fill:#000}
+.ts{font-size:19px;fill:#000}
+.tn{font-size:17px;fill:#000}
+.acc{fill:#FFE819;stroke:#000;stroke-width:2.4}
+.wire{fill:none;stroke:#000;stroke-width:2.6;stroke-linecap:round}
+.cur{fill:none;stroke:#E69F00;stroke-width:5;stroke-linecap:round;stroke-dasharray:6 12;animation:flow .55s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-18}}
+@media (prefers-reduced-motion:reduce){.cur{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="hub" href="../index.html">&larr; All activities</a>
+    <h1>Sinking and sourcing</h1>
+    <span class="chip">which way the current goes</span>
+    <span class="spacer"></span>
+    <span id="stepno">Step 1</span>
+  </header>
+  <div class="progress"><div id="pbar"></div></div>
+
+  <div class="main">
+    <div class="stage">
+      <svg id="stage" viewBox="0 0 1060 800" role="img" aria-label="A three-wire DC sensor between supply rails, a lamp in one of two positions, and a PLC input module">
+        <!-- rails -->
+        <text class="tb" x="40" y="70">+24 V DC</text>
+        <path class="wire" d="M40 92 H1020"/>
+        <path class="wire" d="M40 628 H1020"/>
+        <text class="tb" x="40" y="664">0 V  (DC &minus;)</text>
+
+        <!-- supply -->
+        <g>
+          <rect class="blk" x="52" y="300" width="100" height="120" rx="6"/>
+          <text class="ts" x="102" y="348" text-anchor="middle">24 V</text>
+          <text class="ts" x="102" y="374" text-anchor="middle">supply</text>
+          <path class="wire" d="M102 300 V92 M102 420 V628"/>
+          <text class="tb" x="112" y="292">+</text>
+          <text class="tb" x="112" y="444">&minus;</text>
+        </g>
+
+        <!-- sensor -->
+        <g id="sensor">
+          <rect class="blk" x="230" y="176" width="300" height="344" rx="6"/>
+          <text class="tb" x="380" y="212" text-anchor="middle">Three-wire DC sensor</text>
+          <!-- supply legs -->
+          <path class="wire" d="M266 176 V92"/>
+          <text class="tn" x="276" y="140">brown, +V</text>
+          <path class="wire" d="M266 520 V628"/>
+          <text class="tn" x="276" y="592">blue, 0 V</text>
+          <path class="wire" d="M266 176 V262 M266 384 V520"/>
+          <!-- sensing circuit -->
+          <rect class="blk" x="248" y="262" width="128" height="122" rx="5"/>
+          <text class="ts" x="312" y="316" text-anchor="middle">sensing</text>
+          <text class="ts" x="312" y="342" text-anchor="middle">circuit</text>
+          <path class="wire" d="M376 324 H430" stroke-dasharray="6 6"/>
+          <!-- output switch, PNP: to the top rail -->
+          <g id="swPNP">
+            <path class="wire" d="M266 238 H444"/>
+            <circle cx="444" cy="238" r="6" fill="#000"/>
+            <line id="bladeP" class="wire" x1="444" y1="238" x2="474" y2="278"/>
+            <circle cx="444" cy="324" r="6" fill="#000"/>
+            <path class="wire" d="M444 324 H530"/>
+          </g>
+          <!-- output switch, NPN: to the bottom rail -->
+          <g id="swNPN">
+            <path class="wire" d="M266 456 H444"/>
+            <circle cx="444" cy="456" r="6" fill="#000"/>
+            <line id="bladeN" class="wire" x1="444" y1="456" x2="474" y2="416"/>
+            <circle cx="444" cy="324" r="6" fill="#000"/>
+            <path class="wire" d="M444 324 H530"/>
+          </g>
+        </g>
+        <!-- captions under the sensor, one statement per line, nothing inline -->
+        <text id="capType" class="ts" x="230" y="694">PNP. The output transistor connects the black wire to +V.</text>
+        <text id="capTgt"  class="tb" x="230" y="724" style="font-size:21px">Target absent, output open.</text>
+
+        <!-- the one control wire -->
+        <text class="tn" x="546" y="356">black, output</text>
+        <g id="accent">
+          <circle class="acc" cx="596" cy="216" r="42"/>
+          <text class="tb" x="596" y="210" text-anchor="middle" style="font-size:17px">the one</text>
+          <text class="tb" x="596" y="230" text-anchor="middle" style="font-size:17px">wire</text>
+          <path class="ln" d="M596 258 V324"/>
+        </g>
+
+        <!-- lamp, position A: output down to 0 V -->
+        <g id="loadA">
+          <path class="wire" d="M530 324 H700 V452"/>
+          <circle id="lampA" class="blk" cx="700" cy="490" r="38"/>
+          <path class="wire" d="M700 528 V628"/>
+          <text class="ts" x="750" y="484">lamp A</text>
+          <text class="tn" x="750" y="508">output to 0 V</text>
+        </g>
+        <!-- lamp, position B: +24 V down to output -->
+        <g id="loadB">
+          <path class="wire" d="M530 324 H700 V214"/>
+          <circle id="lampB" class="blk" cx="700" cy="176" r="38"/>
+          <path class="wire" d="M700 138 V92"/>
+          <text class="ts" x="750" y="170">lamp B</text>
+          <text class="tn" x="750" y="194">+24 V to output</text>
+        </g>
+
+        <!-- PLC input module -->
+        <g id="card">
+          <rect class="blk" x="700" y="160" width="290" height="392" rx="6"/>
+          <text class="tb" id="cardName" x="845" y="200" text-anchor="middle">1756-IB16</text>
+          <text class="tn" id="cardSub" x="845" y="228" text-anchor="middle">DC input, 16 points</text>
+          <rect class="blk" x="722" y="252" width="150" height="52" rx="5"/>
+          <text class="ts" x="797" y="286" text-anchor="middle">IN-0</text>
+          <path class="wire" d="M530 324 H640 V278 H722"/>
+          <!-- optocoupler LED -->
+          <path class="ln" d="M797 304 V344"/>
+          <path class="ln" d="M775 344 H819 L797 376 Z"/>
+          <path class="ln" d="M775 376 H819 M797 376 V428"/>
+          <text class="tn" x="830" y="356">LED</text>
+          <rect class="blk" x="722" y="428" width="150" height="52" rx="5"/>
+          <text class="ts" id="comName" x="797" y="462" text-anchor="middle">GND-0</text>
+          <path class="wire" id="comWire" d="M797 480 V628"/>
+          <text class="tn" id="comTxt" x="700" y="592">to DC COM &minus;</text>
+          <text class="tb" id="bit" x="845" y="524" text-anchor="middle">input bit = 0</text>
+        </g>
+
+        <!-- animated current -->
+        <g id="currents"></g>
+        <text id="verdict" class="tb" x="40" y="772" style="font-size:22px"></text>
+      </svg>
+    </div>
+
+    <div class="side">
+      <div class="box">
+        <h2 id="steptitle"></h2>
+        <div id="steptext"></div>
+        <div class="tryit hidden" id="tryit"></div>
+
+        <div class="ctl hidden" data-ctl="type"><label>Output stage of the sensor</label><div class="seg" id="typeSeg"></div></div>
+        <div class="ctl hidden" data-ctl="tgt"><label>Target</label><div class="seg" id="tgtSeg"></div></div>
+        <div class="ctl hidden" data-ctl="load"><label>Position of the lamp</label><div class="seg" id="loadSeg"></div></div>
+        <div class="ctl hidden" data-ctl="cardc"><label>Input module</label><div class="seg" id="cardSeg"></div></div>
+        <div class="ctl hidden" data-ctl="sense"><label>Output contact sense</label><div class="seg" id="senseSeg"></div></div>
+
+        <div class="readout hidden" data-ctl="read">
+          <span>Output transistor</span><b id="rT">&mdash;</b>
+          <span>Current in the control wire</span><b id="rI">none</b>
+          <span>Lamp</span><b id="rL">dark</b>
+          <span>Input bit</span><b id="rB">&mdash;</b>
+        </div>
+
+        <div class="quiz hidden" id="quiz"><div class="q" id="quizq"></div><div class="opts" id="quizopts"></div><div class="fb" id="quizfb"></div></div>
+      </div>
+      <div class="controls">
+        <button id="back" type="button">&larr; Back</button>
+        <button id="next" type="button">Next &rarr;</button>
+        <span class="note">Arrow keys also move between steps</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <p>MENG 4450, Lesson 3.2. Assigned reading: Kuphaldt, <i>Lessons in Industrial Instrumentation</i> v2.30, section 9.4 pages 665 to 667 and section 12.2.1 pages 779 to 786. Module wiring after Rockwell Automation publication 1756-UM058K, page 98 for the 1756-IB16 and page 105 for the 1756-IV16.</p>
+    <p>Model. The output transistor is represented as an ideal switch that either connects the control wire to one supply rail or leaves it open. Current arrows follow conventional flow from positive to negative, which is the convention the terms sourcing and sinking assume. Conductor names follow the common three-wire colour code given on page 666, brown for +V, blue for 0 V and black for the switched output. The bench panel brings the same three connections out as red, black and blue jacks, so read the printed legend rather than the jack colour.</p>
+  </div>
+</div>
+
+<script>// MENG 4450 - step engine shared by the Lesson 3.2 activity pages.
+function makeSteps(STEPS, opts){
+  opts = opts || {};
+  const el = id => document.getElementById(id);
+  let k = 0;
+  const stepno=el('stepno'), pbar=el('pbar'), title=el('steptitle'), text=el('steptext'), tryit=el('tryit');
+  const quiz=el('quiz'), qq=el('quizq'), qopts=el('quizopts'), qfb=el('quizfb');
+  const back=el('back'), next=el('next');
+  const allCtl = Array.from(document.querySelectorAll('[data-ctl]'));
+  function show(i){
+    if (STEPS[k] && STEPS[k].exit) STEPS[k].exit();
+    k = Math.max(0, Math.min(STEPS.length - 1, i));
+    const s = STEPS[k];
+    stepno.textContent = 'Step ' + (k + 1) + ' of ' + STEPS.length;
+    pbar.style.width = ((k + 1) / STEPS.length * 100) + '%';
+    title.textContent = s.title;
+    text.innerHTML = s.text;
+    if (s.tryit){ tryit.classList.remove('hidden'); tryit.innerHTML = '<b>Try it</b>' + s.tryit; }
+    else tryit.classList.add('hidden');
+    allCtl.forEach(c => c.classList.toggle('hidden', !(s.controls || []).includes(c.dataset.ctl)));
+    if (s.quiz){
+      quiz.classList.remove('hidden'); qq.textContent = s.quiz.q; qopts.innerHTML = ''; qfb.textContent = ''; qfb.className = 'fb';
+      s.quiz.opts.forEach((o, i) => {
+        const b = document.createElement('button'); b.type = 'button'; b.textContent = o;
+        b.onclick = () => {
+          const ok = i === s.quiz.answer;
+          qfb.className = 'fb' + (ok ? ' ok' : '');
+          qfb.textContent = (ok ? 'Correct. ' : 'Not quite. ') + s.quiz.why;
+          Array.from(qopts.children).forEach((c, j) => c.classList.toggle('on', j === i));
+        };
+        qopts.appendChild(b);
+      });
+    } else quiz.classList.add('hidden');
+    back.disabled = k === 0; next.disabled = k === STEPS.length - 1;
+    if (s.enter) s.enter();
+    if (opts.onStep) opts.onStep(k);
+  }
+  back.onclick = () => show(k - 1);
+  next.onclick = () => show(k + 1);
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+    if (e.key === 'ArrowRight') show(k + 1);
+    if (e.key === 'ArrowLeft') show(k - 1);
+  });
+  show(0);
+  return { show, get k(){ return k; } };
+}
+function seg(id, values, onpick, init){
+  const box = document.getElementById(id); box.innerHTML = '';
+  values.forEach(v => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = v.label;
+    b.onclick = () => { Array.from(box.children).forEach(c => c.classList.remove('on')); b.classList.add('on'); onpick(v.value); };
+    if (v.value === init) b.classList.add('on');
+    box.appendChild(b);
+  });
+}
+const fmt = (x, d) => (Math.round(x * Math.pow(10, d)) / Math.pow(10, d)).toFixed(d);
+</script>
+<script>
+const $ = id => document.getElementById(id);
+let type='PNP', target=false, load='A', card='IB16', sense='NO', showCard=false;
+
+function conducting(){ return sense==='NO' ? target : !target; }
+
+function update(){
+  const on = conducting();
+  $('swPNP').style.display = type==='PNP' ? '' : 'none';
+  $('swNPN').style.display = type==='NPN' ? '' : 'none';
+  $('bladeP').setAttribute('x2', on?444:474); $('bladeP').setAttribute('y2', on?324:278);
+  $('bladeN').setAttribute('x2', on?444:474); $('bladeN').setAttribute('y2', on?324:416);
+
+  $('capType').textContent = type==='PNP'
+    ? 'PNP. The output transistor connects the black wire to +V.'
+    : 'NPN. The output transistor connects the black wire to 0 V.';
+  $('capTgt').textContent = (target ? 'Target present' : 'Target absent')
+    + (on ? ', output conducting.' : ', output open.');
+
+  $('rT').textContent = (type==='PNP' ? 'PNP, switches to +V' : 'NPN, switches to 0 V') + (on ? ', closed' : ', open');
+
+  const useCard = showCard;
+  $('loadA').style.display = (!useCard && load==='A') ? '' : 'none';
+  $('loadB').style.display = (!useCard && load==='B') ? '' : 'none';
+  $('card').style.display  = useCard ? '' : 'none';
+
+  let flows=false, path='';
+  if(on && !useCard){
+    if(type==='PNP' && load==='A'){ flows=true; path='M102 92 H266 V238 H444 V324 H700 V628 H102'; }
+    if(type==='NPN' && load==='B'){ flows=true; path='M102 92 H700 V324 H444 V456 H266 V628 H102'; }
+  }
+  if(on && useCard){
+    const sinkCard = card==='IB16';
+    if(type==='PNP' && sinkCard){ flows=true; path='M102 92 H266 V238 H444 V324 H640 V278 H797 V628 H102'; }
+    if(type==='NPN' && !sinkCard){ flows=true; path='M102 92 H1020 V560 H797 V278 H640 V324 H444 V456 H266 V628 H102'; }
+  }
+  $('currents').innerHTML = flows ? `<path class="cur" d="${path}"/>` : '';
+  $('lampA').style.fill = (flows && load==='A' && !useCard) ? '#FFE819' : '#fff';
+  $('lampB').style.fill = (flows && load==='B' && !useCard) ? '#FFE819' : '#fff';
+
+  $('rI').textContent = flows ? (type==='PNP' ? 'out of the sensor, sourcing' : 'into the sensor, sinking') : 'none';
+  $('rL').textContent = useCard ? '—' : (flows ? 'lit' : 'dark');
+
+  if(card==='IB16'){
+    $('cardName').textContent='1756-IB16'; $('cardSub').textContent='DC input, 16 points';
+    $('comName').textContent='GND-0'; $('comTxt').textContent='to DC COM −';
+    $('comWire').setAttribute('d','M797 480 V628');
+  } else {
+    $('cardName').textContent='1756-IV16'; $('cardSub').textContent='sourcing input, 16 points';
+    $('comName').textContent='DC-0 +'; $('comTxt').textContent='to DC COM +';
+    $('comWire').setAttribute('d','M797 480 V560 H1020 V92');
+  }
+  const bit = (useCard && flows) ? 1 : 0;
+  $('bit').textContent = 'input bit = ' + bit;
+  $('rB').textContent = useCard ? String(bit) : '—';
+
+  let v = '';
+  if(!on) v = 'Output open. No current anywhere in the control wire.';
+  else if(!useCard && flows) v = 'Output closed, circuit complete, lamp lit.';
+  else if(!useCard && !flows) v = 'Output closed and the lamp is dark. The load is on the wrong side.';
+  else if(useCard && flows) v = 'Sensor on, optocoupler lit, input bit set.';
+  else v = 'Sensor on and the module registers nothing. Wrong module for this output stage.';
+  $('verdict').textContent = v;
+}
+
+seg('typeSeg',[{label:'PNP, switches to +V',value:'PNP'},{label:'NPN, switches to 0 V',value:'NPN'}], v=>{type=v;update();}, 'PNP');
+seg('tgtSeg',[{label:'absent',value:false},{label:'present',value:true}], v=>{target=v;update();}, false);
+seg('loadSeg',[{label:'A: output to 0 V',value:'A'},{label:'B: +24 V to output',value:'B'}], v=>{load=v;update();}, 'A');
+seg('cardSeg',[{label:'1756-IB16, ours',value:'IB16'},{label:'1756-IV16',value:'IV16'}], v=>{card=v;update();}, 'IB16');
+seg('senseSeg',[{label:'normally open',value:'NO'},{label:'normally closed, our bench',value:'NC'}], v=>{sense=v;update();}, 'NO');
+
+const STEPS = [
+ {title:'Three conductors. Two carry power in, one carries the answer out.',
+  text:'<p>A three-wire DC sensor is supplied on two conductors and reports on a third. Kuphaldt gives the common colour code on page 666: brown to the positive supply, blue to the negative, and black for the switched output. The sensing circuit determines whether a target is present, and an output transistor acts on that determination.</p><p>Everything that follows concerns the black conductor alone, and specifically the direction of current within it.</p>',
+  controls:[], enter(){ showCard=false; target=false; type='PNP'; load='A'; sense='NO'; }},
+
+ {title:'A PNP output connects the control wire to the positive rail',
+  text:'<p>When the target is detected, the transistor in a PNP device conducts between the positive supply rail and the output terminal. Current therefore leaves the sensor through the black conductor. The device is said to source current, and the book also calls such an arrangement a high side switch, because the transistor sits on the positive side of the load.</p>',
+  tryit:'Bring the target to present and follow the current path round the circuit.',
+  controls:['tgt','read'], enter(){ showCard=false; type='PNP'; load='A'; }},
+
+ {title:'The load must complete the path to the opposite rail',
+  text:'<p>A lamp requires a complete circuit. A sourcing output delivers current out of the control wire, so the lamp must return that current to 0 V. Place the lamp between the positive rail and the output instead, and when the transistor conducts both terminals of the lamp are held at 24 V, so no potential difference exists across it and no current flows. When the transistor is open the lamp has no supply at all.</p><p>The sensor is functioning correctly in both cases. Only the wiring distinguishes them.</p>',
+  tryit:'Predict the result first, then move the lamp to position B with the target present.',
+  controls:['tgt','load','read'],
+  quiz:{q:'A PNP sensor detects a target. The lamp is wired from +24 V to the output, which is position B. What happens?',
+    opts:['The lamp stays dark. Both of its terminals sit at 24 V, so no current flows','The lamp lights, because the transistor is conducting','The lamp lights only while the target is moving'],
+    answer:0, why:'A sourcing output supplies the positive side. The lamp needs one terminal at +24 V and the other at 0 V, which is position A. Position B places the lamp between two points at the same potential.'}},
+
+ {title:'An NPN output connects the control wire to the negative rail',
+  text:'<p>The same three conductors, the same colour code, and the opposite direction. When an NPN transistor conducts it ties the black conductor to 0 V, so current flows from the positive rail, through the load, and into the sensor. The device sinks current, and the arrangement is a low side switch.</p><p>Only a lamp supplied from the positive rail can now be completed, which is position B.</p>',
+  tryit:'Select NPN with the target present, then try both lamp positions in turn.',
+  controls:['type','tgt','load','read'], enter(){ type='NPN'; load='A'; target=true; }},
+
+ {title:'The general rule',
+  text:'<p>The load completes the path to whichever rail the output stage does not switch to. A sourcing device requires a load returning to 0 V; a sinking device requires a load fed from the positive rail. Kuphaldt states the underlying constraint on page 781: in every circuit formed by a field device and an I/O channel, one element must source current while the other sinks it.</p><p>His footnote on page 780 gives the method. Attend to the single conductor joining the two devices, disregard the conductors common with either supply rail, and note the direction of conventional current within it.</p>',
+  controls:['type','tgt','load','read']},
+
+ {title:'Now the load is a controller input channel',
+  text:'<p>Each channel of a discrete input module is a light emitting diode within an optocoupler, as page 779 shows. Energising the channel illuminates the diode, the phototransistor on the isolated side conducts, and one bit is set in the input image.</p><p>The module on your bench is a 1756-IB16. Its two commons, GND-0 and GND-1, are taken to the negative of the field supply, so current must enter a point at IN-x and leave through the common. The module therefore sinks, and the field device must source.</p>',
+  tryit:'Connect the PNP sensor to the IB16 with the target present. Then try the NPN sensor on the same module.',
+  controls:['type','tgt','read'], enter(){ showCard=true; card='IB16'; type='PNP'; target=true; },
+  quiz:{q:'The 1756-IB16 takes its commons to DC COM minus. Which output stage can it read?',
+    opts:['PNP, sourcing. Current must enter IN-x and leave through the common','NPN, sinking. The module supplies the current','Either, because the module is not polarity sensitive'],
+    answer:0, why:'The wiring diagram on page 98 of 1756-UM058K takes GND-0 and GND-1 to the negative of the supply, so only a device that drives current into the point will illuminate the optocoupler. A limit switch is indifferent to polarity, as page 782 shows, but a transistor output is not.'}},
+
+ {title:'The complementary module exists',
+  text:'<p>Rockwell also supplies the 1756-IV16, described in the catalogue as a sourcing current input module. Its commons are DC-0+ and DC-1+, taken to the positive rail, so current leaves each point and returns through the field device. That module requires an NPN sensor.</p><p>Note the naming convention, since it is the usual source of error. Rockwell names the module by what the module does, so a sourcing input module is the one that wants a sinking field device. The IB16 heading carries no polarity word at all, which is why the polarity has to be read from the wiring diagram rather than inferred from the catalogue description.</p>',
+  tryit:'Switch the module to the IV16 and try each output stage against it.',
+  controls:['type','tgt','cardc','read'], enter(){ showCard=true; }},
+
+ {title:'The bench sensor, read as a bit',
+  text:'<p>The bench sensor is inferred to be PNP, and the panel brings out its normally closed output only. With no target present that output is conducting, the input channel is energised, and the bit reads 1. The arrival of a target interrupts the output and the bit falls to 0.</p><p>Field state and logic state are therefore two distinct tables. Every start pushbutton wired in this course so far has read 1 when something happened. This device reads 0.</p>',
+  tryit:'Select the normally closed sense with a PNP sensor on the IB16, then move the target in and out and watch the bit.',
+  controls:['tgt','sense','read'], enter(){ showCard=true; card='IB16'; type='PNP'; sense='NC'; target=false; },
+  quiz:{q:'A normally closed sourcing sensor feeds the IB16 and a target is present. What does the input bit read?',
+    opts:['0, because the normally closed output opened when the target arrived','1, because something is present','It depends on where the scan is when the target arrives'],
+    answer:0, why:'Normally closed means made at rest, and rest is the absence of a target. The target interrupts the output, the optocoupler goes dark and the bit reads 0. An XIC instruction on that bit is true when nothing is there.'}},
+
+ {title:'Summary, and what Thursday asks of you',
+  text:'<p>Sourcing and sinking describe the direction of conventional current in the one control conductor. A PNP output sources, so its load returns to 0 V. The 1756-IB16 sinks, so it requires a sourcing field device. Normally open and normally closed describe the resting state of the output and bear on none of this.</p><p>In Physical Lab 3, item 2 asks you to land the blue NC jack on a pilot lamp. One side of the lamp completes the circuit and the other leaves it dark while the sensor operates perfectly. You are asked to choose the side, and to state the reason, before you patch anything.</p>',
+  controls:['type','tgt','load','sense','read'], enter(){ showCard=false; }}
+];
+makeSteps(STEPS, {onStep:()=>update()});
+update();
+</script>
+</body>
+</html>

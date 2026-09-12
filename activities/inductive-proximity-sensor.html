@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How a proximity sensor switches</title>
+<meta name="description" content="Inductive sensing, rated operating distance, hysteresis and target material, for MENG 4450 Lesson 3.2.">
+<style>:root{--ink:#000;--ground:#fff;--panel:#F1EFEF;--rule:#BBB;--yellow:#FFE819;--stroke:2px;--radius:6px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:Arial,Helvetica,"Liberation Sans",sans-serif;font-size:19px;line-height:1.45}
+.wrap{max-width:1320px;margin:0 auto;padding:18px}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+header h1{font-size:27px;font-weight:700;margin:0;letter-spacing:-.01em}
+.hub{font-size:17px;font-weight:700;color:var(--ink);text-decoration:none;border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:4px 12px}
+.hub:hover{background:var(--panel)}
+.chip{font-size:17px;font-weight:700;border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:4px 12px;background:var(--ground)}
+.spacer{flex:1}
+#stepno{font-size:19px;font-weight:700}
+.progress{height:10px;border:var(--stroke) solid var(--ink);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;background:var(--ground)}
+#pbar{height:100%;background:var(--ink);width:0;transition:width .3s}
+.main{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+.stage{flex:1 1 720px;min-width:320px;border:var(--stroke) solid var(--ink);border-radius:var(--radius);background:var(--ground);padding:10px}
+.stage svg{width:100%;height:auto;display:block;font-family:Arial,Helvetica,"Liberation Sans",sans-serif}
+.side{flex:1 1 380px;min-width:300px;display:flex;flex-direction:column;gap:14px}
+.box{border:var(--stroke) solid var(--ink);border-radius:var(--radius);background:var(--ground);padding:14px 16px}
+.box h2{font-size:22px;font-weight:700;margin:0 0 8px}
+.box p{margin:0 0 10px;font-size:19px}
+.box p:last-child{margin-bottom:0}
+.tryit{border:var(--stroke) solid var(--ink);border-radius:var(--radius);background:var(--panel);padding:10px 12px;margin-top:10px;font-size:18px}
+.tryit b{display:block;font-size:17px;margin-bottom:3px;letter-spacing:.02em;text-transform:uppercase}
+.readout{display:grid;grid-template-columns:1fr auto;gap:6px 16px;font-size:18px;border-top:2px solid var(--rule);padding-top:10px;margin-top:12px}
+.readout b{font-weight:700;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.ctl{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.ctl label{font-size:18px;font-weight:700}
+.ctl input[type=range]{width:100%;accent-color:#000;height:26px}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+button{font:700 17px Arial,Helvetica,sans-serif;color:var(--ink);background:var(--ground);border:var(--stroke) solid var(--ink);border-radius:var(--radius);padding:9px 15px;cursor:pointer;min-height:42px}
+button:hover{background:var(--panel)}
+button[disabled]{opacity:.4;cursor:default}
+button.on{background:var(--ink);color:var(--ground)}
+.seg button{padding:8px 13px;min-height:40px}
+.quiz{margin-top:14px;border-top:2px solid var(--rule);padding-top:12px}
+.quiz .q{font-weight:700;margin-bottom:9px;font-size:19px}
+.quiz .opts{display:flex;flex-direction:column;gap:8px}
+.quiz .opts button{text-align:left;font-weight:400;padding:11px 13px;font-size:18px}
+.quiz .opts button.on{font-weight:700}
+.quiz .fb{margin-top:10px;font-size:18px;min-height:1.4em}
+.quiz .fb.ok{font-weight:700}
+.controls{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.controls .note{font-size:17px;font-weight:700}
+.foot{margin-top:22px;border-top:2px solid var(--rule);padding-top:10px;font-size:16px}
+.foot p{margin:0 0 6px}
+.hidden{display:none !important}
+/* svg helpers, all text black */
+.blk{fill:#fff;stroke:#000;stroke-width:2.4}
+.pan{fill:#F1EFEF;stroke:#000;stroke-width:2.4}
+.ln{fill:none;stroke:#000;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.thin{fill:none;stroke:#000;stroke-width:1.4}
+.grid{fill:none;stroke:#BBB;stroke-width:1.2}
+.t{font-size:21px;fill:#000}
+.tb{font-size:23px;font-weight:700;fill:#000}
+.ts{font-size:19px;fill:#000}
+.tn{font-size:17px;fill:#000}
+.acc{fill:#FFE819;stroke:#000;stroke-width:2.4}
+.wire{fill:none;stroke:#000;stroke-width:2.6;stroke-linecap:round}
+.cur{fill:none;stroke:#E69F00;stroke-width:5;stroke-linecap:round;stroke-dasharray:6 12;animation:flow .55s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-18}}
+@media (prefers-reduced-motion:reduce){.cur{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="hub" href="../index.html">&larr; All activities</a>
+    <h1>How a proximity sensor switches</h1>
+    <span class="chip">eddy currents to hysteresis</span>
+    <span class="spacer"></span>
+    <span id="stepno">Step 1</span>
+  </header>
+  <div class="progress"><div id="pbar"></div></div>
+
+  <div class="main">
+    <div class="stage">
+      <svg id="stage" viewBox="0 0 900 770" role="img" aria-label="An inductive proximity sensor with a movable target, an oscillator amplitude trace and an output lamp">
+        <!-- sensor -->
+        <g id="sensor">
+          <text class="ts" x="40" y="188">Inductive proximity sensor</text>
+          <rect class="blk" x="40" y="200" width="250" height="120" rx="6"/>
+          <rect class="blk" x="290" y="212" width="18" height="96" rx="3"/>
+          <rect class="blk" x="58" y="222" width="68" height="76" rx="4"/>
+          <text class="tn" x="92" y="254" text-anchor="middle">oscil-</text><text class="tn" x="92" y="276" text-anchor="middle">lator</text>
+          <rect class="blk" x="136" y="222" width="68" height="76" rx="4"/>
+          <text class="tn" x="170" y="254" text-anchor="middle">trigger</text><text class="tn" x="170" y="276" text-anchor="middle">level</text>
+          <rect class="blk" x="214" y="222" width="62" height="76" rx="4"/>
+          <text class="tn" x="245" y="254" text-anchor="middle">out-</text><text class="tn" x="245" y="276" text-anchor="middle">put</text>
+          <path class="ln" d="M126 260 h10 M204 260 h10 M276 260 h14"/>
+          <path class="ln" d="M296 224 h10 M296 236 h10 M296 248 h10 M296 260 h10 M296 272 h10 M296 284 h10 M296 296 h10"/>
+          <text class="tn" x="40" y="350">coil on a ferrite core, behind the sensing face</text>
+        </g>
+        <!-- field -->
+        <g id="field" class="thin"><path id="f1" d=""/><path id="f2" d=""/><path id="f3" d=""/></g>
+        <!-- target, drawn above the sensor band and clear of the marker band below -->
+        <g id="target" style="cursor:grab">
+          <text id="tgtLabel" class="ts" x="0" y="178" text-anchor="middle">steel target</text>
+          <rect id="tgtRect" class="pan" x="0" y="190" width="26" height="130"/>
+          <line id="tgtLead" class="thin" x1="0" y1="322" x2="0" y2="418" stroke-dasharray="3 5"/>
+          <g id="eddy" class="thin"></g>
+        </g>
+        <!-- distance axis -->
+        <g>
+          <path class="ln" d="M320 420 H770"/>
+          <g id="ticks"></g>
+          <text class="ts" x="545" y="566" text-anchor="middle">distance from the sensing face, mm</text>
+        </g>
+        <!-- switching markers: own vertical band, 360 to 470 -->
+        <g id="marks">
+          <rect id="band" class="pan" x="0" y="404" width="0" height="16" style="stroke-width:1.4"/>
+          <line id="onLine" class="ln" x1="0" y1="360" x2="0" y2="474" stroke-dasharray="7 6"/>
+          <line id="offLine" class="ln" x1="0" y1="360" x2="0" y2="474" stroke-dasharray="7 6"/>
+          <g id="accSn"><circle class="acc" cx="0" cy="506" r="29"/><text class="tb" id="accTxt" x="0" y="514" text-anchor="middle" style="font-size:19px">Sn</text></g>
+        </g>
+        <!-- oscillator trace -->
+        <g>
+          <text class="ts" x="40" y="614">Oscillator amplitude</text>
+          <rect class="blk" x="40" y="626" width="360" height="110" rx="5"/>
+          <line id="thr" class="ln" x1="40" x2="400" y1="681" y2="681" stroke-dasharray="5 5" style="stroke-width:1.4"/>
+          <path id="trace" class="ln" style="stroke:#0072B2;stroke-width:2.6" d=""/>
+          <text class="tn" x="408" y="686">trigger level</text>
+        </g>
+        <!-- output -->
+        <g>
+          <text id="outMode" class="ts" x="530" y="636">Normally open output</text>
+          <circle id="lamp" class="blk" cx="562" cy="682" r="34"/>
+          <text id="lampTxt" class="ts" x="610" y="676">output open</text>
+          <text id="outState" class="tn" x="610" y="702">no target present</text>
+        </g>
+        <text id="chatter" class="tb" x="530" y="756" style="font-size:20px"></text>
+      </svg>
+    </div>
+
+    <div class="side">
+      <div class="box">
+        <h2 id="steptitle"></h2>
+        <div id="steptext"></div>
+        <div class="tryit hidden" id="tryit"></div>
+
+        <div class="ctl hidden" data-ctl="dist">
+          <label for="dist">Target distance: <span id="distVal">14.0</span> mm</label>
+          <input type="range" id="dist" min="0" max="20" step="0.1" value="14">
+        </div>
+        <div class="ctl hidden" data-ctl="mat"><label>Target material</label><div class="seg" id="matSeg"></div></div>
+        <div class="ctl hidden" data-ctl="hyst"><label>Hysteresis</label><div class="seg" id="hystSeg"></div></div>
+        <div class="ctl hidden" data-ctl="vib"><label>Mechanical vibration, &plusmn;0.3 mm</label><div class="seg" id="vibSeg"></div></div>
+        <div class="ctl hidden" data-ctl="mode"><label>Output contact sense</label><div class="seg" id="modeSeg"></div></div>
+
+        <div class="readout hidden" data-ctl="read">
+          <span>Rated operating distance S<tspan>n</tspan>, steel</span><b>8.0 mm</b>
+          <span>Reduction factor, this material</span><b id="rf">1.00</b>
+          <span>Operating point, approaching</span><b id="ron">&mdash;</b>
+          <span>Release point, withdrawing</span><b id="roff">&mdash;</b>
+          <span>Differential travel (hysteresis)</span><b id="rh">&mdash;</b>
+        </div>
+
+        <div class="quiz hidden" id="quiz"><div class="q" id="quizq"></div><div class="opts" id="quizopts"></div><div class="fb" id="quizfb"></div></div>
+      </div>
+      <div class="controls">
+        <button id="back" type="button">&larr; Back</button>
+        <button id="next" type="button">Next &rarr;</button>
+        <span class="note">Arrow keys also move between steps</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <p>MENG 4450, Lesson 3.2. Assigned reading: Kuphaldt, <i>Lessons in Industrial Instrumentation</i> v2.30, section 9.4, pages 665 to 669.</p>
+    <p>Model. The oscillator amplitude is taken as A(d) = 1 &minus; 0.5^(d / S<sub>n</sub>f), where f is the material reduction factor. The output operates at A = 0.50 and releases at A = 0.53, which places the release point ten percent of S<sub>n</sub>f beyond the operating point. Manufacturers publish S<sub>n</sub> for a square mild steel target one face diameter across and 1 mm thick, and IEC 60947-5-2 limits the differential travel to twenty percent of the real operating distance. The reduction factors offered here are representative catalogue values and are not measurements of the bench sensor, whose family and catalogue number are not recorded anywhere. Establishing them is the object of item 3 of Physical Lab 3.</p>
+  </div>
+</div>
+
+<script>// MENG 4450 - step engine shared by the Lesson 3.2 activity pages.
+function makeSteps(STEPS, opts){
+  opts = opts || {};
+  const el = id => document.getElementById(id);
+  let k = 0;
+  const stepno=el('stepno'), pbar=el('pbar'), title=el('steptitle'), text=el('steptext'), tryit=el('tryit');
+  const quiz=el('quiz'), qq=el('quizq'), qopts=el('quizopts'), qfb=el('quizfb');
+  const back=el('back'), next=el('next');
+  const allCtl = Array.from(document.querySelectorAll('[data-ctl]'));
+  function show(i){
+    if (STEPS[k] && STEPS[k].exit) STEPS[k].exit();
+    k = Math.max(0, Math.min(STEPS.length - 1, i));
+    const s = STEPS[k];
+    stepno.textContent = 'Step ' + (k + 1) + ' of ' + STEPS.length;
+    pbar.style.width = ((k + 1) / STEPS.length * 100) + '%';
+    title.textContent = s.title;
+    text.innerHTML = s.text;
+    if (s.tryit){ tryit.classList.remove('hidden'); tryit.innerHTML = '<b>Try it</b>' + s.tryit; }
+    else tryit.classList.add('hidden');
+    allCtl.forEach(c => c.classList.toggle('hidden', !(s.controls || []).includes(c.dataset.ctl)));
+    if (s.quiz){
+      quiz.classList.remove('hidden'); qq.textContent = s.quiz.q; qopts.innerHTML = ''; qfb.textContent = ''; qfb.className = 'fb';
+      s.quiz.opts.forEach((o, i) => {
+        const b = document.createElement('button'); b.type = 'button'; b.textContent = o;
+        b.onclick = () => {
+          const ok = i === s.quiz.answer;
+          qfb.className = 'fb' + (ok ? ' ok' : '');
+          qfb.textContent = (ok ? 'Correct. ' : 'Not quite. ') + s.quiz.why;
+          Array.from(qopts.children).forEach((c, j) => c.classList.toggle('on', j === i));
+        };
+        qopts.appendChild(b);
+      });
+    } else quiz.classList.add('hidden');
+    back.disabled = k === 0; next.disabled = k === STEPS.length - 1;
+    if (s.enter) s.enter();
+    if (opts.onStep) opts.onStep(k);
+  }
+  back.onclick = () => show(k - 1);
+  next.onclick = () => show(k + 1);
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+    if (e.key === 'ArrowRight') show(k + 1);
+    if (e.key === 'ArrowLeft') show(k - 1);
+  });
+  show(0);
+  return { show, get k(){ return k; } };
+}
+function seg(id, values, onpick, init){
+  const box = document.getElementById(id); box.innerHTML = '';
+  values.forEach(v => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = v.label;
+    b.onclick = () => { Array.from(box.children).forEach(c => c.classList.remove('on')); b.classList.add('on'); onpick(v.value); };
+    if (v.value === init) b.classList.add('on');
+    box.appendChild(b);
+  });
+}
+const fmt = (x, d) => (Math.round(x * Math.pow(10, d)) / Math.pow(10, d)).toFixed(d);
+</script>
+<script>
+const Sn = 8.0;
+const MATS = {steel:1.0, stainless:0.75, brass:0.5, aluminium:0.4, copper:0.3, plastic:0};
+let mat='steel', d=14, hyst=true, vib=false, mode='NO';
+let on=false, vibPhase=0, currentStep=0, chatterCount=0, lastState=false;
+const X0=320, X1=760, mmToX = mm => X0 + (X1-X0)*mm/20;
+const $ = id => document.getElementById(id);
+
+(function(){ let s='';
+  for(let mm=0; mm<=20; mm+=2){ const x=mmToX(mm);
+    s += `<line class="ln" x1="${x}" x2="${x}" y1="420" y2="432"/><text class="tn" x="${x}" y="456" text-anchor="middle">${mm}</text>`; }
+  $('ticks').innerHTML = s;
+})();
+
+function amp(dist){ const f=MATS[mat]; if(f===0) return 1; return 1 - Math.pow(0.5, dist/(Sn*f)); }
+
+function update(){
+  const f = MATS[mat];
+  const dv = vib ? Math.max(0, d + 0.3*Math.sin(vibPhase)) : d;
+  const A = amp(dv);
+  const thrOn = 0.5, thrOff = hyst ? 0.5335 : 0.5;
+  if(!on && A <= thrOn){ on = true; }
+  else if(on && A >= thrOff){ on = false; }
+
+  const x = mmToX(Math.min(20, dv));
+  $('tgtRect').setAttribute('x', x);
+  $('tgtLabel').setAttribute('x', x+13); $('tgtLabel').textContent = mat + ' target';
+  $('tgtRect').style.fill = f === 0 ? '#fff' : '#F1EFEF';
+  $('tgtLead').setAttribute('x1', x+13); $('tgtLead').setAttribute('x2', x+13);
+
+  let e=''; const n = (f===0 || dv > 1.6*Sn*f) ? 0 : Math.round(6*(1-A));
+  for(let i=0;i<n;i++){ e += `<ellipse cx="${x+13}" cy="${208+i*19}" rx="7" ry="7" style="stroke:#E69F00;stroke-width:2.2"/>`; }
+  $('eddy').innerHTML = e;
+
+  ['f1','f2','f3'].forEach((id,i) => {
+    const rx=(26+19*i)*(0.35+0.65*A), ry=(22+17*i)*(0.35+0.65*A);
+    $(id).setAttribute('d', `M308 260 A ${rx} ${ry} 0 0 1 308 ${260+2*ry}`);
+    $(id).setAttribute('transform', `translate(0,${-ry})`);
+  });
+
+  let p=''; for(let i=0;i<=180;i++){ const px=40+i*2, py=681 - 44*A*Math.sin(i*0.42); p += (i?'L':'M')+px+' '+py.toFixed(1)+' '; }
+  $('trace').setAttribute('d', p);
+
+  const conducting = mode==='NO' ? on : !on;
+  $('lamp').style.fill = conducting ? '#FFE819' : '#fff';
+  $('lampTxt').textContent = conducting ? 'output conducting' : 'output open';
+  $('outMode').textContent = mode==='NO' ? 'Normally open output' : 'Normally closed output (our bench)';
+  $('outState').textContent = on ? 'target detected' : 'no target present';
+
+  const dOn = Sn*f, dOff = hyst ? Sn*f*1.1 : Sn*f;
+  const showOn = f>0 && currentStep>=3, showOff = f>0 && currentStep>=4;
+  $('onLine').classList.toggle('hidden', !showOn);
+  $('offLine').classList.toggle('hidden', !showOff);
+  $('band').classList.toggle('hidden', !showOff);
+  $('accSn').classList.toggle('hidden', !showOn);
+  if(showOn){ const xo=mmToX(dOn);
+    $('onLine').setAttribute('x1',xo); $('onLine').setAttribute('x2',xo);
+    $('accSn').querySelector('circle').setAttribute('cx',xo);
+    $('accTxt').setAttribute('x',xo); $('accTxt').textContent = f===1 ? 'Sn' : 'Sn f'; }
+  if(showOff){ const xf=mmToX(dOff), xo=mmToX(dOn);
+    $('offLine').setAttribute('x1',xf); $('offLine').setAttribute('x2',xf);
+    $('band').setAttribute('x',xo); $('band').setAttribute('width', Math.max(0, xf-xo)); }
+
+  $('rf').textContent = f.toFixed(2);
+  $('ron').textContent = f>0 ? fmt(dOn,1)+' mm' : 'never operates';
+  $('roff').textContent = f>0 ? fmt(dOff,1)+' mm' : '—';
+  $('rh').textContent = f>0 ? fmt(dOff-dOn,1)+' mm' : '—';
+  $('distVal').textContent = fmt(d,1);
+
+  if(vib){ if(on !== lastState) chatterCount++; lastState = on;
+    $('chatter').textContent = chatterCount > 3 ? 'output is chattering' : ''; }
+  else { $('chatter').textContent = ''; chatterCount = 0; }
+}
+
+$('dist').addEventListener('input', e => { d = parseFloat(e.target.value); update(); });
+(function(){ const svg=$('stage'), tg=$('target'); let drag=false;
+  const toMM = ev => { const pt=svg.createSVGPoint(); const t=ev.touches?ev.touches[0]:ev;
+    pt.x=t.clientX; pt.y=t.clientY; const q=pt.matrixTransform(svg.getScreenCTM().inverse());
+    return Math.max(0, Math.min(20, (q.x-13-X0)/(X1-X0)*20)); };
+  tg.addEventListener('mousedown',()=>drag=true); tg.addEventListener('touchstart',()=>drag=true,{passive:true});
+  window.addEventListener('mouseup',()=>drag=false); window.addEventListener('touchend',()=>drag=false);
+  window.addEventListener('mousemove',ev=>{ if(!drag)return; d=toMM(ev); $('dist').value=d; update(); });
+  window.addEventListener('touchmove',ev=>{ if(!drag)return; d=toMM(ev); $('dist').value=d; update(); },{passive:true});
+})();
+
+seg('matSeg', Object.keys(MATS).map(k=>({label:k, value:k})), v=>{ mat=v; on=false; update(); }, 'steel');
+seg('hystSeg', [{label:'present, as built',value:true},{label:'removed, hypothetically',value:false}], v=>{ hyst=v; update(); }, true);
+seg('vibSeg', [{label:'stationary',value:false},{label:'vibrating',value:true}], v=>{ vib=v; chatterCount=0; update(); }, false);
+seg('modeSeg', [{label:'normally open',value:'NO'},{label:'normally closed',value:'NC'}], v=>{ mode=v; update(); }, 'NO');
+setInterval(()=>{ vibPhase += 0.5; if(vib) update(); }, 60);
+
+const STEPS = [
+ {title:'A proximity switch reports presence without contact',
+  text:'<p>A proximity switch answers one question, and the answer has two values. Something is in front of the sensing face, or nothing is. Kuphaldt defines the device on page 665 as one that detects the closeness of an object by magnetic, electric or optical means, and notes that it is almost always an active device, meaning it contains a powered electronic circuit rather than a bare contact.</p><p>Because nothing touches, nothing wears. That is the reason a proximity switch is preferred to a limit switch wherever the geometry allows it.</p>',
+  controls:[]},
+
+ {title:'An oscillator drives a coil, and the coil radiates an alternating field',
+  text:'<p>Behind the sensing face sits a coil wound on a ferrite core, driven by an oscillator running at tens to hundreds of kilohertz. With nothing in front of the face the field closes through air, the coil dissipates almost no energy, and the oscillator sustains full amplitude.</p><p>The blue trace at the lower left is that amplitude. Read it as the quantity the sensor actually measures. Everything the device reports is inferred from it.</p>',
+  controls:[], enter(){ d=18; $('dist').value=d; on=false; }},
+
+ {title:'A metallic target absorbs energy from the field',
+  text:'<p>Bring a metal target into the field and the alternating flux induces circulating currents within it. These are eddy currents, and they dissipate the field’s energy as heat in the target. The coil is now loaded, its quality factor falls, and the oscillator amplitude falls with it.</p><p>The mechanism is the one you met in Lesson 3.1 for the squirrel cage rotor, applied in reverse. There the induced currents produced useful torque. Here the same currents constitute a loss, and the loss is the measurement.</p>',
+  tryit:'Drag the target toward the face, or use the slider. Watch the orange loops grow inside the target as the blue trace collapses.',
+  controls:['dist']},
+
+ {title:'The trigger operates at a fixed amplitude, and therefore at a fixed distance',
+  text:'<p>A trigger stage monitors the amplitude and changes the output state when it falls to a set level. Because the amplitude is a repeatable function of distance, the output changes at a repeatable distance.</p><p>That distance, measured with a standard target, is the rated operating distance S<sub>n</sub>, and it is the headline figure on any proximity sensor datasheet. The yellow marker shows where it falls.</p>',
+  tryit:'Approach slowly and note the distance at which the lamp changes state.',
+  controls:['dist','read'], enter(){ on=false; }},
+
+ {title:'The release point does not coincide with the operating point',
+  text:'<p>Withdraw the target and the output does not release at the distance where it operated. It releases slightly farther out. The separation between the two is the differential travel, or hysteresis, shown here as the shaded band.</p><p>A switching sensor is therefore characterised by two distances rather than one. Any measurement that reports a single number has recorded only half of the device’s behaviour.</p>',
+  tryit:'Approach until the lamp changes, then withdraw slowly and note where it changes back.',
+  controls:['dist','read'],
+  quiz:{q:'You record operation at 8.0 mm approaching and release at 8.8 mm withdrawing. What is the differential travel?',
+    opts:['0.8 mm, which is ten percent of the operating distance','8.4 mm, the mean of the two readings','Zero, since a sensor switches at a single distance'],
+    answer:0, why:'The differential travel is the difference between the two switching points, here 0.8 mm. IEC 60947-5-2 limits it to twenty percent of the real operating distance.'}},
+
+ {title:'Hysteresis exists to suppress chatter under vibration',
+  text:'<p>Consider a target resting at the operating point on a machine that vibrates, which is to say on any machine. Without hysteresis the output would change state on every excursion, and the controller would see a rapid train of transitions where the process has done nothing at all.</p><p>With the differential band in place the output latches until the target has cleared the whole band, and small oscillations about the operating point produce no transitions.</p>',
+  tryit:'Set the distance near 8.0 mm and turn vibration on. Then remove the hysteresis and compare.',
+  controls:['dist','hyst','vib','read'], enter(){ d=8.05; $('dist').value=d; },
+  quiz:{q:'A target sits at 7.9 mm and vibrates by ±0.2 mm. The band runs from 8.0 to 8.8 mm. Does the output chatter?',
+    opts:['No. The excursion never reaches the release point at 8.8 mm','Yes. It crosses 8.0 mm on every cycle','Only if the target is non-ferrous'],
+    answer:0, why:'The target operates the sensor on the way in at 8.0 mm and stays detected until 8.8 mm. An excursion between 7.7 and 8.1 mm never reaches the release point, so the output holds.'}},
+
+ {title:'The rated distance applies to steel, and other metals reduce it',
+  text:'<p>S<sub>n</sub> is quoted for a standard target of mild steel. Non-ferrous metals support eddy currents less readily and do not concentrate the flux, so the same sensor operates on them at a shorter distance. Manufacturers publish a reduction factor for each material, and the operating distance for that material is the product of S<sub>n</sub> and the factor.</p><p>Non-conductors do not operate an inductive sensor at any distance. Detecting plastic, glass or liquid requires a capacitive or optical device instead.</p>',
+  tryit:'Select each material in turn and approach again. Compare the operating distances.',
+  controls:['dist','mat','read'], enter(){ vib=false; hyst=true; on=false; },
+  quiz:{q:'Sₙ is 8 mm. An aluminium bracket passes 5 mm from the face. Is it detected?',
+    opts:['No. The factor near 0.4 gives about 3.2 mm, and 5 mm lies outside that','Yes, because 5 mm is less than 8 mm','Only while the bracket is moving'],
+    answer:0, why:'Aluminium has a reduction factor near 0.4, so this sensor operates on it at roughly 3.2 mm. The remedy is to mount closer or to specify a longer range device.'}},
+
+ {title:'The bench panel brings out the normally closed output only',
+  text:'<p>Whether an output is normally open or normally closed is a separate specification from how the device senses, and Kuphaldt is explicit on page 669 that it has nothing whatever to do with sourcing or sinking. It states one thing only, which is what the output does when no object is near.</p><p>The panel legend on your bench reads NC. At rest the blue jack is therefore conducting, and the arrival of a target interrupts it. Every start pushbutton you have wired since Lesson 1.2 behaved in the opposite sense.</p>',
+  tryit:'Select the normally closed sense and move the target in and out. Note which state the output rests in.',
+  controls:['dist','mode','read'], enter(){ mat='steel'; },
+  quiz:{q:'With nothing in front of the bench sensor, is the blue NC jack conducting?',
+    opts:['Yes. Normally closed means made at rest, and rest is the absence of a target','No. With nothing to detect there is nothing on the output','Only while the controller is scanning the input'],
+    answer:0, why:'Normal denotes the resting condition of no stimulation. A normally closed output is made at rest and is interrupted by the target, so the input bit reads 1 when nothing is there.'}},
+
+ {title:'Summary, and what Thursday asks of you',
+  text:'<p>An oscillator, a coil, a trigger and one output. Operation and release occur at two distances whose difference is the differential travel. The rated distance belongs to steel and is reduced for other metals by a published factor. Normally open and normally closed describe the resting state of the output and nothing else.</p><p>In Physical Lab 3 you will measure both distances with a target moved in and then withdrawn, and you will determine which sensing family the bench device belongs to by presenting it with steel, plastic and aluminium at the same distance.</p>',
+  controls:['dist','mat','mode','read']}
+];
+makeSteps(STEPS, {onStep:k => { currentStep = k; update(); }});
+update();
+</script>
+</body>
+</html>
