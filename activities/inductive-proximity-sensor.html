@@ -354,7 +354,7 @@ const STEPS = [
     answer:0, why:'The differential travel is the difference between the two switching points, here 0.8 mm. IEC 60947-5-2 limits it to twenty percent of the real operating distance.'}},
 
  {title:'Hysteresis exists to suppress chatter under vibration',
-  text:'<p>Consider a target resting at the operating point on a machine that vibrates, which is to say on any machine. Without hysteresis the output would change state on every excursion, and the controller would see a rapid train of transitions where the process has done nothing at all.</p><p>With the differential band in place the output latches until the target has cleared the whole band, and small oscillations about the operating point produce no transitions.</p>',
+  text:'<p>When a machine vibrates, a target sitting right at the trigger point would normally cause a sensor's output to flicker constantly, flooding the controller with false signals.</p><p>Hysteresis prevents this by keeping the output locked until the target moves entirely past the switching zone, ignoring minor, vibration-induced wobbles.</p>',
   tryit:'Set the distance near 8.0 mm and turn vibration on. Then remove the hysteresis and compare.',
   controls:['dist','hyst','vib','read'], enter(){ d=8.05; $('dist').value=d; },
   quiz:{q:'A target sits at 7.9 mm and vibrates by ±0.2 mm. The band runs from 8.0 to 8.8 mm. Does the output chatter?',
