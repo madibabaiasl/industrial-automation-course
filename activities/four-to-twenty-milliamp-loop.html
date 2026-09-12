@@ -351,8 +351,7 @@ const STEPS = [
     opts:['Fifty percent','Sixty percent','Twelve percent'],
     answer:0, why:'Twelve milliamps lies midway between 4 and 20, so the signal is at fifty percent. In general the percentage is (I minus 4) divided by 16.'}},
 
- {title:'Live zero. Four milliamps means empty, nought milliamps means broken.',
-  text:'<p>The range deliberately begins above zero. A genuine reading of nought percent is 4 mA, so a reading of 0 mA can arise only from a severed conductor, a failed transmitter or a lost supply. Page 864 names this property the live zero and observes that the older 3 to 15 psi pneumatic standard was arranged the same way for the same reason.</p><p>A signal standard whose range begins at zero cannot make that distinction. The footnote on the same page records a system ranged from minus ten to plus ten volts, in which a failed signal path read as fifty percent and aroused no suspicion at all.</p>',
+ {title:'Four milliamps means empty, zero milliamps means broken.',
   tryit:'Set the tank to nought percent and read the current, then cut the conductor and read it again.',
   controls:['lvl','cut','read'],
   quiz:{q:'A level loop reads 0.0 mA at the controller. What may be concluded?',
