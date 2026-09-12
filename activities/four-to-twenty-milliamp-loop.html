@@ -363,9 +363,9 @@ const STEPS = [
   text:'<p>Conductors have resistance so a voltage signal therefore arrives at the receiver smaller than it left the transmitter.</p><p>In a series loop the current is the same at every point by Kirchhoff’s current law. A current loop also rejects electromagnetically induced interference more effectively, because a low impedance loop develops little voltage from an induced emf.</p>',
   tryit:'Select the voltage standard and extend the run to one thousand metres. Then return to the current standard at the same length.',
   controls:['lvl','sig','len','read'], enter(){ cut=false; lenM=1000; $('len').value=1000; },
-  quiz:{q:'A 1 to 5 V signal leaves the transmitter at 3.0 V and arrives at the receiver as 2.8 V. What level does the controller report?',
+  /* quiz:{q:'A 1 to 5 V signal leaves the transmitter at 3.0 V and arrives at the receiver as 2.8 V. What level does the controller report?',
     opts:['Forty five percent, and nothing in the system reveals the error','Fifty percent','An instrument fault'],
-    answer:0, why:'The receiver computes (2.8 minus 1) divided by 4, which is forty five percent, while the true value is fifty. A current loop at the same length would still deliver 12.0 mA.'}},
+    answer:0, why:'The receiver computes (2.8 minus 1) divided by 4, which is forty five percent, while the true value is fifty. A current loop at the same length would still deliver 12.0 mA.'}},*/
 
  {title:'The receiver converts the current back into a voltage it can measure',
   text:'<p>Most analog inputs measure voltage rather than current, so a precision resistor is placed across the input terminals to perform the conversion by Ohm’s law. A value of 250 ohms turns the 4 to 20 mA range into 1 to 5 V, which is the standard receiving range described on page 891.</p><p>That voltage is then presented to an analog to digital converter.</p>',
