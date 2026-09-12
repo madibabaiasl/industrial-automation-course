@@ -380,7 +380,7 @@ const STEPS = [
     answer:0, why:'The wiring diagram on page 98 of 1756-UM058K takes GND-0 and GND-1 to the negative of the supply, so only a device that drives current into the point will illuminate the optocoupler. A limit switch is indifferent to polarity but a transistor output is not.'}},
 
  {title:'The complementary module exists',
-  text:'<p>Rockwell also supplies the 1756-IV16, described in the catalogue as a sourcing current input module. Its commons are DC-0+ and DC-1+, taken to the positive rail, so current leaves each point and returns through the field device. That module requires an NPN sensor.</p><p>Note the naming convention, since it is the usual source of error. Rockwell names the module by what the module does, so a sourcing input module is the one that wants a sinking field device. The IB16 heading carries no polarity word at all, which is why the polarity has to be read from the wiring diagram rather than inferred from the catalogue description.</p>',
+  text:'<p>Rockwell also supplies the 1756-IV16, described in the catalogue as a sourcing current input module. Its commons are DC-0+ and DC-1+, taken to the positive rail, so current leaves each point and returns through the field device. That module requires an NPN sensor.</p><p>Note the naming convention, since it is the usual source of error. Rockwell names the module by what the module does, so a sourcing input module is the one that wants a sinking field device.</p>',
   tryit:'Switch the module to the IV16 and try each output stage against it.',
   controls:['type','tgt','cardc','read'], enter(){ showCard=true; }},
 
