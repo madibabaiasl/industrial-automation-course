@@ -321,8 +321,8 @@ setInterval(()=>{ vibPhase += 0.5; if(vib) update(); }, 60);
 
 const STEPS = [
 
- {title:'An oscillator drives a coil, and the coil radiates an alternating field',
-  text:'<p>Behind the sensing face sits a coil wound on a ferrite core, driven by an oscillator running at tens to hundreds of kilohertz. With nothing in front of the face the field closes through air, the coil dissipates almost no energy, and the oscillator sustains full amplitude.</p><p>The blue trace at the lower left is that amplitude. Read it as the quantity the sensor actually measures. Everything the device reports is inferred from it.</p>',
+ {title:'An oscillator drives the inductive coil, generating a localized alternating magnetic field',
+  text:'<p>Positioned behind the sensing face, a ferrite-cored coil is excited by an oscillator operating between tens and hundreds of kilohertz. When no target is present, the magnetic field completes its path through the air, causing minimal energy loss and sustaining full oscillatory amplitude.</p><p>The lower-left blue trace depicts this amplitude (the primary measurement variable from which all device outputs are derived).</p>',
   controls:[], enter(){ d=18; $('dist').value=d; on=false; }},
 
  {title:'A metallic target absorbs energy from the field',
