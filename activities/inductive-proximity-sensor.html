@@ -331,12 +331,12 @@ const STEPS = [
   text:'<p>A proximity switch answers a simple yes-or-no question: Is an object present in front of the sensing face? These active devices use magnetic, electric, or optical fields via powered electronics instead of physical contacts. Because there is no mechanical contact, there is no wear and tear, making proximity switches preferable to limit switches wherever space allows.</p>',
   controls:[]},
 
- {title:'An oscillator drives a coil, and the coil radiates an alternating field',
-  text:'<p>Behind the sensing face sits a coil wound on a ferrite core, driven by an oscillator running at tens to hundreds of kilohertz. With nothing in front of the face the field closes through air, the coil dissipates almost no energy, and the oscillator sustains full amplitude.</p><p>The blue trace at the lower left is that amplitude. Read it as the quantity the sensor actually measures. Everything the device reports is inferred from it.</p>',
+ {title:'An oscillator powers a coil, generating an alternating electromagnetic field that radiates outward from the sensor face',
+  text:'<p>Encased behind the sensing face is a ferrite-core coil driven by a high-frequency oscillator. When no target is present, the electromagnetic field closes through the air, maintaining maximum oscillator amplitude.</p><p>Represented by the blue trace at the lower left, this amplitude serves as the primary metric from which all output states are deduced.</p>',
   controls:[], enter(){ d=18; $('dist').value=d; on=false; }},
 
  {title:'A metallic target absorbs energy from the field',
-  text:'<p>Bring a metal target into the field and the alternating flux induces circulating currents within it. These are eddy currents, and they dissipate the field’s energy as heat in the target. The coil is now loaded, its quality factor falls, and the oscillator amplitude falls with it.</p><p>The mechanism is the one you met in Lesson 3.1 for the squirrel cage rotor, applied in reverse. There the induced currents produced useful torque. Here the same currents constitute a loss, and the loss is the measurement.</p>',
+  text:'<p>When a metal target enters the field, alternating flux induces circulating eddy currents that dissipate energy as heat. This loading effect reduces the coil's quality factor, causing the oscillator amplitude to drop.</p>',
   tryit:'Drag the target toward the face, or use the slider. Watch the orange loops grow inside the target as the blue trace collapses.',
   controls:['dist']},
 
