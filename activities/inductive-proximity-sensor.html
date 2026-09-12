@@ -73,6 +73,7 @@ button.on{background:var(--ink);color:var(--ground)}
   <header>
     <a class="hub" href="../index.html">&larr; All activities</a>
     <h1>How a proximity sensor switches</h1>
+    <span class="chip">eddy currents to hysteresis</span>
     <span class="spacer"></span>
     <span id="stepno">Step 1</span>
   </header>
@@ -94,7 +95,7 @@ button.on{background:var(--ink);color:var(--ground)}
           <text class="tn" x="245" y="254" text-anchor="middle">out-</text><text class="tn" x="245" y="276" text-anchor="middle">put</text>
           <path class="ln" d="M126 260 h10 M204 260 h10 M276 260 h14"/>
           <path class="ln" d="M296 224 h10 M296 236 h10 M296 248 h10 M296 260 h10 M296 272 h10 M296 284 h10 M296 296 h10"/>
-          <text class="tn" x="40" y="350">coil on a ferrite core</text>
+          <text class="tn" x="40" y="350">coil on a ferrite core, behind the sensing face</text>
         </g>
         <!-- field -->
         <g id="field" class="thin"><path id="f1" d=""/><path id="f2" d=""/><path id="f3" d=""/></g>
@@ -109,7 +110,7 @@ button.on{background:var(--ink);color:var(--ground)}
         <g>
           <path class="ln" d="M320 420 H770"/>
           <g id="ticks"></g>
-          <text class="ts" x="545" y="510" text-anchor="middle">distance from the sensing face, mm</text>
+          <text class="ts" x="545" y="566" text-anchor="middle">distance from the sensing face, mm</text>
         </g>
         <!-- switching markers: own vertical band, 360 to 470 -->
         <g id="marks">
@@ -165,9 +166,16 @@ button.on{background:var(--ink);color:var(--ground)}
       <div class="controls">
         <button id="back" type="button">&larr; Back</button>
         <button id="next" type="button">Next &rarr;</button>
+        <span class="note">Arrow keys also move between steps</span>
       </div>
     </div>
   </div>
+
+  <div class="foot">
+    <p>MENG 4450, Lesson 3.2. Assigned reading: Kuphaldt, <i>Lessons in Industrial Instrumentation</i> v2.30, section 9.4, pages 665 to 669.</p>
+    <p>Model. The oscillator amplitude is taken as A(d) = 1 &minus; 0.5^(d / S<sub>n</sub>f), where f is the material reduction factor. The output operates at A = 0.50 and releases at A = 0.53, which places the release point ten percent of S<sub>n</sub>f beyond the operating point. Manufacturers publish S<sub>n</sub> for a square mild steel target one face diameter across and 1 mm thick, and IEC 60947-5-2 limits the differential travel to twenty percent of the real operating distance. The reduction factors offered here are representative catalogue values and are not measurements of the bench sensor, whose family and catalogue number are not recorded anywhere. Establishing them is the object of item 3 of Physical Lab 3.</p>
+  </div>
+</div>
 
 <script>// MENG 4450 - step engine shared by the Lesson 3.2 activity pages.
 function makeSteps(STEPS, opts){
@@ -319,13 +327,16 @@ seg('modeSeg', [{label:'normally open',value:'NO'},{label:'normally closed',valu
 setInterval(()=>{ vibPhase += 0.5; if(vib) update(); }, 60);
 
 const STEPS = [
+ {title:'A proximity switch reports presence without contact',
+  text:'<p>A proximity switch answers one question, and the answer has two values. Something is in front of the sensing face, or nothing is. Kuphaldt defines the device on page 665 as one that detects the closeness of an object by magnetic, electric or optical means, and notes that it is almost always an active device, meaning it contains a powered electronic circuit rather than a bare contact.</p><p>Because nothing touches, nothing wears. That is the reason a proximity switch is preferred to a limit switch wherever the geometry allows it.</p>',
+  controls:[]},
 
- {title:'An oscillator drives the inductive coil, generating a localized alternating magnetic field',
-  text:'<p>Positioned behind the sensing face, a ferrite-cored coil is excited by an oscillator operating between tens and hundreds of kilohertz. When no target is present, the magnetic field completes its path through the air, causing minimal energy loss and sustaining full oscillatory amplitude.</p><p>The lower-left blue trace depicts this amplitude (the primary measurement variable from which all device outputs are derived).</p>',
+ {title:'An oscillator drives a coil, and the coil radiates an alternating field',
+  text:'<p>Behind the sensing face sits a coil wound on a ferrite core, driven by an oscillator running at tens to hundreds of kilohertz. With nothing in front of the face the field closes through air, the coil dissipates almost no energy, and the oscillator sustains full amplitude.</p><p>The blue trace at the lower left is that amplitude. Read it as the quantity the sensor actually measures. Everything the device reports is inferred from it.</p>',
   controls:[], enter(){ d=18; $('dist').value=d; on=false; }},
 
  {title:'A metallic target absorbs energy from the field',
-  text:'<p>When a metallic target enters the alternating magnetic field, it induces circulating eddy currents that dissipate field energy as thermal loss. This loading effect decreases the coil's quality factor and attenuates the oscillator amplitude.</p><p>This electromechanical mechanism mirrors the squirrel-cage rotor principle in reverse: whereas those induced currents produce mechanical torque, here they constitute an electrical loss that serves as the measured variable.</p>',
+  text:'<p>Bring a metal target into the field and the alternating flux induces circulating currents within it. These are eddy currents, and they dissipate the field’s energy as heat in the target. The coil is now loaded, its quality factor falls, and the oscillator amplitude falls with it.</p><p>The mechanism is the one you met in Lesson 3.1 for the squirrel cage rotor, applied in reverse. There the induced currents produced useful torque. Here the same currents constitute a loss, and the loss is the measurement.</p>',
   tryit:'Drag the target toward the face, or use the slider. Watch the orange loops grow inside the target as the blue trace collapses.',
   controls:['dist']},
 
