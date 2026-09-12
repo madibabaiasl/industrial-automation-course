@@ -368,7 +368,7 @@ const STEPS = [
   controls:['type','tgt','load','read'], enter(){ type='NPN'; load='A'; target=true; }},
 
  {title:'The general rule',
-  text:'<p>The load completes the path to whichever rail the output stage does not switch to. A sourcing device requires a load returning to 0 V; a sinking device requires a load fed from the positive rail. Kuphaldt states the underlying constraint on page 781: in every circuit formed by a field device and an I/O channel, one element must source current while the other sinks it.</p><p>His footnote on page 780 gives the method. Attend to the single conductor joining the two devices, disregard the conductors common with either supply rail, and note the direction of conventional current within it.</p>',
+  text:'<p>The load completes the path to whichever rail the output stage does not switch to. A sourcing device requires a load returning to 0 V, and a sinking device requires a load connected to the positive rail. Note: In every circuit formed by a field device and an I/O channel, one element must source current while the other sinks it.</p>',
   controls:['type','tgt','load','read']},
 
  {title:'Now the load is a controller input channel',
