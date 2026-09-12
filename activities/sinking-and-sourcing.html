@@ -349,8 +349,8 @@ const STEPS = [
   text:'<p>Three-wire DC sensors allocate two conductors for power and one for output. The standard wiring uses brown (+V), blue (0V), and black (switched output). The internal sensor logic evaluates target presence via an output transistor.</p><p>The following analysis isolates the black conductor to determine current direction.</p>',
   controls:[], enter(){ showCard=false; target=false; type='PNP'; load='A'; sense='NO'; }},
 
- {title:'A PNP output connects the control wire to the positive rail',
-  text:'<p>When the target is detected, the transistor in a PNP device conducts between the positive supply rail and the output terminal. Current therefore leaves the sensor through the black conductor. The device is said to source current, and the book also calls such an arrangement a high side switch, because the transistor sits on the positive side of the load.</p>',
+ {title:'A PNP output bridges the control wire to the positive rail.',
+  text:'<p>In a PNP sensor, target detection causes the internal transistor to bridge the positive supply rail to the output terminal. Consequently, current flows out of the black conductor. This behavior defines a current-sourcing device or high-side switch, as the switching element resides on the positive side of the load.</p>',
   tryit:'Bring the target to present and follow the current path round the circuit.',
   controls:['tgt','read'], enter(){ showCard=false; type='PNP'; load='A'; }},
 
