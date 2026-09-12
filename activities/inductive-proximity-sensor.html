@@ -320,9 +320,6 @@ seg('modeSeg', [{label:'normally open',value:'NO'},{label:'normally closed',valu
 setInterval(()=>{ vibPhase += 0.5; if(vib) update(); }, 60);
 
 const STEPS = [
- {title:'A proximity switch reports presence without contact',
-  text:'<p>A proximity switch answers one question, and the answer has two values. Something is in front of the sensing face, or nothing is. Kuphaldt defines the device on page 665 as one that detects the closeness of an object by magnetic, electric or optical means, and notes that it is almost always an active device, meaning it contains a powered electronic circuit rather than a bare contact.</p><p>Because nothing touches, nothing wears. That is the reason a proximity switch is preferred to a limit switch wherever the geometry allows it.</p>',
-  controls:[]},
 
  {title:'An oscillator drives a coil, and the coil radiates an alternating field',
   text:'<p>Behind the sensing face sits a coil wound on a ferrite core, driven by an oscillator running at tens to hundreds of kilohertz. With nothing in front of the face the field closes through air, the coil dissipates almost no energy, and the oscillator sustains full amplitude.</p><p>The blue trace at the lower left is that amplitude. Read it as the quantity the sensor actually measures. Everything the device reports is inferred from it.</p>',
