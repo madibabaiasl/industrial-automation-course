@@ -363,7 +363,7 @@ const STEPS = [
     answer:0, why:'A sourcing output supplies the positive side. The lamp needs one terminal at +24 V and the other at 0 V, which is position A. Position B places the lamp between two points at the same potential.'}},
 
  {title:'An NPN output connects the control wire to the negative rail',
-  text:'<p>The same three conductors, the same colour code, and the opposite direction. When an NPN transistor conducts it ties the black conductor to 0 V, so current flows from the positive rail, through the load, and into the sensor. The device sinks current, and the arrangement is a low side switch.</p><p>Only a lamp supplied from the positive rail can now be completed, which is position B.</p>',
+  text:'<p>When an NPN transistor conducts it connects the black conductor to 0 V, so current flows from the positive rail, through the load, and into the sensor. The device sinks current, and the arrangement is a low side switch.</p><p>Only a lamp supplied from the positive rail can now be lit, which is position B.</p>',
   tryit:'Select NPN with the target present, then try both lamp positions in turn.',
   controls:['type','tgt','load','read'], enter(){ type='NPN'; load='A'; target=true; }},
 
