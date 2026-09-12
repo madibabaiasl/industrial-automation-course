@@ -346,7 +346,7 @@ const STEPS = [
   controls:['dist','read'], enter(){ on=false; }},
 
  {title:'The release point does not coincide with the operating point',
-  text:'<p>Withdraw the target and the output does not release at the distance where it operated. It releases slightly farther out. The separation between the two is the differential travel, or hysteresis, shown here as the shaded band.</p><p>A switching sensor is therefore characterised by two distances rather than one. Any measurement that reports a single number has recorded only half of the device’s behaviour.</p>',
+  text:'<p>When you move a target away from a proximity sensor, it doesn't switch off at the exact point it turned on. It releases slightly farther out, and the gap between these two points is called hysteresis (or differential travel).</p><p>Because of this, a switching sensor relies on two separate distances rather than just one.</p>',
   tryit:'Approach until the lamp changes, then withdraw slowly and note where it changes back.',
   controls:['dist','read'],
   quiz:{q:'You record operation at 8.0 mm approaching and release at 8.8 mm withdrawing. What is the differential travel?',
