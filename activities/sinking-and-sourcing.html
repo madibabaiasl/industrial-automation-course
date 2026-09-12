@@ -351,7 +351,7 @@ const STEPS = [
 
  {title:'A PNP output bridges the control wire to the positive rail.',
   text:'<p>In a PNP sensor, target detection causes the internal transistor to bridge the positive supply rail to the output terminal. Consequently, current flows out of the black conductor. This behavior defines a current-sourcing device or high-side switch, as the switching element resides on the positive side of the load.</p>',
-  tryit:'Bring the target to present and follow the current path round the circuit.',
+  tryit:'Engage the target and trace the closed-loop current path.',
   controls:['tgt','read'], enter(){ showCard=false; type='PNP'; load='A'; }},
 
  {title:'The load must complete the path to the opposite rail',
