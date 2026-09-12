@@ -391,10 +391,10 @@ const STEPS = [
   //  opts:['175 GPM','350 GPM','6554 GPM'],
   //  answer:0, why:'Seven hundred divided by 13107, multiplied by 6554, is 350, and subtracting the intercept of 175 leaves 175 gallons per minute. That is twenty five percent of range, which corresponds to 8 mA.'}},
 
- {title:'Two conductors or four, according to where the power comes from',
-  text:'<p>A two wire transmitter derives its own operating power from the very loop whose current it regulates. It behaves as a load that determines how much current the loop supply may deliver, and its internal circuitry must therefore operate on less than 4 mA at about nineteen volts, as page 893 sets out. This is a second reason for placing the zero at 4 mA rather than at nought.</p><p>A four wire transmitter has an independent supply and drives the loop as a true source, described on page 891. Any instrument requiring appreciable power, such as a chromatograph with heaters and an onboard computer, must be of this kind.</p>',
-  tryit:'Switch between the two arrangements and note where the power source sits.',
-  controls:['lvl','wires','read']},
+ //{title:'Two conductors or four, according to where the power comes from',
+ // text:'<p>A two wire transmitter derives its own operating power from the very loop whose current it regulates. It behaves as a load that determines how much current the loop supply may deliver, and its internal circuitry must therefore operate on less than 4 mA at about nineteen volts, as page 893 sets out. This is a second reason for placing the zero at 4 mA rather than at nought.</p><p>A four wire transmitter has an independent supply and drives the loop as a true source, described on page 891. Any instrument requiring appreciable power, such as a chromatograph with heaters and an onboard computer, must be of this kind.</p>',
+ // tryit:'Switch between the two arrangements and note where the power source sits.',
+ // controls:['lvl','wires','read']},
 
  {title:'Summary, and where this sits in the course',
   text:'<p>A standard signal allows any transmitter to address any receiver. Current survives the conductors where voltage does not. The live zero renders a failed loop distinguishable from a genuine zero. A precision resistor and a converter reduce the current to an integer, and one line in the program converts that integer into engineering units.</p><p>Every sensing device on the benches in this course is discrete, and slot three of your chassis, which would carry an analog input module, is empty. The material on this page is therefore examinable rather than wireable, and the arithmetic of the last two steps is what you will be asked to perform on paper.</p>',
