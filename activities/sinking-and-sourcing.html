@@ -345,7 +345,7 @@ seg('cardSeg',[{label:'1756-IB16, ours',value:'IB16'},{label:'1756-IV16',value:'
 seg('senseSeg',[{label:'normally open',value:'NO'},{label:'normally closed, our bench',value:'NC'}], v=>{sense=v;update();}, 'NO');
 
 const STEPS = [
- {title:'Three conductors. Two carry power in, one carries the answer out.',
+ {title:'It has three conductors: two handle the power, while the final wire delivers the signal.',
   text:'<p>A three-wire DC sensor is supplied on two conductors and reports on a third. Kuphaldt gives the common colour code on page 666: brown to the positive supply, blue to the negative, and black for the switched output. The sensing circuit determines whether a target is present, and an output transistor acts on that determination.</p><p>Everything that follows concerns the black conductor alone, and specifically the direction of current within it.</p>',
   controls:[], enter(){ showCard=false; target=false; type='PNP'; load='A'; sense='NO'; }},
 
