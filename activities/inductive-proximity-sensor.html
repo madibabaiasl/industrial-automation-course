@@ -362,7 +362,7 @@ const STEPS = [
     answer:0, why:'The target operates the sensor on the way in at 8.0 mm and stays detected until 8.8 mm. An excursion between 7.7 and 8.1 mm never reaches the release point, so the output holds.'}},
 
  {title:'The rated distance applies to steel, and other metals reduce it',
-  text:'<p>S<sub>n</sub> is quoted for a standard target of mild steel. Non-ferrous metals support eddy currents less readily and do not concentrate the flux, so the same sensor operates on them at a shorter distance. Manufacturers publish a reduction factor for each material, and the operating distance for that material is the product of S<sub>n</sub> and the factor.</p><p>Non-conductors do not operate an inductive sensor at any distance. Detecting plastic, glass or liquid requires a capacitive or optical device instead.</p>',
+  text:'<p>Rated distances assume a mild steel target. Because non-ferrous metals don't conduct eddy currents as easily, they reduce the sensor's range. To find the actual operating distance for a specific material, multiply its manufacturer-published reduction factor by S<sub>n</sub>.</p><p>Non-conductors like plastic, glass, or liquids won't trigger an inductive sensor at all (they require capacitive or optical sensors instead).</p>',
   tryit:'Select each material in turn and approach again. Compare the operating distances.',
   controls:['dist','mat','read'], enter(){ vib=false; hyst=true; on=false; },
   quiz:{q:'Sₙ is 8 mm. An aluminium bracket passes 5 mm from the face. Is it detected?',
