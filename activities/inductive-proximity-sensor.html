@@ -376,10 +376,6 @@ const STEPS = [
   quiz:{q:'With nothing in front of the bench sensor, is the blue NC jack conducting?',
     opts:['Yes. Normally closed means made at rest, and rest is the absence of a target','No. With nothing to detect there is nothing on the output','Only while the controller is scanning the input'],
     answer:0, why:'Normal denotes the resting condition of no stimulation. A normally closed output is made at rest and is interrupted by the target, so the input bit reads 1 when nothing is there.'}},
-
-<!-- {title:'Summary, and what Thursday asks of you',
-  text:'<p>An oscillator, a coil, a trigger and one output. Operation and release occur at two distances whose difference is the differential travel. The rated distance belongs to steel and is reduced for other metals by a published factor. Normally open and normally closed describe the resting state of the output and nothing else.</p><p>In Physical Lab 3 you will measure both distances with a target moved in and then withdrawn, and you will determine which sensing family the bench device belongs to by presenting it with steel, plastic and aluminium at the same distance.</p>',
-  controls:['dist','mat','mode','read']}-->
 ];
 makeSteps(STEPS, {onStep:k => { currentStep = k; update(); }});
 update();
