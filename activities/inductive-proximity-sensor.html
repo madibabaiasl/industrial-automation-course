@@ -327,8 +327,8 @@ seg('modeSeg', [{label:'normally open',value:'NO'},{label:'normally closed',valu
 setInterval(()=>{ vibPhase += 0.5; if(vib) update(); }, 60);
 
 const STEPS = [
- {title:'A proximity switch reports presence without contact',
-  text:'<p>A proximity switch answers one question, and the answer has two values. Something is in front of the sensing face, or nothing is. Kuphaldt defines the device on page 665 as one that detects the closeness of an object by magnetic, electric or optical means, and notes that it is almost always an active device, meaning it contains a powered electronic circuit rather than a bare contact.</p><p>Because nothing touches, nothing wears. That is the reason a proximity switch is preferred to a limit switch wherever the geometry allows it.</p>',
+ {title:'A proximity switch provides contactless presence detection',
+  text:'<p>A proximity switch answers a simple yes-or-no question: Is an object present in front of the sensing face? These active devices use magnetic, electric, or optical fields via powered electronics instead of physical contacts. Because there is no mechanical contact, there is no wear and tear, making proximity switches preferable to limit switches wherever space allows.</p>',
   controls:[]},
 
  {title:'An oscillator drives a coil, and the coil radiates an alternating field',
