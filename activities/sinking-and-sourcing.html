@@ -385,7 +385,7 @@ const STEPS = [
   controls:['type','tgt','cardc','read'], enter(){ showCard=true; }},
 
  {title:'The bench sensor, read as a bit',
-  text:'<p>The bench sensor is inferred to be PNP, and the panel brings out its normally closed output only. With no target present that output is conducting, the input channel is energised, and the bit reads 1. The arrival of a target interrupts the output and the bit falls to 0.</p><p>Field state and logic state are therefore two distinct tables. Every start pushbutton wired in this course so far has read 1 when something happened. This device reads 0.</p>',
+  text:'<p>The bench sensor is inferred to be PNP, and the panel brings out its normally closed output only. With no target present, that output is conducting; the input channel is energized, and the bit reads 1. Target interrupts the output and the bit will become 0.</p>',
   tryit:'Select the normally closed sense with a PNP sensor on the IB16, then move the target in and out and watch the bit.',
   controls:['tgt','sense','read'], enter(){ showCard=true; card='IB16'; type='PNP'; sense='NC'; target=false; },
   quiz:{q:'A normally closed sourcing sensor feeds the IB16 and a target is present. What does the input bit read?',
