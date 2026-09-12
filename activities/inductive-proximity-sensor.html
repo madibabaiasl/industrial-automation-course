@@ -341,7 +341,7 @@ const STEPS = [
   controls:['dist']},
 
  {title:'The trigger operates at a fixed amplitude, and therefore at a fixed distance',
-  text:'<p>A trigger stage monitors the amplitude and changes the output state when it falls to a set level. Because the amplitude is a repeatable function of distance, the output changes at a repeatable distance.</p><p>That distance, measured with a standard target, is the rated operating distance S<sub>n</sub>, and it is the headline figure on any proximity sensor datasheet. The yellow marker shows where it falls.</p>',
+  text:'<p>A trigger stage continuously monitors the oscillator amplitude, switching the output state once it crosses a predefined threshold. Because amplitude scales predictably with distance, the sensor triggers at a consistent point known as the rated operating distance S<sub>n</sub>, which serves as the primary benchmark on any datasheet.</p>',
   tryit:'Approach slowly and note the distance at which the lamp changes state.',
   controls:['dist','read'], enter(){ on=false; }},
 
