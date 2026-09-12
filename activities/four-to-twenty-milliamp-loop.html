@@ -360,7 +360,7 @@ const STEPS = [
     answer:0, why:'No legitimate process value lies below 4 mA. The correct response of the program is an alarm on the instrument, not a report of an empty tank.'}},
 
  {title:'Current survives the conductors, and voltage does not',
-  text:'<p>Conductors have resistance, and a long run has a great deal of it. A voltage signal therefore arrives at the receiver smaller than it left the transmitter, diminished by the product of the current and the conductor resistance, and the receiver has no means of detecting the loss.</p><p>In a series loop the current is the same at every point by Kirchhoff’s current law. The conductors drop volts, the loop supply makes those volts good, and the milliamps arrive unaltered. A current loop also rejects electromagnetically induced interference more effectively, because a low impedance loop develops little voltage from an induced emf.</p>',
+  text:'<p>Conductors have resistance so a voltage signal therefore arrives at the receiver smaller than it left the transmitter.</p><p>In a series loop the current is the same at every point by Kirchhoff’s current law. A current loop also rejects electromagnetically induced interference more effectively, because a low impedance loop develops little voltage from an induced emf.</p>',
   tryit:'Select the voltage standard and extend the run to one thousand metres. Then return to the current standard at the same length.',
   controls:['lvl','sig','len','read'], enter(){ cut=false; lenM=1000; $('len').value=1000; },
   quiz:{q:'A 1 to 5 V signal leaves the transmitter at 3.0 V and arrives at the receiver as 2.8 V. What level does the controller report?',
