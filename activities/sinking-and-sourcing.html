@@ -330,7 +330,7 @@ function update(){
   $('rB').textContent = useCard ? String(bit) : '—';
 
   let v = '';
-  if(!on) v = 'Output open. No current anywhere in the control wire.';
+  if(!on) v = 'Output is open and there is no current in control wire.';
   else if(!useCard && flows) v = 'Output closed, circuit complete, lamp lit.';
   else if(!useCard && !flows) v = 'Output closed and the lamp is dark. The load is on the wrong side.';
   else if(useCard && flows) v = 'Sensor on, optocoupler lit, input bit set.';
