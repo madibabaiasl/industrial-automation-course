@@ -352,7 +352,8 @@ const STEPS = [
     answer:0, why:'Twelve milliamps lies midway between 4 and 20, so the signal is at fifty percent. In general the percentage is (I minus 4) divided by 16.'}},
 
  {title:'Four milliamps means empty, zero milliamps means broken.',
-  tryit:'Set the tank to nought percent and read the current, then cut the conductor and read it again.',
+  text:'<p>Using 4 mA instead of zero is to distinguish broken from in this case, the tank being empty.</p>',
+  tryit:'Set the tank to zero percent and read the current, then cut the conductor and read it again.',
   controls:['lvl','cut','read'],
   quiz:{q:'A level loop reads 0.0 mA at the controller. What may be concluded?',
     opts:['The loop is broken or unpowered, since a genuinely empty tank reads 4 mA','The tank is empty','The tank is full'],
