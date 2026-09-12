@@ -392,9 +392,9 @@ const STEPS = [
     opts:['0, because the normally closed output opened when the target arrived','1, because something is present','It depends on where the scan is when the target arrives'],
     answer:0, why:'Normally closed means made at rest, and rest is the absence of a target. The target interrupts the output, the optocoupler goes dark and the bit reads 0. An XIC instruction on that bit is true when nothing is there.'}},
 
- {title:'Summary, and what Thursday asks of you',
+ /*{title:'Summary, and what Thursday asks of you',
   text:'<p>Sourcing and sinking describe the direction of conventional current in the one control conductor. A PNP output sources, so its load returns to 0 V. The 1756-IB16 sinks, so it requires a sourcing field device. Normally open and normally closed describe the resting state of the output and bear on none of this.</p><p>In Physical Lab 3, item 2 asks you to land the blue NC jack on a pilot lamp. One side of the lamp completes the circuit and the other leaves it dark while the sensor operates perfectly. You are asked to choose the side, and to state the reason, before you patch anything.</p>',
-  controls:['type','tgt','load','sense','read'], enter(){ showCard=false; }}
+  controls:['type','tgt','load','sense','read'], enter(){ showCard=false; }}*/
 ];
 makeSteps(STEPS, {onStep:()=>update()});
 update();
