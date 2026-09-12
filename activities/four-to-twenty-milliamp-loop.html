@@ -339,7 +339,7 @@ seg('wiresSeg',[{label:'two wire, loop powered',value:2},{label:'four wire, self
 
 const STEPS = [
  {title:'A transmitter converts a physical quantity into a standard signal',
-  text:'<p>The tank has no notion of what a controller is. A level transmitter senses the level and regulates the current in a pair of conductors so that the current stands for the level. Four milliamps denotes nought percent of the calibrated range and twenty milliamps denotes one hundred percent.</p><p>Kuphaldt describes this on page 863 as the most widely used form of signal transmission in modern industrial instrumentation, and the reason is compatibility. Any transmitter can drive any receiver, because both are built to the same standard.</p>',
+  text:'<p>The tank itself is just a passive vessel. To get process data to the controller, a level transmitter measures the fluid and scales that reading into a proportional current across a two-wire loop. A 4 mA signal represents 0% of the calibrated range, and 20 mA represents 100%.</p><p>This 4-20 mA standard is the most common signal type in modern industrial instrumentation because of its universal interoperability. Since the electrical standard is uniform, any transmitter can seamlessly interface with any receiver, regardless of the manufacturer.</p>',
   tryit:'Move the level and observe the current the transmitter regulates.',
   controls:['lvl','read'], enter(){ cut=false; sig='I'; wires=2; }},
 
