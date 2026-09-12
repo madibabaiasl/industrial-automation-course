@@ -369,8 +369,8 @@ const STEPS = [
     opts:['No. The factor near 0.4 gives about 3.2 mm, and 5 mm lies outside that','Yes, because 5 mm is less than 8 mm','Only while the bracket is moving'],
     answer:0, why:'Aluminium has a reduction factor near 0.4, so this sensor operates on it at roughly 3.2 mm. The remedy is to mount closer or to specify a longer range device.'}},
 
- {title:'The bench panel brings out the normally closed output only',
-  text:'<p>Whether an output is normally open or normally closed is a separate specification from how the device senses, and Kuphaldt is explicit on page 669 that it has nothing whatever to do with sourcing or sinking. It states one thing only, which is what the output does when no object is near.</p><p>The panel legend on your bench reads NC. At rest the blue jack is therefore conducting, and the arrival of a target interrupts it. Every start pushbutton you have wired since Lesson 1.2 behaved in the opposite sense.</p>',
+ {title:'Our bench panel has the normally closed output only',
+  text:'<p>Whether a sensor output is normally open (NO) or normally closed (NC) is separate from its sensing mechanism or sourcing/sinking configuration. It simply defines what the output does when no target is present.</p><p>Because the bench panel is NC, the blue jack conducts current at rest, and an approaching target interrupts it—the exact opposite behavior of a standard start pushbutton.</p>',
   tryit:'Select the normally closed sense and move the target in and out. Note which state the output rests in.',
   controls:['dist','mode','read'], enter(){ mat='steel'; },
   quiz:{q:'With nothing in front of the bench sensor, is the blue NC jack conducting?',
