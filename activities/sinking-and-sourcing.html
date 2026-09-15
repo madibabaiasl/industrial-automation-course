@@ -170,9 +170,11 @@ button.on{background:var(--ink);color:var(--ground)}
           <path class="wire" d="M530 324 H640 V278 H722"/>
           <!-- optocoupler LED -->
           <path class="ln" d="M797 304 V344"/>
-          <path class="ln" d="M775 344 H819 L797 376 Z"/>
-          <path class="ln" d="M775 376 H819 M797 376 V428"/>
-          <text class="tn" x="830" y="356">LED</text>
+          <path class="ln" id="ledTri" d="M775 344 H819 L797 376 Z"/>
+          <path class="ln" id="ledBar" d="M775 376 H819"/>
+          <path class="ln" d="M797 376 V428"/>
+          <text class="tn" x="830" y="348">LED</text>
+          <text class="tn" id="ledTxt" x="830" y="372">conducts downward</text>
           <rect class="blk" x="722" y="428" width="150" height="52" rx="5"/>
           <text class="ts" id="comName" x="797" y="462" text-anchor="middle">GND-0</text>
           <path class="wire" id="comWire" d="M797 480 V628"/>
@@ -320,10 +322,16 @@ function update(){
     $('cardName').textContent='1756-IB16'; $('cardSub').textContent='DC input, 16 points';
     $('comName').textContent='GND-0'; $('comTxt').textContent='to DC COM −';
     $('comWire').setAttribute('d','M797 480 V628');
+    $('ledTri').setAttribute('d','M775 344 H819 L797 376 Z');
+    $('ledBar').setAttribute('d','M775 376 H819');
+    $('ledTxt').textContent='conducts downward';
   } else {
     $('cardName').textContent='1756-IV16'; $('cardSub').textContent='sourcing input, 16 points';
     $('comName').textContent='DC-0 +'; $('comTxt').textContent='to DC COM +';
     $('comWire').setAttribute('d','M797 480 V560 H1020 V92');
+    $('ledTri').setAttribute('d','M775 376 H819 L797 344 Z');
+    $('ledBar').setAttribute('d','M775 344 H819');
+    $('ledTxt').textContent='conducts upward';
   }
   const bit = (useCard && flows) ? 1 : 0;
   $('bit').textContent = 'input bit = ' + bit;
