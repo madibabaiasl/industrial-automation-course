@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Four joints, one part</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #FFFFFF; color: #000000; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 18px; line-height: 1.3; }
+  main { max-width: 900px; margin: 0 auto; padding: 10px 16px 16px 16px; }
+  h1 { font-size: 18px; font-weight: bold; margin: 0 0 6px 0; }
+  h1 span { font-weight: normal; margin-left: 12px; }
+  svg { display: block; width: 100%; height: auto; }
+  svg text { font-family: Arial, Helvetica, sans-serif; font-size: 16px; fill: #000000; }
+  .row { display: flex; align-items: center; gap: 12px; font-size: 16px; height: 28px; }
+  .row label { width: 110px; flex: none; }
+  .row input[type=range] { flex: 1; margin: 0; accent-color: #000000; }
+  .row output { width: 70px; flex: none; text-align: right; font-variant-numeric: tabular-nums; }
+  #readout { margin-top: 6px; font-variant-numeric: tabular-nums; }
+  #statusline { display: flex; align-items: center; gap: 16px; margin-top: 4px; }
+  #status { font-variant-numeric: tabular-nums; }
+  button { font-family: Arial, Helvetica, sans-serif; font-size: 16px; background: #FFFFFF; color: #000000;
+           border: 2px solid #000000; border-radius: 0; padding: 2px 12px; cursor: pointer; }
+  #check { margin-top: 28px; border-top: 2px solid #000000; padding-top: 12px; }
+  #check p { margin: 0 0 8px 0; }
+  #check .opts { display: flex; gap: 12px; }
+  #feedback { margin-top: 8px; min-height: 24px; }
+  footer { margin-top: 24px; font-size: 16px; }
+  @media (max-width: 600px) {
+    .row label { width: 90px; }
+    .row output { width: 60px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Four joints, one part<span>Put the part in the nest with the slot facing the arrow.</span></h1>
+
+  <svg id="scene" viewBox="0 0 900 480" aria-label="Top view of the SCARA robot and side view of the vertical axis">
+    <!-- top view -->
+    <circle id="reach" cx="300" cy="240" r="210" fill="none" stroke="#000000" stroke-width="2" stroke-dasharray="8 6"/>
+    <text x="300" y="20" text-anchor="middle">reach 350 mm</text>
+
+    <g id="nest" transform="translate(408,144)">
+      <rect x="-14" y="-14" width="28" height="28" fill="#EEEEEE" stroke="#000000" stroke-width="2"/>
+      <line x1="0" y1="0" x2="0" y2="-30" stroke="#000000" stroke-width="2"/>
+      <polyline points="-5,-24 0,-31 5,-24" fill="none" stroke="#000000" stroke-width="2"/>
+      <text x="20" y="6">nest</text>
+    </g>
+
+    <circle cx="300" cy="240" r="22" fill="#EEEEEE" stroke="#000000" stroke-width="2"/>
+    <line id="arm1" x1="300" y1="240" x2="375" y2="240" stroke="#000000" stroke-width="10" stroke-linecap="round"/>
+    <line id="arm2" x1="375" y1="240" x2="510" y2="240" stroke="#000000" stroke-width="6" stroke-linecap="round"/>
+    <circle id="elbow" cx="375" cy="240" r="7" fill="#FFFFFF" stroke="#000000" stroke-width="2"/>
+    <circle id="tool" cx="510" cy="240" r="12" fill="#FFE819" stroke="#000000" stroke-width="2"/>
+    <line id="slot" x1="510" y1="240" x2="526" y2="240" stroke="#000000" stroke-width="2"/>
+    <text id="lblJ1" x="300" y="275">J1</text>
+    <text id="lblJ2" x="375" y="225">J2</text>
+    <text id="lblJ4" x="524" y="266">J4</text>
+
+    <!-- side view -->
+    <rect x="630" y="30" width="250" height="420" fill="none" stroke="#000000" stroke-width="2"/>
+    <text x="755" y="56" text-anchor="middle">side view</text>
+    <line x1="700" y1="80" x2="700" y2="400" stroke="#000000" stroke-width="2"/>
+    <line x1="660" y1="400" x2="860" y2="400" stroke="#000000" stroke-width="2"/>
+    <rect x="786" y="390" width="28" height="10" fill="#EEEEEE" stroke="#000000" stroke-width="2"/>
+    <text x="820" y="420" text-anchor="middle">nest</text>
+    <g id="quill" transform="translate(0,0)">
+      <rect x="692" y="90" width="16" height="140" fill="#FFFFFF" stroke="#000000" stroke-width="2"/>
+      <line x1="700" y1="230" x2="700" y2="270" stroke="#000000" stroke-width="2"/>
+      <line x1="700" y1="270" x2="800" y2="270" stroke="#000000" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="800" cy="270" r="8" fill="#FFE819" stroke="#000000" stroke-width="2"/>
+    </g>
+    <text x="716" y="160">J3</text>
+  </svg>
+
+  <div class="row"><label for="j1">J1 angle</label><input id="j1" type="range" min="-170" max="170" step="1" value="0"><output id="o1">0°</output></div>
+  <div class="row"><label for="j2">J2 angle</label><input id="j2" type="range" min="-145" max="145" step="1" value="0"><output id="o2">0°</output></div>
+  <div class="row"><label for="j3">J3 height</label><input id="j3" type="range" min="0" max="200" step="1" value="0"><output id="o3">0 mm</output></div>
+  <div class="row"><label for="j4">J4 tool turn</label><input id="j4" type="range" min="-360" max="360" step="1" value="0"><output id="o4">0°</output></div>
+
+  <div id="readout">Tool at x = 350 mm, y = 0 mm, z = 0 mm, heading = 0°</div>
+  <div id="statusline"><span id="status" aria-live="polite">Not in the nest yet</span><button id="reset" type="button">Reset</button></div>
+
+  <section id="check">
+    <p>You are in the nest but the slot faces the wrong way. Which single joint fixes it without moving the part?</p>
+    <div class="opts">
+      <button type="button" data-ans="J1">J1</button>
+      <button type="button" data-ans="J2">J2</button>
+      <button type="button" data-ans="J4">J4</button>
+    </div>
+    <div id="feedback" aria-live="polite"></div>
+  </section>
+
+  <footer>Model: planar SCARA geometry of the RH-6FH3520 (arms 125 and 225 mm, J3 stroke 200 mm, BFP-A8863-AV Table 2-1). Joint limits are the real ones; speeds and dynamics are not modelled.</footer>
+</main>
+
+<script>
+(function () {
+  var S = 0.6;            // px per mm
+  var CX = 300, CY = 240; // base position in the SVG
+  var L1 = 125, L2 = 225;
+  var NEST = { x: 180, y: 160, heading: 90 };
+
+  var j1 = document.getElementById('j1'), j2 = document.getElementById('j2'),
+      j3 = document.getElementById('j3'), j4 = document.getElementById('j4');
+  var o1 = document.getElementById('o1'), o2 = document.getElementById('o2'),
+      o3 = document.getElementById('o3'), o4 = document.getElementById('o4');
+  var arm1 = document.getElementById('arm1'), arm2 = document.getElementById('arm2'),
+      j2c = document.getElementById("elbow"), tool = document.getElementById('tool'),
+      slot = document.getElementById('slot'), quill = document.getElementById('quill');
+  var lblJ2 = document.getElementById('lblJ2'), lblJ4 = document.getElementById('lblJ4');
+  var readout = document.getElementById('readout'), status = document.getElementById('status');
+
+  function rad(d) { return d * Math.PI / 180; }
+  function px(x) { return CX + x * S; }
+  function py(y) { return CY - y * S; }
+  function wrap(d) { d = ((d % 360) + 360) % 360; return d > 180 ? d - 360 : d; }
+
+  function update() {
+    var a1 = +j1.value, a2 = +j2.value, z = +j3.value, a4 = +j4.value;
+    o1.value = a1 + '°'; o2.value = a2 + '°'; o3.value = z + ' mm'; o4.value = a4 + '°';
+
+    var ex = L1 * Math.cos(rad(a1)), ey = L1 * Math.sin(rad(a1));
+    var tx = ex + L2 * Math.cos(rad(a1 + a2)), ty = ey + L2 * Math.sin(rad(a1 + a2));
+    var head = wrap(a1 + a2 + a4);
+
+    arm1.setAttribute('x2', px(ex)); arm1.setAttribute('y2', py(ey));
+    arm2.setAttribute('x1', px(ex)); arm2.setAttribute('y1', py(ey));
+    arm2.setAttribute('x2', px(tx)); arm2.setAttribute('y2', py(ty));
+    j2c.setAttribute('cx', px(ex)); j2c.setAttribute('cy', py(ey));
+    tool.setAttribute('cx', px(tx)); tool.setAttribute('cy', py(ty));
+    slot.setAttribute('x1', px(tx)); slot.setAttribute('y1', py(ty));
+    slot.setAttribute('x2', px(tx) + 16 * Math.cos(rad(head)));
+    slot.setAttribute('y2', py(ty) - 16 * Math.sin(rad(head)));
+    lblJ2.setAttribute('x', px(ex)); lblJ2.setAttribute('y', py(ey) - 15);
+    lblJ4.setAttribute('x', px(tx) + 14); lblJ4.setAttribute('y', py(ty) + 26);
+    quill.setAttribute('transform', 'translate(0,' + (z * S) + ')');
+
+    readout.textContent = 'Tool at x = ' + tx.toFixed(0) + ' mm, y = ' + ty.toFixed(0) +
+      ' mm, z = ' + z + ' mm, heading = ' + head + '°';
+
+    var dist = Math.hypot(tx - NEST.x, ty - NEST.y);
+    var dh = Math.abs(wrap(head - NEST.heading));
+    if (dist <= 6 && z >= 190 && dh <= 8) {
+      status.textContent = 'Part placed. J1 = ' + a1 + '°, J2 = ' + a2 + '°, J3 = ' + z + ' mm, J4 = ' + a4 + '°';
+    } else {
+      status.textContent = 'Not in the nest yet';
+    }
+  }
+
+  [j1, j2, j3, j4].forEach(function (s) { s.addEventListener('input', update); });
+  document.getElementById('reset').addEventListener('click', function () {
+    j1.value = 0; j2.value = 0; j3.value = 0; j4.value = 0; update();
+  });
+
+  var fb = document.getElementById('feedback');
+  var answers = {
+    J1: 'Not J1. J1 swings the whole arm, so the tool point moves out of the nest.',
+    J2: 'Not J2. J2 folds the elbow, so the tool point moves out of the nest.',
+    J4: 'Correct. J4 turns the tool about its own axis, so only the heading changes.'
+  };
+  document.querySelectorAll('#check button').forEach(function (b) {
+    b.addEventListener('click', function () { fb.textContent = answers[b.dataset.ans]; });
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>
